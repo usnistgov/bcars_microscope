@@ -4,13 +4,13 @@
 	:alt: pytest
 	:target: https://github.com/CCampJr/bcars_microscope/actions/workflows/python-testing.yml
 
-.. image:: https://codecov.io/gh/CCampJr/bcars_microscope/branch/master/graph/badge.svg?token=WIHgHEUc82
+.. image:: https://codecov.io/gh/CCampJr/bcars_microscope/branch/main/graph/badge.svg?token=WIHgHEUc82
 	:alt: Codecov
 	:target: https://codecov.io/gh/CCampJr/bcars_microscope
 
 .. image:: https://img.shields.io/badge/License-NIST%20Public%20Domain-green.svg
     :alt: NIST Public Domain
-    :target: https://github.com/CCampJr/bcars_microscope/blob/master/LICENSE.md
+    :target: https://github.com/CCampJr/bcars_microscope/blob/main/LICENSE.md
 
 BCARS Microscope - Python software to run BCARS microscope at NIST.
 ============================================================
