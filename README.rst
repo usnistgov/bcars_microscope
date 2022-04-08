@@ -1,16 +1,16 @@
 .. -*- mode: rst -*-
 
-.. image:: https://github.com/CCampJr/bcars_microscope/actions/workflows/python-testing.yml/badge.svg
+.. image:: https://github.com/usnistgov/bcars_microscope/actions/workflows/python-testing.yml/badge.svg
 	:alt: pytest
-	:target: https://github.com/CCampJr/bcars_microscope/actions/workflows/python-testing.yml
+	:target: https://github.com/usnistgov/bcars_microscope/actions/workflows/python-testing.yml
 
-.. image:: https://codecov.io/gh/CCampJr/bcars_microscope/branch/main/graph/badge.svg?token=WIHgHEUc82
+.. image:: https://codecov.io/gh/usnistgov/bcars_microscope/branch/main/graph/badge.svg?token=WIHgHEUc82
 	:alt: Codecov
-	:target: https://codecov.io/gh/CCampJr/bcars_microscope
+	:target: https://codecov.io/gh/usnistgov/bcars_microscope
 
 .. image:: https://img.shields.io/badge/License-NIST%20Public%20Domain-green.svg
     :alt: NIST Public Domain
-    :target: https://github.com/CCampJr/bcars_microscope/blob/main/LICENSE.md
+    :target: https://github.com/usnistgov/bcars_microscope/blob/main/LICENSE.md
 
 BCARS Microscope - Python software to run BCARS microscope at NIST.
 ============================================================
@@ -34,7 +34,7 @@ Installation
 -------------
 
 **NOTE**: The `examples/` and `doc/` folders are not included in the pip installation.
-You will need to download the file from the `GitHub repo <https://github.com/CCampJr/bcars_microscope>`_ manually. 
+You will need to download the file from the `GitHub repo <https://github.com/usnistgov/bcars_microscope>`_ manually. 
 
 Using pip
 ~~~~~~~~~
@@ -50,7 +50,7 @@ Using pip (soft install, i.e. can update with git)
     
     # Make new directory for bcars_microscope and enter it
     # Clone from github
-    git clone https://github.com/CCampJr/bcars_microscope .
+    git clone https://github.com/usnistgov/bcars_microscope .
 
     pip install -e .
 
