@@ -1,0 +1,14 @@
+recursive-exclude * __pycache__
+include *.rst
+include LICENSE.md
+include README.rst
+include CONTRIBUTING.rst
+include CHANGELOG.rst
+include requirements.txt
+recursive-include docs *
+prune docs/build
+recursive-include examples *
+recursive-include examples *.ipynb *.png
+prune examples/.ipynb_checkpoints
+prune examples/Old
+prune examples/outputs
