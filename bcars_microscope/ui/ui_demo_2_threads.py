@@ -24,85 +24,86 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.verticalLayout_pos = QVBoxLayout()
         self.verticalLayout_pos.setObjectName(u"verticalLayout_pos")
+        self.label_4 = QLabel(self.centralwidget)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.label_4.setTextFormat(Qt.RichText)
+
+        self.verticalLayout_pos.addWidget(self.label_4)
+
         self.pushButton_updatePosition = QPushButton(self.centralwidget)
         self.pushButton_updatePosition.setObjectName(u"pushButton_updatePosition")
+        self.pushButton_updatePosition.setStyleSheet(u"font: 11pt \"Arial\";")
 
         self.verticalLayout_pos.addWidget(self.pushButton_updatePosition)
 
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.Box)
-        self.frame.setFrameShadow(QFrame.Sunken)
-        self.frame.setLineWidth(2)
+        self.frame.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.frame.setFrameShape(QFrame.Panel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.frame.setLineWidth(1)
         self.verticalLayout = QVBoxLayout(self.frame)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(3, 3, 3, 3)
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
+        self.label.setStyleSheet(u"font: 11pt \"Arial\";")
 
-        self.verticalLayout.addWidget(self.label)
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label)
 
         self.spinBox_x_pos = QDoubleSpinBox(self.frame)
         self.spinBox_x_pos.setObjectName(u"spinBox_x_pos")
+        self.spinBox_x_pos.setStyleSheet(u"font: 11pt \"Arial\";")
         self.spinBox_x_pos.setReadOnly(True)
         self.spinBox_x_pos.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.spinBox_x_pos.setDecimals(3)
         self.spinBox_x_pos.setMinimum(-10.000000000000000)
         self.spinBox_x_pos.setMaximum(210.000000000000000)
 
-        self.verticalLayout.addWidget(self.spinBox_x_pos)
+        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.spinBox_x_pos)
 
-
-        self.verticalLayout_pos.addWidget(self.frame)
-
-        self.frame_2 = QFrame(self.centralwidget)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QFrame.Box)
-        self.frame_2.setFrameShadow(QFrame.Sunken)
-        self.frame_2.setLineWidth(2)
-        self.verticalLayout_2 = QVBoxLayout(self.frame_2)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.label_2 = QLabel(self.frame_2)
+        self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setStyleSheet(u"font: 11pt \"Arial\";")
 
-        self.verticalLayout_2.addWidget(self.label_2)
+        self.formLayout_2.setWidget(1, QFormLayout.LabelRole, self.label_2)
 
-        self.spinBox_y_pos = QDoubleSpinBox(self.frame_2)
+        self.spinBox_y_pos = QDoubleSpinBox(self.frame)
         self.spinBox_y_pos.setObjectName(u"spinBox_y_pos")
+        self.spinBox_y_pos.setStyleSheet(u"font: 11pt \"Arial\";")
         self.spinBox_y_pos.setReadOnly(True)
         self.spinBox_y_pos.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.spinBox_y_pos.setDecimals(3)
         self.spinBox_y_pos.setMinimum(-10.000000000000000)
         self.spinBox_y_pos.setMaximum(210.000000000000000)
 
-        self.verticalLayout_2.addWidget(self.spinBox_y_pos)
+        self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.spinBox_y_pos)
 
-
-        self.verticalLayout_pos.addWidget(self.frame_2)
-
-        self.frame_3 = QFrame(self.centralwidget)
-        self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.Box)
-        self.frame_3.setFrameShadow(QFrame.Sunken)
-        self.frame_3.setLineWidth(2)
-        self.verticalLayout_3 = QVBoxLayout(self.frame_3)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.label_3 = QLabel(self.frame_3)
+        self.label_3 = QLabel(self.frame)
         self.label_3.setObjectName(u"label_3")
+        self.label_3.setStyleSheet(u"font: 11pt \"Arial\";")
 
-        self.verticalLayout_3.addWidget(self.label_3)
+        self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.label_3)
 
-        self.spinBox_z_pos = QDoubleSpinBox(self.frame_3)
+        self.spinBox_z_pos = QDoubleSpinBox(self.frame)
         self.spinBox_z_pos.setObjectName(u"spinBox_z_pos")
+        self.spinBox_z_pos.setStyleSheet(u"font: 11pt \"Arial\";")
         self.spinBox_z_pos.setReadOnly(True)
         self.spinBox_z_pos.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.spinBox_z_pos.setDecimals(3)
         self.spinBox_z_pos.setMinimum(-10.000000000000000)
         self.spinBox_z_pos.setMaximum(210.000000000000000)
 
-        self.verticalLayout_3.addWidget(self.spinBox_z_pos)
+        self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.spinBox_z_pos)
 
 
-        self.verticalLayout_pos.addWidget(self.frame_3)
+        self.verticalLayout.addLayout(self.formLayout_2)
+
+
+        self.verticalLayout_pos.addWidget(self.frame)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -110,11 +111,6 @@ class Ui_MainWindow(object):
 
 
         self.horizontalLayout.addLayout(self.verticalLayout_pos)
-
-        self.widget = QWidget(self.centralwidget)
-        self.widget.setObjectName(u"widget")
-
-        self.horizontalLayout.addWidget(self.widget)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -136,6 +132,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">Current Position</span></p></body></html>", None))
         self.pushButton_updatePosition.setText(QCoreApplication.translate("MainWindow", u"Update", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"X", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Y", None))
