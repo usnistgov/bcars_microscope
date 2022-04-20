@@ -115,6 +115,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addLayout(self.verticalLayout_pos)
 
         self.verticalLayout_pos_2 = QVBoxLayout()
+        self.verticalLayout_pos_2.setSpacing(6)
         self.verticalLayout_pos_2.setObjectName(u"verticalLayout_pos_2")
         self.label_5 = QLabel(self.centralwidget)
         self.label_5.setObjectName(u"label_5")
@@ -146,49 +147,55 @@ class Ui_MainWindow(object):
         self.frame_2.setFrameShape(QFrame.Panel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.frame_2.setLineWidth(1)
+        self.verticalLayout_2 = QVBoxLayout(self.frame_2)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(3, 3, 3, 3)
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
         self.label_6 = QLabel(self.frame_2)
         self.label_6.setObjectName(u"label_6")
-        self.label_6.setGeometry(QRect(5, 5, 16, 17))
         self.label_6.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.label_8 = QLabel(self.frame_2)
-        self.label_8.setObjectName(u"label_8")
-        self.label_8.setGeometry(QRect(5, 71, 16, 17))
-        self.label_8.setStyleSheet(u"font: 11pt \"Arial\";")
+
+        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.label_6)
+
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.spinBox_x_setpos = QDoubleSpinBox(self.frame_2)
+        self.spinBox_x_setpos.setObjectName(u"spinBox_x_setpos")
+        self.spinBox_x_setpos.setMaximumSize(QSize(50, 16777215))
+        self.spinBox_x_setpos.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_x_setpos.setReadOnly(True)
+        self.spinBox_x_setpos.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_x_setpos.setDecimals(3)
+        self.spinBox_x_setpos.setMinimum(-10.000000000000000)
+        self.spinBox_x_setpos.setMaximum(210.000000000000000)
+
+        self.horizontalLayout_5.addWidget(self.spinBox_x_setpos)
+
+        self.pushButton_moveX = QPushButton(self.frame_2)
+        self.pushButton_moveX.setObjectName(u"pushButton_moveX")
+        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButton_moveX.sizePolicy().hasHeightForWidth())
+        self.pushButton_moveX.setSizePolicy(sizePolicy)
+        self.pushButton_moveX.setMaximumSize(QSize(16777215, 21))
+        self.pushButton_moveX.setStyleSheet(u"font: 11pt \"Arial\";")
+
+        self.horizontalLayout_5.addWidget(self.pushButton_moveX)
+
+
+        self.formLayout_3.setLayout(0, QFormLayout.FieldRole, self.horizontalLayout_5)
+
         self.label_7 = QLabel(self.frame_2)
         self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(5, 38, 16, 17))
         self.label_7.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.widget = QWidget(self.frame_2)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(21, 71, 133, 27))
-        self.horizontalLayout_7 = QHBoxLayout(self.widget)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.spinBox_z_setpos = QDoubleSpinBox(self.widget)
-        self.spinBox_z_setpos.setObjectName(u"spinBox_z_setpos")
-        self.spinBox_z_setpos.setMaximumSize(QSize(50, 16777215))
-        self.spinBox_z_setpos.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_z_setpos.setReadOnly(True)
-        self.spinBox_z_setpos.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_z_setpos.setDecimals(3)
-        self.spinBox_z_setpos.setMinimum(-10.000000000000000)
-        self.spinBox_z_setpos.setMaximum(210.000000000000000)
 
-        self.horizontalLayout_7.addWidget(self.spinBox_z_setpos)
+        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.label_7)
 
-        self.pushButton_moveZ = QPushButton(self.widget)
-        self.pushButton_moveZ.setObjectName(u"pushButton_moveZ")
-        self.pushButton_moveZ.setStyleSheet(u"font: 11pt \"Arial\";")
-
-        self.horizontalLayout_7.addWidget(self.pushButton_moveZ)
-
-        self.widget1 = QWidget(self.frame_2)
-        self.widget1.setObjectName(u"widget1")
-        self.widget1.setGeometry(QRect(21, 38, 133, 27))
-        self.horizontalLayout_6 = QHBoxLayout(self.widget1)
+        self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.spinBox_y_setpos = QDoubleSpinBox(self.widget1)
+        self.spinBox_y_setpos = QDoubleSpinBox(self.frame_2)
         self.spinBox_y_setpos.setObjectName(u"spinBox_y_setpos")
         self.spinBox_y_setpos.setMaximumSize(QSize(50, 16777215))
         self.spinBox_y_setpos.setStyleSheet(u"font: 11pt \"Arial\";")
@@ -200,31 +207,49 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6.addWidget(self.spinBox_y_setpos)
 
-        self.pushButton_moveY = QPushButton(self.widget1)
+        self.pushButton_moveY = QPushButton(self.frame_2)
         self.pushButton_moveY.setObjectName(u"pushButton_moveY")
+        self.pushButton_moveY.setMaximumSize(QSize(16777215, 21))
         self.pushButton_moveY.setStyleSheet(u"font: 11pt \"Arial\";")
 
         self.horizontalLayout_6.addWidget(self.pushButton_moveY)
 
-        self.spinBox_x_setpos = QDoubleSpinBox(self.frame_2)
-        self.spinBox_x_setpos.setObjectName(u"spinBox_x_setpos")
-        self.spinBox_x_setpos.setGeometry(QRect(22, 8, 50, 21))
-        self.spinBox_x_setpos.setMaximumSize(QSize(50, 16777215))
-        self.spinBox_x_setpos.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_x_setpos.setReadOnly(True)
-        self.spinBox_x_setpos.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_x_setpos.setDecimals(3)
-        self.spinBox_x_setpos.setMinimum(-10.000000000000000)
-        self.spinBox_x_setpos.setMaximum(210.000000000000000)
-        self.pushButton_moveX = QPushButton(self.frame_2)
-        self.pushButton_moveX.setObjectName(u"pushButton_moveX")
-        self.pushButton_moveX.setGeometry(QRect(78, 6, 75, 21))
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton_moveX.sizePolicy().hasHeightForWidth())
-        self.pushButton_moveX.setSizePolicy(sizePolicy)
-        self.pushButton_moveX.setStyleSheet(u"font: 11pt \"Arial\";")
+
+        self.formLayout_3.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout_6)
+
+        self.label_8 = QLabel(self.frame_2)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setStyleSheet(u"font: 11pt \"Arial\";")
+
+        self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.label_8)
+
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.spinBox_z_setpos = QDoubleSpinBox(self.frame_2)
+        self.spinBox_z_setpos.setObjectName(u"spinBox_z_setpos")
+        self.spinBox_z_setpos.setMaximumSize(QSize(50, 16777215))
+        self.spinBox_z_setpos.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_z_setpos.setReadOnly(True)
+        self.spinBox_z_setpos.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_z_setpos.setDecimals(3)
+        self.spinBox_z_setpos.setMinimum(-10.000000000000000)
+        self.spinBox_z_setpos.setMaximum(210.000000000000000)
+
+        self.horizontalLayout_7.addWidget(self.spinBox_z_setpos)
+
+        self.pushButton_moveZ = QPushButton(self.frame_2)
+        self.pushButton_moveZ.setObjectName(u"pushButton_moveZ")
+        self.pushButton_moveZ.setMaximumSize(QSize(16777215, 21))
+        self.pushButton_moveZ.setStyleSheet(u"font: 11pt \"Arial\";")
+
+        self.horizontalLayout_7.addWidget(self.pushButton_moveZ)
+
+
+        self.formLayout_3.setLayout(2, QFormLayout.FieldRole, self.horizontalLayout_7)
+
+
+        self.verticalLayout_2.addLayout(self.formLayout_3)
+
 
         self.verticalLayout_pos_2.addWidget(self.frame_2)
 
@@ -278,10 +303,10 @@ class Ui_MainWindow(object):
         self.pushButton_moveAll.setText(QCoreApplication.translate("MainWindow", u"Move All", None))
         self.pushButton_setPos_getCurrent.setText(QCoreApplication.translate("MainWindow", u"Load Current", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"X", None))
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Z", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Y", None))
-        self.pushButton_moveZ.setText(QCoreApplication.translate("MainWindow", u"Move Z", None))
-        self.pushButton_moveY.setText(QCoreApplication.translate("MainWindow", u"Move Y", None))
         self.pushButton_moveX.setText(QCoreApplication.translate("MainWindow", u"Move X", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Y", None))
+        self.pushButton_moveY.setText(QCoreApplication.translate("MainWindow", u"Move Y", None))
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Z", None))
+        self.pushButton_moveZ.setText(QCoreApplication.translate("MainWindow", u"Move Z", None))
     # retranslateUi
 
