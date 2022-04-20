@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>996</width>
-    <height>763</height>
+    <width>1193</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -243,171 +243,210 @@
           <property name="lineWidth">
            <number>1</number>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <property name="leftMargin">
+          <widget class="QLabel" name="label_6">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>5</y>
+             <width>16</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+           </property>
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_8">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>71</y>
+             <width>16</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Z</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_7">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>38</y>
+             <width>16</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Y</string>
+           </property>
+          </widget>
+          <widget class="QWidget" name="">
+           <property name="geometry">
+            <rect>
+             <x>21</x>
+             <y>71</y>
+             <width>133</width>
+             <height>27</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QDoubleSpinBox" name="spinBox_z_setpos">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="decimals">
+               <number>3</number>
+              </property>
+              <property name="minimum">
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>210.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_moveZ">
+              <property name="styleSheet">
+               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Move Z</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="">
+           <property name="geometry">
+            <rect>
+             <x>21</x>
+             <y>38</y>
+             <width>133</width>
+             <height>27</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QDoubleSpinBox" name="spinBox_y_setpos">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="decimals">
+               <number>3</number>
+              </property>
+              <property name="minimum">
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>210.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_moveY">
+              <property name="styleSheet">
+               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+              </property>
+              <property name="text">
+               <string>Move Y</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QDoubleSpinBox" name="spinBox_x_setpos">
+           <property name="geometry">
+            <rect>
+             <x>22</x>
+             <y>8</y>
+             <width>50</width>
+             <height>21</height>
+            </rect>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::NoButtons</enum>
+           </property>
+           <property name="decimals">
             <number>3</number>
            </property>
-           <property name="topMargin">
-            <number>3</number>
+           <property name="minimum">
+            <double>-10.000000000000000</double>
            </property>
-           <property name="rightMargin">
-            <number>3</number>
+           <property name="maximum">
+            <double>210.000000000000000</double>
            </property>
-           <property name="bottomMargin">
-            <number>3</number>
+          </widget>
+          <widget class="QPushButton" name="pushButton_moveX">
+           <property name="geometry">
+            <rect>
+             <x>78</x>
+             <y>6</y>
+             <width>75</width>
+             <height>21</height>
+            </rect>
            </property>
-           <item>
-            <layout class="QGridLayout" name="gridLayout">
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_8">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Z</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_6">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>X</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="spinBox_y_setpos">
-               <property name="maximumSize">
-                <size>
-                 <width>50</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>210.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="spinBox_x_setpos">
-               <property name="maximumSize">
-                <size>
-                 <width>50</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>210.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="spinBox_z_setpos">
-               <property name="maximumSize">
-                <size>
-                 <width>50</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
-               </property>
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>210.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_7">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Y</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <widget class="QPushButton" name="pushButton_moveX">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Move X</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QPushButton" name="pushButton_moveY">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Move Y</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QPushButton" name="pushButton_moveZ">
-               <property name="styleSheet">
-                <string notr="true">font: 11pt &quot;Arial&quot;;</string>
-               </property>
-               <property name="text">
-                <string>Move Z</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 11pt &quot;Arial&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Move X</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
@@ -431,12 +470,28 @@
      </layout>
     </item>
     <item>
+     <widget class="QWidget" name="mpl_widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
      <spacer name="horizontalSpacer">
       <property name="styleSheet">
        <string notr="true">font: 11pt &quot;Arial&quot;;</string>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -453,7 +508,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>996</width>
+     <width>1193</width>
      <height>26</height>
     </rect>
    </property>

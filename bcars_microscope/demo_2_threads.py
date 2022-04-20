@@ -38,8 +38,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.ui.mpl_canvas)
 
         # Create a placeholder widget to hold our toolbar and canvas.
-        # self.ui.widget = QWidget()
-        self.ui.widget.setLayout(layout)
+        self.ui.mpl_widget.setLayout(layout)
         self.ui.mpl_canvas.axes.set_xlabel('Pixel')
         self.ui.mpl_canvas.axes.set_ylabel('Counts')
         self.ui.mpl_canvas.axes.set_title('CCD Counts')
