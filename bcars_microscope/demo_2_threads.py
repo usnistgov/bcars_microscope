@@ -66,23 +66,19 @@ class MainWindow(QMainWindow):
         self.timer2.start()
 
     def update_position(self):
-        rand_vals = 2*100*np.random.rand(3)
-        self.ui.spinBox_x_pos.setValue(rand_vals[0])
-        self.ui.spinBox_y_pos.setValue(rand_vals[1])
-        self.ui.spinBox_z_pos.setValue(rand_vals[2])
+        locs_dict = get_position()
+        self.ui.spinBox_x_pos.setValue(locs_dict['X'])
+        self.ui.spinBox_y_pos.setValue(locs_dict['Y'])
+        self.ui.spinBox_z_pos.setValue(locs_dict['Z'])
 
     def update_plot(self):
-        xdata = np.arange(1600)
-        # print(xdata.shape)
-        ydata = np.random.randint(0,2**16,size=1600)
-        # print(ydata.shape)
-
+        ydata = get_spectrum()
         if self.ui.plot_ref is None:
+            xdata = np.arange(ydata.size)
             # self.ui.mpl_canvas.axes.cla()
             self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, lw=1)[0]
             
         else:
-            # self.ui.plot_ref.set_xdata(xdata)
             self.ui.plot_ref.set_ydata(ydata)
         # self.ui.mpl_canvas.axes.set_ylim(bottom=ydata.min()-np.std(ydata), top=ydata.max()+np.std(ydata))
         self.ui.mpl_canvas.draw()
@@ -90,31 +86,12 @@ class MainWindow(QMainWindow):
         # print('Here')
         # print(ydata)
 
+def get_spectrum(n=1600):
+    return np.random.randint(0,2**16,size=1600)
 
-# class MainWindow(QMainWindow):
-
-#     def __init__(self, *args, **kwargs):
-#         super(MainWindow, self).__init__(*args, **kwargs)
-
-#         # Create the maptlotlib FigureCanvas object,
-#         # which defines a single set of axes as self.axes.
-#         self.ui.mpl_canvas = MplCanvas(self, width=5, height=4, dpi=100)
-#         sc.axes.plot([0,1,2,3,4], [10,1,20,3,40])
-
-#         # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
-#         toolbar = NavigationToolbar2QT(sc, self)
-
-#         layout = QVBoxLayout()
-#         layout.addWidget(toolbar)
-#         layout.addWidget(sc)
-
-#         # Create a placeholder widget to hold our toolbar and canvas.
-#         widget = QWidget()
-#         widget.setLayout(layout)
-#         self.setCentralWidget(widget)
-
-#         self.show()
-
+def get_position():
+    vals = 2*100*np.random.rand(3)
+    return {'X':vals[0], 'Y':vals[1], 'Z':vals[2]}
 
 app = QApplication(sys.argv)
 window = MainWindow()
