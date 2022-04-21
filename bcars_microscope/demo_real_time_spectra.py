@@ -1,6 +1,5 @@
 from multiprocessing.sharedctypes import Value
 import sys
-from time import sleep
 import traceback
 
 import matplotlib as mpl
@@ -11,8 +10,9 @@ mpl.rcParams['axes.labelsize'] = 20
 import numpy as np
 
 from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
-from PySide2.QtCore import QTimer
+from PySide2.QtCore import QTimer, Qt
 from PySide2 import QtCore
+from PySide2.QtGui import QPalette, QColor
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
@@ -26,6 +26,28 @@ err_codes = atmcd_errors.Error_Codes
 
 from pipython import GCS2Commands, GCSDevice, pitools
 
+dark_palette = QPalette()
+dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+dark_palette.setColor(QPalette.WindowText, Qt.white)
+dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
+dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+dark_palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
+dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+dark_palette.setColor(QPalette.Text, Qt.white)
+dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+dark_palette.setColor(QPalette.ButtonText, Qt.white)
+dark_palette.setColor(QPalette.BrightText, Qt.red)
+dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+dark_palette.setColor(QPalette.HighlightedText, QColor(35, 35, 35))
+dark_palette.setColor(QPalette.Active, QPalette.Button, QColor(53, 53, 53))
+dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, Qt.darkGray)
+dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, Qt.darkGray)
+dark_palette.setColor(QPalette.Disabled, QPalette.Text, Qt.darkGray)
+dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(53, 53, 53))
+
+# Stylesheet overwrites palette for button
+stylesheet = "QPushButton {background-color: (53,53,53), border-style: inset; border-width: 2px; border-radius: 3px;}"
 
 class MplCanvas(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -74,6 +96,8 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_moveY.pressed.connect(self.inner_move_stage)
         self.ui.pushButton_moveZ.pressed.connect(self.inner_move_stage)
         self.ui.pushButton_moveAll.pressed.connect(self.inner_move_stage)
+        self.ui.pushButton_moveCenter.pressed.connect(self.inner_move_stage)
+        self.ui.pushButton_moveCenter_Offset.pressed.connect(self.inner_move_stage)
 
         self.timer = QTimer()
         self.timer.setInterval(100)
@@ -98,14 +122,13 @@ class MainWindow(QMainWindow):
 
 
     def update_plot(self):
-        ydata = get_spectrum()
+        xdata, ydata = get_spectrum()
         if ydata is not None:
             if self.ui.plot_ref is None:
-                xdata = np.arange(ydata.size)
-                # self.ui.mpl_canvas.axes.cla()
                 self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, lw=1)[0]
                 
             else:
+                self.ui.plot_ref.set_ydata(xdata)
                 self.ui.plot_ref.set_ydata(ydata)
             # self.ui.mpl_canvas.axes.set_ylim(bottom=ydata.min()-np.std(ydata), top=ydata.max()+np.std(ydata))
             self.ui.mpl_canvas.draw()
@@ -115,7 +138,6 @@ class MainWindow(QMainWindow):
 
     def inner_move_stage(self):
         self.timer2.stop()
-        sleep(1)
         if self.sender() == self.ui.pushButton_moveX:
             outer_move_stage({'X': self.ui.spinBox_x_setpos.value()})
         elif self.sender() == self.ui.pushButton_moveY:
@@ -126,6 +148,13 @@ class MainWindow(QMainWindow):
             outer_move_stage({'X': self.ui.spinBox_x_setpos.value(),
                               'Y': self.ui.spinBox_y_setpos.value(),
                               'Z': self.ui.spinBox_z_setpos.value()})
+        elif self.sender() == self.ui.pushButton_moveCenter:
+            outer_move_stage({'X': 100., 'Y': 100., 'Z': 100.})
+        elif self.sender() == self.ui.pushButton_moveCenter_Offset:
+            outer_move_stage({'X': 100.,
+                              'Y': 100.,
+                              'Z': self.ui.spinBox_z_offset.value()})
+                              
 
         else:
             raise ValueError('Move stage error (inner')
@@ -139,10 +168,24 @@ if __name__ == '__main__':
     test_mode = True
 
     if test_mode:
+        from scipy.interpolate import interp1d
         pos = {'X':100, 'Y':101, 'Z':102}
 
         def get_spectrum(n=1600):
-            return 200*np.random.rand(n)
+            x = [0,100,100, 200, 200, 400, 400, 600, 600, 500, 500, 900, 700, 700, 1000]
+            y = [0,0,1000, 0, 1000, 1000, 0, 0, 500, 500, 1000, 1000, 1000, 0, 0]
+
+            x2 = np.hstack((np.arange(101), np.array([100]), np.arange(100,201), np.array(101*[200]),
+                            np.arange(200,301), np.array(101*[300]), np.arange(300, 501), np.array(50*[500]),
+                            np.arange(500,400-1,-1), np.array(50*[400]), np.arange(400,801), np.arange(800,599,-1),
+                            np.array(101*[600]), np.arange(600,901)))
+            y2 = np.hstack((np.array(101*[0]), np.array([1000]), np.linspace(1000,0,101), np.linspace(0,1000,101),
+                            np.array(101*[1000]), np.linspace(1000,0,101), np.array(201*[0]),
+                            np.linspace(0,500,50), np.array(101*[500]), np.linspace(500,1000,50), np.array(401*[1000]),
+                            np.array(201*[1000]), np.linspace(1000,0,101), np.array(301*[0])))
+            
+            return x2, y2 + 30*np.random.randn(y2.size)
+
         def get_position():
             return pos
         def outer_move_stage(mov_dict):
@@ -150,7 +193,9 @@ if __name__ == '__main__':
             return None
         
         app = QApplication(sys.argv)
-        app.setStyleSheet("QPushButton {border-style: outset; border-width: 2px; border-radius: 10px;}")
+        app.setStyleSheet(stylesheet)
+        app.setStyle("Fusion")
+        app.setPalette(dark_palette)
         window = MainWindow()
         window.show()
         app.exec_()
@@ -175,7 +220,7 @@ if __name__ == '__main__':
                 if n_images > 0:
                     (ret_code, arr, validfirst, validlast) = ccd.sdk.GetImages16(last_img, last_img, sgl_image_size)
                     # print(arr[0])
-                    return arr
+                    return np.arange(n), arr
                 else:
                     return None
 
@@ -204,7 +249,9 @@ if __name__ == '__main__':
             
 
             app = QApplication(sys.argv)
-            app.setStyleSheet("QPushButton {border-style: outset; border-width: 2px; border-radius: 10px;}")
+            app.setStyleSheet(stylesheet)
+            app.setStyle("Fusion")
+            app.setPalette(dark_palette)
             window = MainWindow()
             window.show()
             app.exec_()
