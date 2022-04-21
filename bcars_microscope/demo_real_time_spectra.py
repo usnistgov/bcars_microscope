@@ -20,35 +20,39 @@ from ui.ui_demo_2_threads import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
-from andor_ccd import AndorNewton970, andor_err_code_str
-from pyAndorSDK2 import atmcd_errors, atmcd_codes
-err_codes = atmcd_errors.Error_Codes
+try:
+    from andor_ccd import AndorNewton970, andor_err_code_str
+    from pyAndorSDK2 import atmcd_errors, atmcd_codes
+    err_codes = atmcd_errors.Error_Codes
 
-from pipython import GCS2Commands, GCSDevice, pitools
+    from pipython import GCS2Commands, GCSDevice, pitools
+except:
+    pass
+else:
+    pass
 
-dark_palette = QPalette()
-dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-dark_palette.setColor(QPalette.WindowText, Qt.white)
-dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
-dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-dark_palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
-dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-dark_palette.setColor(QPalette.Text, Qt.white)
-dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-dark_palette.setColor(QPalette.ButtonText, Qt.white)
-dark_palette.setColor(QPalette.BrightText, Qt.red)
-dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-dark_palette.setColor(QPalette.HighlightedText, QColor(35, 35, 35))
-dark_palette.setColor(QPalette.Active, QPalette.Button, QColor(53, 53, 53))
-dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, Qt.darkGray)
-dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, Qt.darkGray)
-dark_palette.setColor(QPalette.Disabled, QPalette.Text, Qt.darkGray)
-dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(53, 53, 53))
+# dark_palette = QPalette()
+# dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+# dark_palette.setColor(QPalette.WindowText, Qt.white)
+# dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
+# dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+# dark_palette.setColor(QPalette.ToolTipBase, QColor(25, 25, 25))
+# dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+# dark_palette.setColor(QPalette.Text, Qt.white)
+# dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+# dark_palette.setColor(QPalette.ButtonText, Qt.white)
+# dark_palette.setColor(QPalette.BrightText, Qt.red)
+# dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+# dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+# dark_palette.setColor(QPalette.HighlightedText, QColor(35, 35, 35))
+# dark_palette.setColor(QPalette.Active, QPalette.Button, QColor(53, 53, 53))
+# dark_palette.setColor(QPalette.Disabled, QPalette.ButtonText, Qt.darkGray)
+# dark_palette.setColor(QPalette.Disabled, QPalette.WindowText, Qt.darkGray)
+# dark_palette.setColor(QPalette.Disabled, QPalette.Text, Qt.darkGray)
+# dark_palette.setColor(QPalette.Disabled, QPalette.Light, QColor(53, 53, 53))
 
 # Stylesheet overwrites palette for button
-stylesheet = "QPushButton {background-color: (53,53,53), border-style: inset; border-width: 2px; border-radius: 3px;}"
-
+# stylesheet = "QPushButton {background-color: (53,53,53), border-style: inset; border-width: 2px; border-radius: 3px;}"
 class MplCanvas(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
@@ -69,7 +73,7 @@ class MainWindow(QMainWindow):
 
         # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
         toolbar = NavigationToolbar2QT(self.ui.mpl_canvas, self)
-        toolbar.setStyleSheet('font: 20pt "Arial";')  # Work around to setting the nav toolbar coordinate font size
+        toolbar.setStyleSheet('font: 20pt "Arial"; color: white')  # Work around to setting the nav toolbar coordinate font size
 
         layout = QVBoxLayout()
         layout.addWidget(toolbar)
@@ -193,9 +197,8 @@ if __name__ == '__main__':
             return None
         
         app = QApplication(sys.argv)
-        app.setStyleSheet(stylesheet)
+        # app.setStyleSheet(stylesheet)
         app.setStyle("Fusion")
-        app.setPalette(dark_palette)
         window = MainWindow()
         window.show()
         app.exec_()
@@ -249,9 +252,9 @@ if __name__ == '__main__':
             
 
             app = QApplication(sys.argv)
-            app.setStyleSheet(stylesheet)
+            # app.setStyleSheet(stylesheet)
             app.setStyle("Fusion")
-            app.setPalette(dark_palette)
+            # app.setPalette(dark_palette)
             window = MainWindow()
             window.show()
             app.exec_()
