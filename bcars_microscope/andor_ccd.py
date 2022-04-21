@@ -69,14 +69,11 @@ class AndorNewton970:
     else:
         raise ValueError('Valid Amplifiers are Conventional and ElectronMultiplying')
 
-    def __init__(self, init_sdk=None, settings_kwargs=None):
-        if init_sdk is None:
-            self.sdk = atmcd()
-            ret_code = self.sdk.Initialize("")  # Initialize camera
-            print('Initialize SDK {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
-        else:
-            self.sdk = init_sdk
-            print('SDK already initialized.')
+    def __init__(self, initialized_sdk=None, settings_kwargs=None):
+        self.sdk = initialized_sdk
+        if initialized_sdk is not None:
+            print('Using pre-initialized SDK reference')
+        
         self.name = 'Andor Newton 970'
         self.is_fvb_or_sgl_track = None
         self.n_rows = None
@@ -94,6 +91,14 @@ class AndorNewton970:
             print('Updating: {}'.format(settings_kwargs))
             self.settings.update(settings_kwargs)
 
+    def init_sdk(self, force=False):
+        """ Initialize the sdk """
+        if (self.sdk is not None) & (not force):
+            print('Cannot initialize SDK: already initialized. Use force parameter if needed.')
+        else:
+            self.sdk = atmcd()
+            ret_code = self.sdk.Initialize("")  # Initialize camera
+            print('Initialize SDK {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
 
     def get_meta(self):
         pass
@@ -124,7 +129,7 @@ class AndorNewton970:
         # print('Handle: {} -- {}: {}'.format(handle, ret_code, andor_err_code_str(ret_code)))
         # del ret_code, handle
 
-    def initialize_default(self):
+    def init_camera(self):
 
         print('HERE: {}'.format(self.settings))
         # Cooler on
@@ -266,50 +271,95 @@ class AndorNewton970:
         self.sdk.FreeInternalMemory()
         self.sdk.ShutDown()
 
+    def start_acquisition(self):
+        ret_code = ccd.sdk.StartAcquisition()
+        print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
+        return ret_code
 
+    def stop_acquisition(self):
+        ret_code = ccd.sdk.AbortAcquisition()
+        print('Aborting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
+        return ret_code
 
+    def free_memory(self):
+        ret_code = self.sdk.FreeInternalMemory()
+        print('Free Internal Memory: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
+        return ret_code
+
+    def get_num_new_images(self):
+        """ ret_code, n_images, first_img, last_img """
+        ret_code, first_img, last_img = ccd.sdk.GetNumberNewImages()
+        # ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
+        # print('New Images: {}:{}'.format(first_img, last_img))       
+        
+        if first_image == 0:
+            n_images = last_img-first_img
+        else:
+            n_images = last_img-first_img + 1
+
+        print('New Images: {}:{}'.format(first_img, last_img))
+
+        return ret_code, n_images, first_img, last_img
+
+    @property
+    def sgl_image_size(self):
+        if self.is_fvb_or_sgl_track == True:
+            return self.n_cols
+        else:
+            return self.n_rows * self.n_cols
+
+    def get_all_images16(self):
+        """ Get all available images """
+        _, n_images, first_img, last_img = self.get_num_new_images()
+        allImageSize = self.sgl_image_size * n_images
+        (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(first_img, last_img, allImageSize)
+        return (ret_code, arr, validfirst, validlast)
+
+    def get_last_n_images16(self, k=1):
+        """ Get k last images"""
+        _, n_images, _, last_img = self.get_num_new_images()
+        allImageSize = self.sgl_image_size * k
+        (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(last_img-k+1, last_img, allImageSize)
+        return (ret_code, arr, validfirst, validlast)
+
+    def get_first_n_images16(self, k=1):
+        """ Get k last images"""
+        _, n_images, first_img, _ = self.get_num_new_images()
+        allImageSize = self.sgl_image_size * k
+        (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(first_img, first_img+k-1, allImageSize)
+        return (ret_code, arr, validfirst, validlast)
 
 if __name__ == '__main__':
     ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0, 'read_mode': 'FULL_VERTICAL_BINNING',
                                           'trigger_mode': 'INTERNAL'})
     try:
-        ccd.initialize_default()
+        ccd.init_camera()
     except Exception as e:
         print('ERROR: {}'.format(traceback.format_exc()))
         ret_code = ccd.sdk.ShutDown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
     else:
-        ret_code = ccd.sdk.StartAcquisition()
+        ret_code = ccd.start_acquisition()
         print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
         # ccd.sdk.WaitForAcquisition()
         sleep(1)
-        ccd.sdk.AbortAcquisition()
+        ccd.stop_acquisition()
         
         
-        ret_code, first_img, last_img = ccd.sdk.GetNumberNewImages()
-        print('New Images: {}:{}'.format(first_img, last_img))
+        ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
+        print('New Images: {} [{}:{}]'.format(n_images, first_img, last_img))
 
-        ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
-        print('New Images: {}:{}'.format(first_img, last_img))
-
-        if ccd.is_fvb_or_sgl_track == True:
-            sgl_image_size = ccd.n_cols
-        else:
-            sgl_image_size = ccd.n_rows * ccd.n_cols
-        
-        n_images = last_img-first_img + 1
-        allImageSize = sgl_image_size * n_images
-
-        (ret_code, arr, validfirst, validlast) = ccd.sdk.GetImages16(first_img, last_img, allImageSize)
+        (ret_code, arr, validfirst, validlast) = ccd.get_all_images16()
         # arr = arr.reshape((n_images, sgl_image_size))
         # del arr
-        print('Single_image size: {}'.format(sgl_image_size))
+        print('Single_image size: {}'.format(ccd.sgl_image_size))
+        allImageSize = n_images * ccd.sgl_image_size
         print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
         print('arr[0]: {}'.format(arr[0]))
-        ccd.sdk.FreeInternalMemory()
-        ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
+        ccd.free_memory()
+        ret_code, first_img, last_img = ccd.get_num_new_images()
         print('Post-Abort N New Images: {} -- {}: {}'.format(last_img - first_img + 1, ret_code, andor_err_code_str(ret_code)))
-        ret_code = ccd.sdk.ShutDown()
+        ret_code = ccd.shutdown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
         # print(ccd.__dict__)
     
