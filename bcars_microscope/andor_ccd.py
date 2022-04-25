@@ -269,7 +269,8 @@ class AndorNewton970:
 
     def shutdown(self):
         self.sdk.FreeInternalMemory()
-        self.sdk.ShutDown()
+        ret_code = self.sdk.ShutDown()
+        return ret_code
 
     def start_acquisition(self):
         ret_code = ccd.sdk.StartAcquisition()
@@ -292,7 +293,7 @@ class AndorNewton970:
         # ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
         # print('New Images: {}:{}'.format(first_img, last_img))       
         
-        if first_image == 0:
+        if first_img == 0:
             n_images = last_img-first_img
         else:
             n_images = last_img-first_img + 1
@@ -333,10 +334,11 @@ if __name__ == '__main__':
     ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0, 'read_mode': 'FULL_VERTICAL_BINNING',
                                           'trigger_mode': 'INTERNAL'})
     try:
+        ccd.init_sdk()
         ccd.init_camera()
     except Exception as e:
         print('ERROR: {}'.format(traceback.format_exc()))
-        ret_code = ccd.sdk.ShutDown()
+        ret_code = ccd.shutdown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
     else:
         ret_code = ccd.start_acquisition()
@@ -357,8 +359,8 @@ if __name__ == '__main__':
         print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
         print('arr[0]: {}'.format(arr[0]))
         ccd.free_memory()
-        ret_code, first_img, last_img = ccd.get_num_new_images()
-        print('Post-Abort N New Images: {} -- {}: {}'.format(last_img - first_img + 1, ret_code, andor_err_code_str(ret_code)))
+        ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
+        print('Abort New Images: {} [{}:{}] -- {}: {}'.format(n_images, first_img, last_img, ret_code, andor_err_code_str(ret_code)))
         ret_code = ccd.shutdown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
         # print(ccd.__dict__)
