@@ -353,23 +353,23 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.formLayout = QFormLayout()
         self.formLayout.setObjectName(u"formLayout")
-        self.checkBox = QCheckBox(self.frame_2)
-        self.checkBox.setObjectName(u"checkBox")
-        sizePolicy.setHeightForWidth(self.checkBox.sizePolicy().hasHeightForWidth())
-        self.checkBox.setSizePolicy(sizePolicy)
-        self.checkBox.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }")
+        self.checkBoxAvgOn = QCheckBox(self.frame_2)
+        self.checkBoxAvgOn.setObjectName(u"checkBoxAvgOn")
+        sizePolicy.setHeightForWidth(self.checkBoxAvgOn.sizePolicy().hasHeightForWidth())
+        self.checkBoxAvgOn.setSizePolicy(sizePolicy)
+        self.checkBoxAvgOn.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }")
 
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.checkBox)
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.checkBoxAvgOn)
 
-        self.spinBox_averages = QSpinBox(self.frame_2)
-        self.spinBox_averages.setObjectName(u"spinBox_averages")
-        self.spinBox_averages.setMaximumSize(QSize(100, 16777215))
-        self.spinBox_averages.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_averages.setMinimum(1)
-        self.spinBox_averages.setMaximum(1000)
-        self.spinBox_averages.setValue(1)
+        self.spinBoxNAverages = QSpinBox(self.frame_2)
+        self.spinBoxNAverages.setObjectName(u"spinBoxNAverages")
+        self.spinBoxNAverages.setMaximumSize(QSize(100, 16777215))
+        self.spinBoxNAverages.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBoxNAverages.setMinimum(1)
+        self.spinBoxNAverages.setMaximum(1000)
+        self.spinBoxNAverages.setValue(1)
 
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.spinBox_averages)
+        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.spinBoxNAverages)
 
         self.label_8 = QLabel(self.frame_2)
         self.label_8.setObjectName(u"label_8")
@@ -382,6 +382,20 @@ class Ui_MainWindow(object):
         self.label_9.setTextFormat(Qt.PlainText)
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.label_9)
+
+        self.label_10 = QLabel(self.frame_2)
+        self.label_10.setObjectName(u"label_10")
+        self.label_10.setTextFormat(Qt.PlainText)
+
+        self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_10)
+
+        self.checkBoxShowStdDev = QCheckBox(self.frame_2)
+        self.checkBoxShowStdDev.setObjectName(u"checkBoxShowStdDev")
+        sizePolicy.setHeightForWidth(self.checkBoxShowStdDev.sizePolicy().hasHeightForWidth())
+        self.checkBoxShowStdDev.setSizePolicy(sizePolicy)
+        self.checkBoxShowStdDev.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }")
+
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.checkBoxShowStdDev)
 
 
         self.verticalLayout_2.addLayout(self.formLayout)
@@ -477,7 +491,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1141, 26))
+        self.menubar.setGeometry(QRect(0, 0, 1141, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -504,9 +518,11 @@ class Ui_MainWindow(object):
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"X (um)", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Z (um)", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Z-Offset", None))
-        self.checkBox.setText("")
+        self.checkBoxAvgOn.setText("")
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Averages ON", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"N Averages", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Show Standard Deviation", None))
+        self.checkBoxShowStdDev.setText("")
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Start", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
     # retranslateUi
