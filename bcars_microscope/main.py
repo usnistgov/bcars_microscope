@@ -84,7 +84,13 @@ if __name__ == '__main__':
         app.setStyle("Fusion")
         app.setStyleSheet(stylesheet)
         window = MainWindow()
+        screen_geo = app.screens()[0].availableGeometry()
+        app_geo = window.geometry()
+        
         window.show()
+        window.setGeometry(screen_geo.width()/2 - app_geo.width()/2, 
+                           screen_geo.height()*0.05, app_geo.width(), app_geo.height())
+
 
         window_spectroscopy = WinSpectroscopy(window.devices)
         window_spectroscopy.hide()
