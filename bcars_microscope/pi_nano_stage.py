@@ -25,3 +25,25 @@ except Exception as e:
     pidevice.CloseConnection()
 else:
     pidevice.CloseConnection()
+
+
+# Below is testing error handling
+# from pipython import GCSDevice
+# import traceback
+# from time import sleep
+
+
+# pidevice = GCSDevice('E-545')
+# pidevice.ConnectUSB('PI E-517 Display and Interface SN 0114071272')
+# print(pidevice.qIDN())
+# # pidevice.CloseConnection()
+
+# try:
+#     pidevice.ConnectUSB('PI E-517 Display and Interface SN 0114071272')
+# except Exception:
+#     print('Failed')
+# finally:
+#     print('Closing')
+#     pidevice.CloseConnection()
+
+
