@@ -17,81 +17,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1141, 753)
+        MainWindow.resize(1141, 838)
         MainWindow.setMinimumSize(QSize(800, 400))
-        palette = QPalette()
-        brush = QBrush(QColor(255, 255, 255, 255))
-        brush.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.WindowText, brush)
-        brush1 = QBrush(QColor(53, 53, 53, 255))
-        brush1.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Active, QPalette.Light, brush)
-        palette.setBrush(QPalette.Active, QPalette.Text, brush)
-        brush2 = QBrush(QColor(255, 0, 0, 255))
-        brush2.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.BrightText, brush2)
-        palette.setBrush(QPalette.Active, QPalette.ButtonText, brush)
-        brush3 = QBrush(QColor(35, 35, 35, 255))
-        brush3.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Base, brush3)
-        palette.setBrush(QPalette.Active, QPalette.Window, brush1)
-        brush4 = QBrush(QColor(42, 130, 218, 255))
-        brush4.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Highlight, brush4)
-        palette.setBrush(QPalette.Active, QPalette.HighlightedText, brush3)
-        palette.setBrush(QPalette.Active, QPalette.Link, brush4)
-        palette.setBrush(QPalette.Active, QPalette.AlternateBase, brush1)
-        brush5 = QBrush(QColor(25, 25, 25, 255))
-        brush5.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.ToolTipBase, brush5)
-        palette.setBrush(QPalette.Active, QPalette.ToolTipText, brush)
-        brush6 = QBrush(QColor(255, 255, 255, 128))
-        brush6.setStyle(Qt.SolidPattern)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Active, QPalette.PlaceholderText, brush6)
-#endif
-        palette.setBrush(QPalette.Inactive, QPalette.WindowText, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Inactive, QPalette.Light, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Text, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.BrightText, brush2)
-        palette.setBrush(QPalette.Inactive, QPalette.ButtonText, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Base, brush3)
-        palette.setBrush(QPalette.Inactive, QPalette.Window, brush1)
-        palette.setBrush(QPalette.Inactive, QPalette.Highlight, brush4)
-        palette.setBrush(QPalette.Inactive, QPalette.HighlightedText, brush3)
-        palette.setBrush(QPalette.Inactive, QPalette.Link, brush4)
-        palette.setBrush(QPalette.Inactive, QPalette.AlternateBase, brush1)
-        palette.setBrush(QPalette.Inactive, QPalette.ToolTipBase, brush5)
-        palette.setBrush(QPalette.Inactive, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush6)
-#endif
-        brush7 = QBrush(QColor(120, 120, 120, 255))
-        brush7.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush7)
-        palette.setBrush(QPalette.Disabled, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.Light, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.Text, brush7)
-        palette.setBrush(QPalette.Disabled, QPalette.BrightText, brush2)
-        palette.setBrush(QPalette.Disabled, QPalette.ButtonText, brush7)
-        palette.setBrush(QPalette.Disabled, QPalette.Base, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.Window, brush1)
-        brush8 = QBrush(QColor(0, 120, 215, 255))
-        brush8.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Disabled, QPalette.Highlight, brush8)
-        palette.setBrush(QPalette.Disabled, QPalette.HighlightedText, brush3)
-        palette.setBrush(QPalette.Disabled, QPalette.Link, brush4)
-        palette.setBrush(QPalette.Disabled, QPalette.AlternateBase, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.ToolTipBase, brush5)
-        palette.setBrush(QPalette.Disabled, QPalette.ToolTipText, brush)
-        brush9 = QBrush(QColor(0, 0, 0, 128))
-        brush9.setStyle(Qt.SolidPattern)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
-        palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush9)
-#endif
-        MainWindow.setPalette(palette)
         font = QFont()
         font.setFamily(u"Arial")
         font.setPointSize(11)
@@ -99,11 +26,10 @@ class Ui_MainWindow(object):
         MainWindow.setStyleSheet(u"")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout_3 = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.verticalLayout_3 = QVBoxLayout()
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setSizeConstraint(QLayout.SetFixedSize)
+        self.horizontalLayout_4 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -225,7 +151,7 @@ class Ui_MainWindow(object):
         self.spinBox_z_offset.setObjectName(u"spinBox_z_offset")
         self.spinBox_z_offset.setMinimumSize(QSize(50, 25))
         self.spinBox_z_offset.setMaximumSize(QSize(150, 40))
-        self.spinBox_z_offset.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_z_offset.setStyleSheet(u"")
         self.spinBox_z_offset.setReadOnly(False)
         self.spinBox_z_offset.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.spinBox_z_offset.setDecimals(3)
@@ -338,50 +264,61 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.gridLayout)
 
 
-        self.verticalLayout_3.addWidget(self.frame)
+        self.verticalLayout_2.addWidget(self.frame)
 
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
-        self.frame_2.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
+        self.frame_2.setSizePolicy(sizePolicy1)
+        self.frame_2.setMinimumSize(QSize(0, 106))
+        self.frame_2.setMaximumSize(QSize(16777215, 106))
         self.frame_2.setFrameShape(QFrame.Panel)
         self.frame_2.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_2 = QVBoxLayout(self.frame_2)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.formLayout = QFormLayout()
+        self.formLayout = QFormLayout(self.frame_2)
         self.formLayout.setObjectName(u"formLayout")
-        self.checkBoxAvgOn = QCheckBox(self.frame_2)
-        self.checkBoxAvgOn.setObjectName(u"checkBoxAvgOn")
-        sizePolicy.setHeightForWidth(self.checkBoxAvgOn.sizePolicy().hasHeightForWidth())
-        self.checkBoxAvgOn.setSizePolicy(sizePolicy)
-        self.checkBoxAvgOn.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }")
-
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.checkBoxAvgOn)
-
-        self.spinBoxNAverages = QSpinBox(self.frame_2)
-        self.spinBoxNAverages.setObjectName(u"spinBoxNAverages")
-        self.spinBoxNAverages.setMaximumSize(QSize(100, 16777215))
-        self.spinBoxNAverages.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBoxNAverages.setMinimum(1)
-        self.spinBoxNAverages.setMaximum(1000)
-        self.spinBoxNAverages.setValue(1)
-
-        self.formLayout.setWidget(1, QFormLayout.FieldRole, self.spinBoxNAverages)
-
         self.label_8 = QLabel(self.frame_2)
         self.label_8.setObjectName(u"label_8")
         self.label_8.setTextFormat(Qt.PlainText)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_8)
 
+        self.checkBoxAvgOn = QCheckBox(self.frame_2)
+        self.checkBoxAvgOn.setObjectName(u"checkBoxAvgOn")
+        sizePolicy.setHeightForWidth(self.checkBoxAvgOn.sizePolicy().hasHeightForWidth())
+        self.checkBoxAvgOn.setSizePolicy(sizePolicy)
+        self.checkBoxAvgOn.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
+"QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
+
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.checkBoxAvgOn)
+
         self.label_9 = QLabel(self.frame_2)
         self.label_9.setObjectName(u"label_9")
         self.label_9.setTextFormat(Qt.PlainText)
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.label_9)
+
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.spinBoxNAverages = QSpinBox(self.frame_2)
+        self.spinBoxNAverages.setObjectName(u"spinBoxNAverages")
+        self.spinBoxNAverages.setMaximumSize(QSize(100, 16777215))
+        self.spinBoxNAverages.setStyleSheet(u"")
+        self.spinBoxNAverages.setMinimum(2)
+        self.spinBoxNAverages.setMaximum(1000)
+        self.spinBoxNAverages.setValue(100)
+
+        self.horizontalLayout_3.addWidget(self.spinBoxNAverages)
+
+        self.radioButtonAvgDone = QRadioButton(self.frame_2)
+        self.radioButtonAvgDone.setObjectName(u"radioButtonAvgDone")
+        self.radioButtonAvgDone.setEnabled(False)
+        self.radioButtonAvgDone.setCheckable(True)
+        self.radioButtonAvgDone.setChecked(False)
+
+        self.horizontalLayout_3.addWidget(self.radioButtonAvgDone)
+
+
+        self.formLayout.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout_3)
 
         self.label_10 = QLabel(self.frame_2)
         self.label_10.setObjectName(u"label_10")
@@ -393,15 +330,165 @@ class Ui_MainWindow(object):
         self.checkBoxShowStdDev.setObjectName(u"checkBoxShowStdDev")
         sizePolicy.setHeightForWidth(self.checkBoxShowStdDev.sizePolicy().hasHeightForWidth())
         self.checkBoxShowStdDev.setSizePolicy(sizePolicy)
-        self.checkBoxShowStdDev.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }")
+        self.checkBoxShowStdDev.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
+"QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
 
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.checkBoxShowStdDev)
 
 
-        self.verticalLayout_2.addLayout(self.formLayout)
+        self.verticalLayout_2.addWidget(self.frame_2)
+
+        self.frame_4 = QFrame(self.centralwidget)
+        self.frame_4.setObjectName(u"frame_4")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
+        self.frame_4.setSizePolicy(sizePolicy2)
+        self.frame_4.setFrameShape(QFrame.Panel)
+        self.frame_4.setFrameShadow(QFrame.Raised)
+        self.gridLayout_2 = QGridLayout(self.frame_4)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.label_12 = QLabel(self.frame_4)
+        self.label_12.setObjectName(u"label_12")
+        self.label_12.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_2.addWidget(self.label_12, 0, 0, 1, 1)
+
+        self.checkBoxSubtractDark = QCheckBox(self.frame_4)
+        self.checkBoxSubtractDark.setObjectName(u"checkBoxSubtractDark")
+        self.checkBoxSubtractDark.setEnabled(False)
+        sizePolicy.setHeightForWidth(self.checkBoxSubtractDark.sizePolicy().hasHeightForWidth())
+        self.checkBoxSubtractDark.setSizePolicy(sizePolicy)
+        self.checkBoxSubtractDark.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
+"QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
+
+        self.gridLayout_2.addWidget(self.checkBoxSubtractDark, 0, 1, 1, 1)
+
+        self.pushButtonRecDark = QPushButton(self.frame_4)
+        self.pushButtonRecDark.setObjectName(u"pushButtonRecDark")
+
+        self.gridLayout_2.addWidget(self.pushButtonRecDark, 0, 2, 1, 1)
+
+        self.label_11 = QLabel(self.frame_4)
+        self.label_11.setObjectName(u"label_11")
+        self.label_11.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_2.addWidget(self.label_11, 1, 0, 1, 1)
+
+        self.checkBoxKK = QCheckBox(self.frame_4)
+        self.checkBoxKK.setObjectName(u"checkBoxKK")
+        self.checkBoxKK.setEnabled(False)
+        sizePolicy.setHeightForWidth(self.checkBoxKK.sizePolicy().hasHeightForWidth())
+        self.checkBoxKK.setSizePolicy(sizePolicy)
+        self.checkBoxKK.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
+"QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
+
+        self.gridLayout_2.addWidget(self.checkBoxKK, 1, 1, 1, 1)
+
+        self.pushButtonRecNRB = QPushButton(self.frame_4)
+        self.pushButtonRecNRB.setObjectName(u"pushButtonRecNRB")
+
+        self.gridLayout_2.addWidget(self.pushButtonRecNRB, 1, 2, 1, 1)
 
 
-        self.verticalLayout_3.addWidget(self.frame_2)
+        self.verticalLayout_2.addWidget(self.frame_4)
+
+        self.frame_5 = QFrame(self.centralwidget)
+        self.frame_5.setObjectName(u"frame_5")
+        self.frame_5.setFrameShape(QFrame.Panel)
+        self.frame_5.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_5 = QVBoxLayout(self.frame_5)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.groupBox = QGroupBox(self.frame_5)
+        self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setMinimumSize(QSize(0, 0))
+        self.groupBox.setFlat(False)
+        self.gridLayout_4 = QGridLayout(self.groupBox)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.label = QLabel(self.groupBox)
+        self.label.setObjectName(u"label")
+
+        self.gridLayout_3.addWidget(self.label, 0, 0, 1, 2)
+
+        self.spinBoxTimeCurrPos = QDoubleSpinBox(self.groupBox)
+        self.spinBoxTimeCurrPos.setObjectName(u"spinBoxTimeCurrPos")
+        self.spinBoxTimeCurrPos.setMinimumSize(QSize(75, 25))
+        self.spinBoxTimeCurrPos.setMaximumSize(QSize(200, 40))
+        self.spinBoxTimeCurrPos.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBoxTimeCurrPos.setReadOnly(False)
+        self.spinBoxTimeCurrPos.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBoxTimeCurrPos.setDecimals(6)
+        self.spinBoxTimeCurrPos.setMinimum(-10000.000000000000000)
+        self.spinBoxTimeCurrPos.setMaximum(10000.000000000000000)
+        self.spinBoxTimeCurrPos.setValue(0.000000000000000)
+
+        self.gridLayout_3.addWidget(self.spinBoxTimeCurrPos, 0, 2, 1, 1)
+
+        self.spinBoxTimeGoToPos = QDoubleSpinBox(self.groupBox)
+        self.spinBoxTimeGoToPos.setObjectName(u"spinBoxTimeGoToPos")
+        self.spinBoxTimeGoToPos.setMinimumSize(QSize(75, 25))
+        self.spinBoxTimeGoToPos.setMaximumSize(QSize(200, 40))
+        self.spinBoxTimeGoToPos.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBoxTimeGoToPos.setReadOnly(False)
+        self.spinBoxTimeGoToPos.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBoxTimeGoToPos.setDecimals(3)
+        self.spinBoxTimeGoToPos.setMinimum(-10000.000000000000000)
+        self.spinBoxTimeGoToPos.setMaximum(10000.000000000000000)
+        self.spinBoxTimeGoToPos.setValue(-0.010000000000000)
+
+        self.gridLayout_3.addWidget(self.spinBoxTimeGoToPos, 1, 0, 1, 1)
+
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.pushButtonTimeGoToPos = QPushButton(self.groupBox)
+        self.pushButtonTimeGoToPos.setObjectName(u"pushButtonTimeGoToPos")
+
+        self.horizontalLayout_5.addWidget(self.pushButtonTimeGoToPos)
+
+        self.pushButtonTimeSetZero = QPushButton(self.groupBox)
+        self.pushButtonTimeSetZero.setObjectName(u"pushButtonTimeSetZero")
+
+        self.horizontalLayout_5.addWidget(self.pushButtonTimeSetZero)
+
+
+        self.gridLayout_3.addLayout(self.horizontalLayout_5, 1, 1, 1, 2)
+
+
+        self.gridLayout_4.addLayout(self.gridLayout_3, 0, 0, 1, 1)
+
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.pushButtonTimeGoToEarly = QPushButton(self.groupBox)
+        self.pushButtonTimeGoToEarly.setObjectName(u"pushButtonTimeGoToEarly")
+
+        self.verticalLayout_3.addWidget(self.pushButtonTimeGoToEarly)
+
+        self.pushButtonTimeGoToZero = QPushButton(self.groupBox)
+        self.pushButtonTimeGoToZero.setObjectName(u"pushButtonTimeGoToZero")
+
+        self.verticalLayout_3.addWidget(self.pushButtonTimeGoToZero)
+
+        self.pushButtonTimeGoToLate = QPushButton(self.groupBox)
+        self.pushButtonTimeGoToLate.setObjectName(u"pushButtonTimeGoToLate")
+
+        self.verticalLayout_3.addWidget(self.pushButtonTimeGoToLate)
+
+        self.pushButtonTimeGoToDark = QPushButton(self.groupBox)
+        self.pushButtonTimeGoToDark.setObjectName(u"pushButtonTimeGoToDark")
+
+        self.verticalLayout_3.addWidget(self.pushButtonTimeGoToDark)
+
+
+        self.gridLayout_4.addLayout(self.verticalLayout_3, 0, 1, 1, 1)
+
+
+        self.verticalLayout_5.addWidget(self.groupBox)
+
+
+        self.verticalLayout_2.addWidget(self.frame_5)
 
         self.frame_3 = QFrame(self.centralwidget)
         self.frame_3.setObjectName(u"frame_3")
@@ -422,38 +509,38 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_4)
 
-        self.pushButton = QPushButton(self.frame_3)
-        self.pushButton.setObjectName(u"pushButton")
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-        self.pushButton.setMinimumSize(QSize(50, 50))
-        self.pushButton.setMaximumSize(QSize(50, 50))
-        self.pushButton.setBaseSize(QSize(50, 50))
+        self.pushButtonStartAcq = QPushButton(self.frame_3)
+        self.pushButtonStartAcq.setObjectName(u"pushButtonStartAcq")
+        sizePolicy.setHeightForWidth(self.pushButtonStartAcq.sizePolicy().hasHeightForWidth())
+        self.pushButtonStartAcq.setSizePolicy(sizePolicy)
+        self.pushButtonStartAcq.setMinimumSize(QSize(50, 50))
+        self.pushButtonStartAcq.setMaximumSize(QSize(50, 50))
+        self.pushButtonStartAcq.setBaseSize(QSize(50, 50))
         font2 = QFont()
         font2.setFamily(u"Arial")
         font2.setPointSize(14)
         font2.setBold(True)
         font2.setWeight(75)
-        self.pushButton.setFont(font2)
-        self.pushButton.setStyleSheet(u"color:black")
+        self.pushButtonStartAcq.setFont(font2)
+        self.pushButtonStartAcq.setStyleSheet(u"color:black")
 
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.horizontalLayout.addWidget(self.pushButtonStartAcq)
 
         self.horizontalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
-        self.pushButton_2 = QPushButton(self.frame_3)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        sizePolicy.setHeightForWidth(self.pushButton_2.sizePolicy().hasHeightForWidth())
-        self.pushButton_2.setSizePolicy(sizePolicy)
-        self.pushButton_2.setMinimumSize(QSize(50, 50))
-        self.pushButton_2.setMaximumSize(QSize(50, 50))
-        self.pushButton_2.setBaseSize(QSize(50, 50))
-        self.pushButton_2.setFont(font2)
-        self.pushButton_2.setStyleSheet(u"color:red")
+        self.pushButtonStopAcq = QPushButton(self.frame_3)
+        self.pushButtonStopAcq.setObjectName(u"pushButtonStopAcq")
+        sizePolicy.setHeightForWidth(self.pushButtonStopAcq.sizePolicy().hasHeightForWidth())
+        self.pushButtonStopAcq.setSizePolicy(sizePolicy)
+        self.pushButtonStopAcq.setMinimumSize(QSize(50, 50))
+        self.pushButtonStopAcq.setMaximumSize(QSize(50, 50))
+        self.pushButtonStopAcq.setBaseSize(QSize(50, 50))
+        self.pushButtonStopAcq.setFont(font2)
+        self.pushButtonStopAcq.setStyleSheet(u"color:red")
 
-        self.horizontalLayout.addWidget(self.pushButton_2)
+        self.horizontalLayout.addWidget(self.pushButtonStopAcq)
 
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -463,14 +550,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addLayout(self.horizontalLayout)
 
 
-        self.verticalLayout_3.addWidget(self.frame_3)
+        self.verticalLayout_2.addWidget(self.frame_3)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_3.addItem(self.verticalSpacer)
+        self.verticalLayout_2.addItem(self.verticalSpacer)
 
 
-        self.horizontalLayout_3.addLayout(self.verticalLayout_3)
+        self.horizontalLayout_4.addLayout(self.verticalLayout_2)
 
         self.mpl_widget = QWidget(self.centralwidget)
         self.mpl_widget.setObjectName(u"mpl_widget")
@@ -482,11 +569,11 @@ class Ui_MainWindow(object):
         self.mpl_widget.setAutoFillBackground(False)
         self.mpl_widget.setStyleSheet(u"background-color: rgb(53,53,53)")
 
-        self.horizontalLayout_3.addWidget(self.mpl_widget)
+        self.horizontalLayout_4.addWidget(self.mpl_widget)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer)
+        self.horizontalLayout_4.addItem(self.horizontalSpacer)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -518,12 +605,27 @@ class Ui_MainWindow(object):
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"X (um)", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Z (um)", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Z-Offset", None))
-        self.checkBoxAvgOn.setText("")
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Averages ON", None))
+        self.checkBoxAvgOn.setText("")
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"N Averages", None))
+        self.radioButtonAvgDone.setText("")
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Show Standard Deviation", None))
         self.checkBoxShowStdDev.setText("")
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Start", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Subtract Dark", None))
+        self.checkBoxSubtractDark.setText("")
+        self.pushButtonRecDark.setText(QCoreApplication.translate("MainWindow", u"Record Dark", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Perform KK", None))
+        self.checkBoxKK.setText("")
+        self.pushButtonRecNRB.setText(QCoreApplication.translate("MainWindow", u"Record NRB", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Time Delay", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Current Position (mm)", None))
+        self.pushButtonTimeGoToPos.setText(QCoreApplication.translate("MainWindow", u"Move", None))
+        self.pushButtonTimeSetZero.setText(QCoreApplication.translate("MainWindow", u"Set Zero", None))
+        self.pushButtonTimeGoToEarly.setText(QCoreApplication.translate("MainWindow", u"Early Time", None))
+        self.pushButtonTimeGoToZero.setText(QCoreApplication.translate("MainWindow", u"Zero Time", None))
+        self.pushButtonTimeGoToLate.setText(QCoreApplication.translate("MainWindow", u"Late Time", None))
+        self.pushButtonTimeGoToDark.setText(QCoreApplication.translate("MainWindow", u"Dark Time", None))
+        self.pushButtonStartAcq.setText(QCoreApplication.translate("MainWindow", u"Start", None))
+        self.pushButtonStopAcq.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
     # retranslateUi
 
