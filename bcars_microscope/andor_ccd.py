@@ -82,7 +82,7 @@ class AndorNewton970:
         self.mode_codes['acquisition'] = {k.name:k.value for k in atmcd_codes.Acquisition_Mode}
         self.mode_codes['read'] = {k.name:k.value for k in atmcd_codes.Read_Mode}
         self.mode_codes['shutter'] = {k.name:k.value for k in atmcd_codes.Shutter_Mode}
-        self.mode_codes['trigger'] = {k.name:k.value for k in atmcd_codes.Trigger_Mode}
+        self.mode_codes['trigger_mode'] = {k.name:k.value for k in atmcd_codes.Trigger_Mode}
 
         self.settings = self.defaults.copy()
 
@@ -99,57 +99,36 @@ class AndorNewton970:
             self.sdk = atmcd()
             ret_code = self.sdk.Initialize("")  # Initialize camera
             print('Initialize SDK {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+            return ret_code
 
     def get_meta(self):
         pass
-        # 2. Get SDK software info
-        # a. head model
-        # ret_code, ret_text = sdk.GetHeadModel()
-        # if isinstance(ret_text, bytes):
-        #     ret_text = ret_text.decode()
-        # print('Head model: {} -- {}: {}'.format(ret_text, ret_code, andor_err_code_str(ret_code)))
-        # del ret_code, ret_text
-
-        # # b. Get Camera Serial Number
-        # ret_code, ret_text = sdk.GetCameraSerialNumber()
-        # if isinstance(ret_text, bytes):
-        #     ret_text = ret_text.decode()
-        # print('Serial Number: {} -- {}: {}'.format(ret_text, ret_code, andor_err_code_str(ret_code)))
-        # del ret_code, ret_text
-
-        # # c. Get SDK version
-        # ret_code, _, _, _, _, vers_minor, vers_major = sdk.GetSoftwareVersion()
-        # version = float('{}.{}'.format(vers_major, vers_minor))
-        # del vers_minor, vers_major
-        # print('SDK Version: {} -- {}: {}'.format(version, ret_code, andor_err_code_str(ret_code)))
-        # del ret_code, version
-
-        # # 3. Get Camera Handle. Usually would have the index as a configuration parameter, but we'll go with this.
-        # ret_code, handle = sdk.GetCameraHandle(0)
-        # print('Handle: {} -- {}: {}'.format(handle, ret_code, andor_err_code_str(ret_code)))
-        # del ret_code, handle
-
+        
     def init_camera(self):
-
+        ret_code_list = []
         print('HERE: {}'.format(self.settings))
         # Cooler on
         ret_code = self.sdk.CoolerON()
+        ret_code_list.append(ret_code)
         print('Cooler ON: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
         del ret_code
 
         # Set Temperature
         ret_code = self.sdk.SetTemperature(self.settings['temperature'])
+        ret_code_list.append(ret_code)
         print('Set temperature: {} -- {}: {}'.format(self.settings['temperature'], ret_code, andor_err_code_str(ret_code)))
         
         # Set fan mode
         # 0: fan on full; (1) fan on low; (2) fan off (2)
         ret_code = self.sdk.SetFanMode(0)
+        ret_code_list.append(ret_code)
         print('Fan Mode: Full -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
 
         # Set Acuqisition Mode
         # 1 Single Scan 2 Accumulate 3 Kinetics 4 Fast Kinetics 5 Run till abort
         print('')
         ret_code = self.sdk.SetAcquisitionMode(self.mode_codes['acquisition'][self.settings['acquisition_mode']])
+        ret_code_list.append(ret_code)
         print('Set Acquisition Mode: {} -- {}: {}'.format(self.settings['acquisition_mode'], ret_code, andor_err_code_str(ret_code)))
 
         n_ads = self.sdk.GetNumberADChannels()[1]  # Number of A/D's
@@ -163,15 +142,18 @@ class AndorNewton970:
         print('')
         # Set output amplifier (0 EM or 1 Conventional)
         ret_code = self.sdk.SetOutputAmplifier(self.settings['amplifier_idx'])
+        ret_code_list.append(ret_code)
         print('Set Amplifier: {} -- {}: {}'.format(self.settings['amplifier_idx'], ret_code, andor_err_code_str(ret_code)))
 
         # print(get_amplifier_list())
         # Set AD Chan = 0
         ret_code = self.sdk.SetADChannel(self.settings['ad_channel'])
+        ret_code_list.append(ret_code)
         print('Set AD Channel: {} -- {}: {}'.format(self.settings['ad_channel'], ret_code, andor_err_code_str(ret_code)))
 
         # Set horizontal shift speed (MHz)
         ret_code = self.sdk.SetHorizontalSpeed(self.settings['hs_speed_idx'])
+        ret_code_list.append(ret_code)
         print('Set Horizontal Shift Speed: {} -- {}: {}'.format(self.settings['hs_speed_idx'], ret_code, andor_err_code_str(ret_code)))
 
         # Set preamp gain
@@ -179,6 +161,7 @@ class AndorNewton970:
         for num_gain in range(self.sdk.GetNumberPreAmpGains()[1]):
             print('Index: {}; Gain: {}x'.format(num_gain, self.sdk.GetPreAmpGain(num_gain)[1]))
         ret_code = self.sdk.SetPreAmpGain(self.settings['preamp_gain_idx'])
+        ret_code_list.append(ret_code)
         print('Set Pre-Amp Gain: {} -- {}: {}'.format(self.settings['preamp_gain_idx'], ret_code, andor_err_code_str(ret_code)))
 
         # Set VS shift speed ??
@@ -188,40 +171,51 @@ class AndorNewton970:
         
         # self.sdk.GetNumberVSSpeeds
         ret_code = self.sdk.SetVSSpeed(0)
+        ret_code_list.append(ret_code)
         print('Set Vertical Shift Speed: {} -- {}: {}'.format(0, ret_code, andor_err_code_str(ret_code)))
 
         # 11. Set VS amplitude
         ret_code = self.sdk.SetVSAmplitude(0)
+        ret_code_list.append(ret_code)
         print('Set Vertical Shift Ampltiude: {} -- {}: {}'.format(0, ret_code, andor_err_code_str(ret_code)))
 
         # 12. Set trigger mode
         # 0: Internal; 1: External; 6: External Start; 7: External Exposure (Bulb) 
         # 9: External FVB EM (only valid for EM Newton models in FVB mode)
         # 10: Software Trigger 11: External Charge Shifting
-        print(self.mode_codes['trigger'])
-        print(self.settings['trigger_mode'])
-        ret_code = self.sdk.SetTriggerMode(self.mode_codes['trigger'][self.settings['trigger_mode']])
-        print('Set Trigger Mode: {} -- {}: {}'.format(self.mode_codes['trigger'][self.settings['trigger_mode']], 
-                                                      ret_code, andor_err_code_str(ret_code)))
+        # print(self.mode_codes['trigger_mode'])
+        # print(self.settings['trigger_mode'])
+        # ret_code = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
+        # ret_code_list.append(ret_code)
+        # print('Set Trigger Mode: {} -- {}: {}'.format(self.mode_codes['trigger_mode'][self.settings['trigger_mode']], 
+        #                                               ret_code, andor_err_code_str(ret_code)))
 
-        # 0: Off; 1: On
-        ret_code = self.sdk.SetFastExtTrigger(1)
-        print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
-
+        # # 0: Off; 1: On
+        # ret_code = self.sdk.SetFastExtTrigger(1)
+        # ret_code_list.append(ret_code)
+        # print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+        # ret_code_trig, ret_code_fast = self.set_fast_external_trigger()
+        # ret_code_trig = self.set_internal_trigger()
+        ret_code = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
+        
         # Set exposure time
         ret_code =  self.sdk.SetExposureTime(self.settings['exposure_time'])
+        ret_code_list.append(ret_code)
         print('Set Exposure Time: {} -- {}: {}'.format(self.settings['exposure_time'], ret_code, andor_err_code_str(ret_code)))
 
         # Set frame transfer mode = Off (0)
         ret_code =  self.sdk.SetFrameTransferMode(0)
+        ret_code_list.append(ret_code)
         print('Frame Transfer Mode: OFF -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
 
         # Set shutter
         ret_code =  self.sdk.SetShutter(0, self.mode_codes['shutter'][self.settings['shutter_mode']],0,0)
+        ret_code_list.append(ret_code)
         print('Shutter Mode: {} -- {}: {}'.format(self.mode_codes['shutter'][self.settings['shutter_mode']], ret_code, andor_err_code_str(ret_code)))
 
         # Set image flip
         ret_code =  self.sdk.SetImageFlip(0,0)
+        ret_code_list.append(ret_code)
         print('Set Image Flip: OFF, OFF -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
 
         # Set single-track or not
@@ -230,6 +224,7 @@ class AndorNewton970:
         # Set read mode
         # 0 Full Vertical Binning; 1: Multi-Track; 2: Random-Track; 3: Single-Track; 4: Image
         ret_code = self.sdk.SetReadMode(self.mode_codes['read'][self.settings['read_mode']])
+        ret_code_list.append(ret_code)
         print('Read Mode: {} -- {}: {}'.format(self.mode_codes['read'][self.settings['read_mode']], ret_code, andor_err_code_str(ret_code)))
         if self.settings['read_mode'] == 'FULL_VERTICAL_BINNING':
             self.is_fvb_or_sgl_track = True
@@ -237,12 +232,14 @@ class AndorNewton970:
             self.is_fvb_or_sgl_track = False
 
         ret_code, self.n_cols, self.n_rows = self.sdk.GetDetector()
+        ret_code_list.append(ret_code)
         print('Detector Size: ({}, {})'.format(self.n_rows, self.n_cols))
         # Oddly, SetImage was needed. Maybe there's a default binning
         if self.is_fvb_or_sgl_track:
             ret_code =  self.sdk.SetImage(1, 1, 1, self.n_rows, 1, 1)
         else:
             ret_code =  self.sdk.SetImage(1, 1, 1, 1600, 1, 200)
+        ret_code_list.append(ret_code)
         print('Set Image Dimensions: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
 
 
@@ -260,16 +257,59 @@ class AndorNewton970:
         print('Size of Circular Buffer: {}'.format(self.sdk.GetSizeOfCircularBuffer()[1]))
         
         ret_code = self.sdk.PrepareAcquisition()
+        ret_code_list.append(ret_code)
         print('Prepare Acquisition: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+        return ret_code_list
+
+    def init_all(self):
+        """Initialize both SDK and CCD (Andor)"""
+        ret_sdk = self.init_sdk()
+        ret_camera_list = self.init_camera()
+        # print(ret_sdk, ret_camera_list)
+        return (ret_sdk == err_codes.DRV_SUCCESS) & (ret_camera_list.count(err_codes.DRV_SUCCESS) == len(ret_camera_list))
 
     @property
     def net_acquisition_time(self):
         # Exposure time + readout time
         return self.sdk.GetReadOutTime()[1] + self.sdk.GetAcquisitionTimings()[1]
 
+    def set_fast_external_trigger(self):
+        """ Set CCD to fast external trigger """
+        try:
+            self.settings['trigger_mode'] = 'EXTERNAL'
+            ret_code_trig = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
+            print('Set Trigger Mode: {} -- {}: {}'.format(self.mode_codes['trigger_mode'][self.settings['trigger_mode']], 
+                                                          ret_code_trig, andor_err_code_str(ret_code_trig)))
+            ret_code_fast = self.sdk.SetFastExtTrigger(1)
+            print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code_fast, andor_err_code_str(ret_code_fast)))
+        except Exception as e:
+            print(traceback.format_exc())
+        return (ret_code_trig, ret_code_fast)
+
+    def set_internal_trigger(self):
+        """ Set CCD to internal triggering """
+        print('Turn on internal triggering')
+        try:
+            self.settings['trigger_mode'] = 'INTERNAL'
+            ret_code_trig = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
+            print('Set Trigger Mode: {} -- {}: {}'.format(self.mode_codes['trigger_mode'][self.settings['trigger_mode']], 
+                                                          ret_code_trig, andor_err_code_str(ret_code_trig)))
+        except Exception as e:
+            print(traceback.format_exc())
+        return ret_code_trig
+
+    @property
+    def is_external_trigger(self):
+        return self.settings['trigger_mode'] == 'EXTERNAL'
+
+    @property
+    def is_internal_trigger(self):
+        return self.settings['trigger_mode'] == 'INTERNAL'
+
     def shutdown(self):
         self.sdk.FreeInternalMemory()
         ret_code = self.sdk.ShutDown()
+        print('Shutting Down CCD')
         return ret_code
 
     def start_acquisition(self):
@@ -334,8 +374,9 @@ if __name__ == '__main__':
     ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0, 'read_mode': 'FULL_VERTICAL_BINNING',
                                           'trigger_mode': 'INTERNAL'})
     try:
-        ccd.init_sdk()
-        ccd.init_camera()
+        ret = ccd.init_all()
+        # ccd.init_sdk()
+        # ccd.init_camera()
     except Exception as e:
         print('ERROR: {}'.format(traceback.format_exc()))
         ret_code = ccd.shutdown()
