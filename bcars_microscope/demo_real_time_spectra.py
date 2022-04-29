@@ -1,9 +1,7 @@
-from multiprocessing.sharedctypes import Value
 import sys
 import traceback
 
 import matplotlib as mpl
-from typer import style
 mpl.use('Qt5Agg')
 mpl.rcParams['font.size'] = 20
 mpl.rcParams['axes.labelsize'] = 20
