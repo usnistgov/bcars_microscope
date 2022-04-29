@@ -996,7 +996,7 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>50</width>
+               <width>75</width>
                <height>50</height>
               </size>
              </property>
@@ -1008,14 +1008,16 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
              </property>
              <property name="font">
               <font>
-               <family>Arial</family>
+               <family>Arial Black</family>
                <pointsize>14</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
+               <weight>10</weight>
+               <italic>false</italic>
+               <bold>false</bold>
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">color:black</string>
+              <string notr="true">color: white;
+font: 87 14pt &quot;Arial Black&quot;;</string>
              </property>
              <property name="text">
               <string>Start</string>
@@ -1054,7 +1056,7 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>50</width>
+               <width>75</width>
                <height>50</height>
               </size>
              </property>
@@ -1066,14 +1068,16 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
              </property>
              <property name="font">
               <font>
-               <family>Arial</family>
+               <family>Arial Black</family>
                <pointsize>14</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
+               <weight>10</weight>
+               <italic>false</italic>
+               <bold>false</bold>
               </font>
              </property>
              <property name="styleSheet">
-              <string notr="true">color:red</string>
+              <string notr="true">color:red;
+font: 87 14pt &quot;Arial Black&quot;;</string>
              </property>
              <property name="text">
               <string>Stop</string>

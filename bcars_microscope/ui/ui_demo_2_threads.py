@@ -418,7 +418,7 @@ class Ui_MainWindow(object):
         self.spinBoxTimeCurrPos.setMinimumSize(QSize(75, 25))
         self.spinBoxTimeCurrPos.setMaximumSize(QSize(200, 40))
         self.spinBoxTimeCurrPos.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBoxTimeCurrPos.setReadOnly(False)
+        self.spinBoxTimeCurrPos.setReadOnly(True)
         self.spinBoxTimeCurrPos.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.spinBoxTimeCurrPos.setDecimals(6)
         self.spinBoxTimeCurrPos.setMinimum(-10000.000000000000000)
@@ -514,15 +514,17 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.pushButtonStartAcq.sizePolicy().hasHeightForWidth())
         self.pushButtonStartAcq.setSizePolicy(sizePolicy)
         self.pushButtonStartAcq.setMinimumSize(QSize(50, 50))
-        self.pushButtonStartAcq.setMaximumSize(QSize(50, 50))
+        self.pushButtonStartAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStartAcq.setBaseSize(QSize(50, 50))
         font2 = QFont()
-        font2.setFamily(u"Arial")
+        font2.setFamily(u"Arial Black")
         font2.setPointSize(14)
-        font2.setBold(True)
-        font2.setWeight(75)
+        font2.setBold(False)
+        font2.setItalic(False)
+        font2.setWeight(10)
         self.pushButtonStartAcq.setFont(font2)
-        self.pushButtonStartAcq.setStyleSheet(u"color:black")
+        self.pushButtonStartAcq.setStyleSheet(u"color: white;\n"
+"font: 87 14pt \"Arial Black\";")
 
         self.horizontalLayout.addWidget(self.pushButtonStartAcq)
 
@@ -535,10 +537,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.pushButtonStopAcq.sizePolicy().hasHeightForWidth())
         self.pushButtonStopAcq.setSizePolicy(sizePolicy)
         self.pushButtonStopAcq.setMinimumSize(QSize(50, 50))
-        self.pushButtonStopAcq.setMaximumSize(QSize(50, 50))
+        self.pushButtonStopAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStopAcq.setBaseSize(QSize(50, 50))
         self.pushButtonStopAcq.setFont(font2)
-        self.pushButtonStopAcq.setStyleSheet(u"color:red")
+        self.pushButtonStopAcq.setStyleSheet(u"color:red;\n"
+"font: 87 14pt \"Arial Black\";")
 
         self.horizontalLayout.addWidget(self.pushButtonStopAcq)
 
