@@ -273,12 +273,12 @@ class AndorNewton970:
         return ret_code
 
     def start_acquisition(self):
-        ret_code = ccd.sdk.StartAcquisition()
+        ret_code = self.sdk.StartAcquisition()
         print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
         return ret_code
 
     def stop_acquisition(self):
-        ret_code = ccd.sdk.AbortAcquisition()
+        ret_code = self.sdk.AbortAcquisition()
         print('Aborting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
         return ret_code
 
@@ -289,8 +289,8 @@ class AndorNewton970:
 
     def get_num_new_images(self):
         """ ret_code, n_images, first_img, last_img """
-        ret_code, first_img, last_img = ccd.sdk.GetNumberNewImages()
-        # ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
+        ret_code, first_img, last_img = self.sdk.GetNumberNewImages()
+        # ret_code, first_img, last_img = self.sdk.GetNumberAvailableImages()
         # print('New Images: {}:{}'.format(first_img, last_img))       
         
         if first_img == 0:
@@ -298,7 +298,7 @@ class AndorNewton970:
         else:
             n_images = last_img-first_img + 1
 
-        print('New Images: {}:{}'.format(first_img, last_img))
+        # print('New Images: {}:{}'.format(first_img, last_img))
 
         return ret_code, n_images, first_img, last_img
 
