@@ -12,6 +12,7 @@ QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 from ui.ui_bcars2_main import Ui_MainWindow
 from spectroscopy import MainWindow as WinSpectroscopy
+from raster import MainWindow as WinRaster
 
 from andor_ccd import AndorNewton970
 from pipython import GCSDevice
@@ -28,11 +29,27 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.devices = {}
+        self.devices['running'] = False
 
         # Signals and Slots
         self.ui.pushButtonInitCCD.pressed.connect(self.init_ccd)
         self.ui.pushButtonInitNanoStage.pressed.connect(self.init_nano_stage)
         self.ui.pushButtonInitDelayStage.pressed.connect(self.init_delay_stage)
+        self.windows = {}
+        self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
+        self.windows['Spectroscopy'].hide()
+        self.ui.pushButtonWinSpectroscopy.pressed.connect(self.windows['Spectroscopy'].show)
+        
+        
+        self.windows['Raster'] = WinRaster(self.devices)
+        self.windows['Raster'].hide()
+        self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
+
+
+    def closeEvent(self, ev):
+        print('Close')
+        del self.windows  # If you close main window, should close all other windows and exit
+        return super().closeEvent(ev)
 
     def init_ccd(self):
         """ Initialize CCD camera """
@@ -40,8 +57,10 @@ class MainWindow(QMainWindow):
         # Default to FVB spectroscopy
         self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
                                                               'read_mode': 'FULL_VERTICAL_BINNING',
-                                                              'trigger_mode': 'INTERNAL'})
+                                                              'trigger_mode': 'EXTERNAL'})
+        
         ret = self.devices['CCD'].init_all()
+
         # Disable init button if CCD initialized just fine
         self.ui.pushButtonInitCCD.setEnabled(not ret)
         
@@ -86,10 +105,6 @@ if __name__ == '__main__':
         window.setGeometry(screen_geo.width()/2 - app_geo.width()/2, 
                            screen_geo.height()*0.05, app_geo.width(), app_geo.height())
 
-
-        window_spectroscopy = WinSpectroscopy(window.devices)
-        window_spectroscopy.hide()
-        window.ui.pushButtonWinSpectroscopy.pressed.connect(window_spectroscopy.show)
 
         app.exec_()
     except Exception as e:

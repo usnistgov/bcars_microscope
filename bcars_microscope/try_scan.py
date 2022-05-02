@@ -23,7 +23,7 @@ def do_scan(pixel_time=None, set_wavegen=False):
         # pidevice.WAV_LIN(1,1,50,'X',0, 198, 1, 50)
         # print(pidevice.qPOS())
         
-        fast_axis_start_stop_steps = [1,199,300]
+        fast_axis_start_stop_steps = [1,199,50]
         pidevice.MOV({'X':1})
         pidevice.gcscommands.WAV_LIN(table=1, firstpoint=0, numpoints=fast_axis_start_stop_steps[2], append='X', speedupdown=0, 
                                      amplitude=fast_axis_start_stop_steps[1]-fast_axis_start_stop_steps[0], 
@@ -86,14 +86,17 @@ def do_scan(pixel_time=None, set_wavegen=False):
 
 if __name__ == '__main__':
     # print(AndorNewton970.default_imaging)
-    ccd = AndorNewton970(settings_kwargs=AndorNewton970.default_fvb_trigd)
+    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'read_mode': 'FULL_VERTICAL_BINNING', 'trigger_mode': 'EXTERNAL'})
     try:
-        ccd.settings.update({'exposure_time':0.0035})
-        ccd.sdk.SetFastExtTrigger(1)
-        ccd.initialize_default()
-        ccd.sdk.SetFastExtTrigger(1)
-        # ccd.sdk.SetTriggerMode(1)
-        # print(atmcd_codes.Trigger_Mode.EXTERNAL.value)
+        ret = ccd.init_all()
+        print('==========================')
+        read_out_time = ccd.sdk.GetReadOutTime()[1]
+        print('ReadOut Time: {:.6f} sec'.format(read_out_time))
+        print('Exposure Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[1]))
+        print('Accumulate Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[2]))
+        print('Kinetic Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[3]))
+        print('Estimated total time per acquisition: {}'.format(ccd.net_acquisition_time))
+        print('==========================')
         ccd.sdk.PrepareAcquisition()
     except Exception as e:
         print('ERROR: {}'.format(traceback.format_exc()))
@@ -104,9 +107,7 @@ if __name__ == '__main__':
         print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
         do_scan(pixel_time=ccd.net_acquisition_time, set_wavegen=True)
         # ccd.sdk.WaitForAcquisition()
-        sleep(1)
-        ccd.sdk.AbortAcquisition()
-        
+        sleep(1)        
         
         ret_code, first_img, last_img = ccd.sdk.GetNumberNewImages()
         print('New Images: {}:{}'.format(first_img, last_img))
@@ -114,24 +115,29 @@ if __name__ == '__main__':
         ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
         print('New Images: {}:{}'.format(first_img, last_img))
 
-        if ccd.is_fvb_or_sgl_track == True:
-            sgl_image_size = ccd.n_cols
-        else:
-            sgl_image_size = ccd.n_rows * ccd.n_cols
-        
-        n_images = last_img-first_img + 1
-        allImageSize = sgl_image_size * n_images
+    finally:
+        ccd.stop_acquisition()
+        ccd.free_memory()
+        ccd.shutdown()
 
-        (ret_code, arr, validfirst, validlast) = ccd.sdk.GetImages16(first_img, last_img, allImageSize)
-        # arr = arr.reshape((n_images, sgl_image_size))
-        # del arr
-        print('Single_image size: {}'.format(sgl_image_size))
-        print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
-        print('arr[0]: {}'.format(arr[0]))
-        ccd.sdk.FreeInternalMemory()
-        ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
-        print('Post-Abort N New Images: {} -- {}: {}'.format(last_img - first_img + 1, ret_code, andor_err_code_str(ret_code)))
-        ret_code = ccd.sdk.ShutDown()
-        print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
+        # if ccd.is_fvb_or_sgl_track == True:
+        #     sgl_image_size = ccd.n_cols
+        # else:
+        #     sgl_image_size = ccd.n_rows * ccd.n_cols
+        
+        # n_images = last_img-first_img + 1
+        # allImageSize = sgl_image_size * n_images
+
+        # (ret_code, arr, validfirst, validlast) = ccd.sdk.GetImages16(first_img, last_img, allImageSize)
+        # # arr = arr.reshape((n_images, sgl_image_size))
+        # # del arr
+        # print('Single_image size: {}'.format(sgl_image_size))
+        # print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
+        # print('arr[0]: {}'.format(arr[0]))
+        # ccd.sdk.FreeInternalMemory()
+        # ret_code, first_img, last_img = ccd.sdk.GetNumberAvailableImages()
+        # print('Post-Abort N New Images: {} -- {}: {}'.format(last_img - first_img + 1, ret_code, andor_err_code_str(ret_code)))
+        # ret_code = ccd.sdk.ShutDown()
+        # print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
         # print(ccd.__dict__)
 

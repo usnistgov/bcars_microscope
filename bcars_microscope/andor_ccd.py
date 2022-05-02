@@ -191,9 +191,9 @@ class AndorNewton970:
         #                                               ret_code, andor_err_code_str(ret_code)))
 
         # # 0: Off; 1: On
-        # ret_code = self.sdk.SetFastExtTrigger(1)
+        ret_code = self.sdk.SetFastExtTrigger(1)
         # ret_code_list.append(ret_code)
-        # print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+        print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
         # ret_code_trig, ret_code_fast = self.set_fast_external_trigger()
         # ret_code_trig = self.set_internal_trigger()
         ret_code = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
@@ -220,7 +220,7 @@ class AndorNewton970:
 
         # Set single-track or not
         # ret_code =  self.sdk.SetSingleTrack()
-
+        
         # Set read mode
         # 0 Full Vertical Binning; 1: Multi-Track; 2: Random-Track; 3: Single-Track; 4: Image
         ret_code = self.sdk.SetReadMode(self.mode_codes['read'][self.settings['read_mode']])
@@ -231,6 +231,7 @@ class AndorNewton970:
         else:
             self.is_fvb_or_sgl_track = False
 
+        
         ret_code, self.n_cols, self.n_rows = self.sdk.GetDetector()
         ret_code_list.append(ret_code)
         print('Detector Size: ({}, {})'.format(self.n_rows, self.n_cols))
@@ -280,8 +281,10 @@ class AndorNewton970:
             ret_code_trig = self.sdk.SetTriggerMode(self.mode_codes['trigger_mode'][self.settings['trigger_mode']])
             print('Set Trigger Mode: {} -- {}: {}'.format(self.mode_codes['trigger_mode'][self.settings['trigger_mode']], 
                                                           ret_code_trig, andor_err_code_str(ret_code_trig)))
+            self.sdk.EnableKeepCleans(0)
             ret_code_fast = self.sdk.SetFastExtTrigger(1)
             print('Set Fast External Trigger: ON -- {}: {}'.format(ret_code_fast, andor_err_code_str(ret_code_fast)))
+            self.sdk.SetKineticCycleTime(0)
         except Exception as e:
             print(traceback.format_exc())
         return (ret_code_trig, ret_code_fast)
@@ -371,10 +374,25 @@ class AndorNewton970:
         return (ret_code, arr, validfirst, validlast)
 
 if __name__ == '__main__':
-    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0, 'read_mode': 'FULL_VERTICAL_BINNING',
-                                          'trigger_mode': 'INTERNAL'})
+    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'read_mode': 'FULL_VERTICAL_BINNING',
+                                          'trigger_mode': 'EXTERNAL'})
     try:
         ret = ccd.init_all()
+
+        print('==========================')
+        ccd.sdk.EnableKeepCleans(0)
+        ccd.sdk.SetKineticCycleTime(0)
+        ccd.sdk.SetFastExtTrigger(1)
+        read_out_time = ccd.sdk.GetReadOutTime()[1]
+        print('ReadOut Time: {:.6f} sec'.format(read_out_time))
+        print('Exposure Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[1]))
+        print('Accumulate Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[2]))
+        print('Kinetic Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[3]))
+        print('Estimated total time per acquisition: {}'.format(ccd.net_acquisition_time))
+        print('==========================')
+        # ccd.sdk.
+
+        # ccd.sdk.EnableKeepCleans(1)
         # ccd.init_sdk()
         # ccd.init_camera()
     except Exception as e:
@@ -390,18 +408,20 @@ if __name__ == '__main__':
         
         
         ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
-        print('New Images: {} [{}:{}]'.format(n_images, first_img, last_img))
+        if (first_img != 0) & (last_img != 0):
+            print('New Images: {} [{}:{}]'.format(n_images, first_img, last_img))
 
-        (ret_code, arr, validfirst, validlast) = ccd.get_all_images16()
-        # arr = arr.reshape((n_images, sgl_image_size))
-        # del arr
-        print('Single_image size: {}'.format(ccd.sgl_image_size))
-        allImageSize = n_images * ccd.sgl_image_size
-        print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
-        print('arr[0]: {}'.format(arr[0]))
+
+            (ret_code, arr, validfirst, validlast) = ccd.get_all_images16()
+            # arr = arr.reshape((n_images, sgl_image_size))
+            # del arr
+            print('Single_image size: {}'.format(ccd.sgl_image_size))
+            allImageSize = n_images * ccd.sgl_image_size
+            print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
+            print('arr[0]: {}'.format(arr[0]))
+        
+    finally:
         ccd.free_memory()
-        ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
-        print('Abort New Images: {} [{}:{}] -- {}: {}'.format(n_images, first_img, last_img, ret_code, andor_err_code_str(ret_code)))
         ret_code = ccd.shutdown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
         # print(ccd.__dict__)

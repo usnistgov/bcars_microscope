@@ -168,6 +168,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.pushButtonWinSpectroscopy, 0, 0, 1, 1)
 
+        self.pushButtonWinRaster = QPushButton(self.groupBox)
+        self.pushButtonWinRaster.setObjectName(u"pushButtonWinRaster")
+        self.pushButtonWinRaster.setMaximumSize(QSize(134, 50))
+        self.pushButtonWinRaster.setFont(font3)
+
+        self.gridLayout.addWidget(self.pushButtonWinRaster, 1, 0, 1, 1)
+
 
         self.horizontalLayout.addWidget(self.groupBox)
 
@@ -202,5 +209,6 @@ class Ui_MainWindow(object):
         self.pushButtonInitDelayStage.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Widgets", None))
         self.pushButtonWinSpectroscopy.setText(QCoreApplication.translate("MainWindow", u"Spectroscopy", None))
+        self.pushButtonWinRaster.setText(QCoreApplication.translate("MainWindow", u"Raster Image", None))
     # retranslateUi
 

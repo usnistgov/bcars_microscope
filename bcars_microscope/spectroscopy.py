@@ -2,9 +2,31 @@ import sys
 import traceback
 
 import matplotlib as mpl
+import matplotlib.style
+from sqlalchemy import TEXT
+mpl.style.use('seaborn-dark-palette')
 mpl.use('Qt5Agg')
 mpl.rcParams['font.size'] = 11
+
+TEXT_COLOR = 'white'
+mpl.rcParams['text.color'] = TEXT_COLOR
+mpl.rcParams['axes.labelcolor'] = TEXT_COLOR
+mpl.rcParams['axes.edgecolor'] = TEXT_COLOR
+mpl.rcParams['xtick.color'] = TEXT_COLOR
+mpl.rcParams['ytick.color'] = TEXT_COLOR
+
 mpl.rcParams['axes.labelsize'] = 11
+# print(mpl.rcParams)
+
+MPL_BG_COLOR = (53/255,53/255,53/255)
+mpl.rcParams['figure.facecolor'] = MPL_BG_COLOR
+mpl.rcParams['axes.facecolor'] = MPL_BG_COLOR
+# print(mpl.style.available)
+
+mpl.rcParams['lines.linewidth'] = 0.5
+from cycler import cycler
+mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF', '#A239A0','#DE350B', '#36B37E'])
+
 
 import numpy as np
 
@@ -135,11 +157,13 @@ class MainWindow(QMainWindow):
             if self.devices['CCD'].is_external_trigger:
                 self.devices['CCD'].set_internal_trigger()
             self.devices['CCD'].start_acquisition()
+            self.devices['running'] = True
             self.timer_update_plot.start()
        
     def stop_acquisition(self):
         if 'CCD' in self.devices:
             self.devices['CCD'].stop_acquisition()
+            self.devices['running'] = False
             self.timer_update_plot.stop()
 
     def get_spectrum(self):
@@ -246,7 +270,7 @@ class MainWindow(QMainWindow):
                     ydata -= self.dark_spectrum
 
                 if self.ui.plot_ref is None:
-                    self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, lw=1, label='Spectrum')[0]
+                    self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, label='Spectrum')[0]
                     
                     if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
 
@@ -312,6 +336,8 @@ class MainWindow(QMainWindow):
             self.timer_update_pos.start()
 
         
+
+# if __name__ == '__main__':
 
 # def get_position():
 #     vals = 2*100*np.random.rand(3)
@@ -387,7 +413,12 @@ if __name__ == '__main__':
         app.setStyle("Fusion")
         app.setStyleSheet(stylesheet)
         window = MainWindow()
-        
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.75*np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.5*np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.25*np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.125*np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.065*np.arange(1000), label='Spectrum')[0]
         window.show()
 
         app.exec_()

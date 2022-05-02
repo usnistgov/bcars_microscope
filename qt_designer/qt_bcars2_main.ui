@@ -317,6 +317,26 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButtonWinRaster">
+         <property name="maximumSize">
+          <size>
+           <width>134</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Raster Image</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
