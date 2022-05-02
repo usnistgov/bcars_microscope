@@ -15,7 +15,7 @@ from PySide2.QtGui import QPalette, QColor
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
-from ui.ui_demo_2_threads import Ui_MainWindow
+from ui.ui_bcars2_spectroscopy import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
