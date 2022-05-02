@@ -3,8 +3,8 @@ import traceback
 
 import matplotlib as mpl
 mpl.use('Qt5Agg')
-mpl.rcParams['font.size'] = 20
-mpl.rcParams['axes.labelsize'] = 20
+mpl.rcParams['font.size'] = 11
+mpl.rcParams['axes.labelsize'] = 11
 
 import numpy as np
 
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         # MPL Stuff
         # Create toolbar, passing canvas as first parament, parent (self, the MainWindow) as second.
         toolbar = NavigationToolbar2QT(self.ui.mpl_canvas, self)
-        toolbar.setStyleSheet('font: 20pt "Arial"; color: white')  # Work around to setting the nav toolbar coordinate font size
+        toolbar.setStyleSheet('font: 16pt "Arial"; color: white')  # Work around to setting the nav toolbar coordinate font size
 
         # Create a layout to house our MPL widget
         layout = QVBoxLayout()

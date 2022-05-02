@@ -1,11 +1,6 @@
 import sys
 import traceback
 
-import matplotlib as mpl
-mpl.use('Qt5Agg')
-mpl.rcParams['font.size'] = 20
-mpl.rcParams['axes.labelsize'] = 20
-
 import numpy as np
 
 from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
