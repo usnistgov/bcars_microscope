@@ -562,6 +562,8 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addLayout(self.verticalLayout_2)
 
+        self.verticalLayout_6 = QVBoxLayout()
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.mpl_widget = QWidget(self.centralwidget)
         self.mpl_widget.setObjectName(u"mpl_widget")
         sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -572,7 +574,18 @@ class Ui_MainWindow(object):
         self.mpl_widget.setAutoFillBackground(False)
         self.mpl_widget.setStyleSheet(u"background-color: rgb(53,53,53)")
 
-        self.horizontalLayout_4.addWidget(self.mpl_widget)
+        self.verticalLayout_6.addWidget(self.mpl_widget)
+
+        self.frame_6 = QFrame(self.centralwidget)
+        self.frame_6.setObjectName(u"frame_6")
+        self.frame_6.setMinimumSize(QSize(0, 250))
+        self.frame_6.setFrameShape(QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QFrame.Raised)
+
+        self.verticalLayout_6.addWidget(self.frame_6)
+
+
+        self.horizontalLayout_4.addLayout(self.verticalLayout_6)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
