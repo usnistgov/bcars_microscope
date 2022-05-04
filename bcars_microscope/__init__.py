@@ -15,7 +15,9 @@ dark_style_sheet = ('QWidget {background-color: rgb(53,53,53); font: 11pt "Arial
                     'QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}\n'
                     'QDoubleSpinBox {font: 11pt "Arial";}\n'
                     'QGroupBox {color: white}\n'
-                    'QFrame {color: white}\n')
+                    'QFrame {color: white}\n'
+                    'QTabBar {color: white}\n'
+                    'QLineEdit {background-color: white}\n')
 
 # QRadioButton { color: white}\nQRadioButton::indicator { width: 50; height: 50; border-radius: 20px}\nQRadioButton::indicator:checked {background-color: rgb(85, 255, 0); border: 2px solid white}\nQRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}
 
