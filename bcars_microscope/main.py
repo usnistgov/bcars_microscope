@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
                                                               'trigger_mode': 'EXTERNAL'})
         
         ret = self.devices['CCD'].init_all()
+        self.devices['CCD'].set_fast_external_trigger()
 
         # Disable init button if CCD initialized just fine
         self.ui.pushButtonInitCCD.setEnabled(not ret)
