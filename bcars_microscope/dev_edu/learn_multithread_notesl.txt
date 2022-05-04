@@ -1,0 +1,42 @@
+Scenario 0 ()
+0. NO PLOTTING
+1. fcn AcquisitionStart called via signal
+2. For loop in main thread that collects data 
+3. ProcessEvents NOT called
+4. Stop button checked for checked during for loop
+
+Result:
+50 Iterations Total Time: 0.000015 sec.
+Mean 0.000000 +/- 0.000000 sec
+
+
+Scenario 1 (see learn_multithread_basic):
+1. fcn AcquisitionStart called via signal
+2. For loop in main thread that collects data and plots
+3. ProcessEvents NOT called
+4. Stop button checked for checked during for loop
+
+Result: 
+1. Only plots once 
+2. 50 Iterations Total Time: 1.400 sec.
+   Mean 0.028 +/- 0.014 sec
+3. Cannot stop during loop
+
+Scenario 2 (see learn_multithread_basic_processevent):
+1. Same as scenario 1, BUT ProcessEvents called
+
+Result: 
+1. Plots all 50 Iterations 
+2.  50 Iterations Total Time: 1.318 sec.
+    Mean 0.026 +/- 0.006 sec
+3. Can stop during for loop 
+
+Scenario 3 (see learn_multithread_plot_in_qtimer)
+1. Plot update called from QTimer with interval 100 ms
+
+Result:
+1. 50 Iterations Total Time: 0.538 sec.
+   Mean 0.011 +/- 0.037 sec
+   Number of plots: 5
+
+
