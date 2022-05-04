@@ -1,5 +1,8 @@
 import traceback
 from time import sleep
+from hypothesis import settings
+
+import numpy as np
 
 from pyAndorSDK2 import atmcd, atmcd_codes, atmcd_errors
 
@@ -40,11 +43,14 @@ def andor_err_code_str(code):
 
 class AndorNewton970:
     """ Andor Newton 970 Settings EMCCD model """
-    default_fvb = {'exposure_time': 0.0035, 
+    default_fvb = {'cooler': True,
+                   'exposure_time': 0.0035, 
                    'temperature': -70,
                    'amplifier': 'Conventional',
                    'ad_channel': 1,
                    'hs_speed_idx' : 0,
+                   'vs_speed_idx' : 0,
+                   'vs_shift_amp' : 0,
                    'preamp_gain_idx' : 2,
                    'read_mode': 'FULL_VERTICAL_BINNING',
                    'trigger_mode': 'INTERNAL',
@@ -86,9 +92,9 @@ class AndorNewton970:
 
         self.settings = self.defaults.copy()
 
-        print('===== {}'.format(settings_kwargs))
+        # print('===== {}'.format(settings_kwargs))
         if settings_kwargs:
-            print('Updating: {}'.format(settings_kwargs))
+            # print('Updating: {}'.format(settings_kwargs))
             self.settings.update(settings_kwargs)
 
     def init_sdk(self, force=False):
@@ -101,16 +107,42 @@ class AndorNewton970:
             print('Initialize SDK {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
             return ret_code
 
-    def get_meta(self):
-        pass
+    @property
+    def meta(self):
+        output = {}
+        prefix = 'CCD'
+        # Prepend prefix to settings and put in meta
+        output.update({'{}.{}'.format(prefix,k): self.settings[k] for k in self.settings})
         
+        # Manually set things:
+        output['CCD.cooler'] = self.settings['cooler']
+        output['CCD.fanmode'] = 'full'
+
+        output['CCD.temperature.actual'] = round(self.sdk.GetTemperatureStatus()[1],2)
+        output['CCD.temperature.set'] = round(self.sdk.GetTemperatureStatus()[2],2)
+        output['CCD.amplifier_idx'] = [self.sdk.GetAmpDesc(num,25)[1] for num in range(self.sdk.GetNumberAmp()[1])].index(self.settings['amplifier'])
+        output['CCD.HS_shift_frequency'] = '{} MHz'.format(self.sdk.GetHSSpeed(self.settings['ad_channel'],
+                                                           output['CCD.amplifier_idx'],
+                                                           self.settings['hs_speed_idx'])[1])
+        output['CCD.VS_shift_time'] = '{} us'.format(self.sdk.GetVSSpeed(self.settings['vs_speed_idx'])[1])
+        output['CCD.preamp_gain'] = self.sdk.GetPreAmpGain(self.settings['preamp_gain_idx'])[1]
+        for k in self.mode_codes:
+            output['CCD.modecode.{}'.format(k)] = self.mode_codes[k]
+        return output
+
     def init_camera(self):
         ret_code_list = []
-        print('HERE: {}'.format(self.settings))
-        # Cooler on
-        ret_code = self.sdk.CoolerON()
+
+        if self.settings['cooler']:
+            # Cooler on
+            ret_code = self.sdk.CoolerON()
+            print('Cooler ON: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+        
+        else:
+            ret_code = self.sdk.CoolerOFF()
+            print('Cooler OFF: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
+        
         ret_code_list.append(ret_code)
-        print('Cooler ON: {}: {}'.format(ret_code, andor_err_code_str(ret_code)))
         del ret_code
 
         # Set Temperature
@@ -170,12 +202,12 @@ class AndorNewton970:
             print('Index: {}; Vertical Shift Speed: {}us'.format(num_speeds, self.sdk.GetVSSpeed(num_speeds)[1]))
         
         # self.sdk.GetNumberVSSpeeds
-        ret_code = self.sdk.SetVSSpeed(0)
+        ret_code = self.sdk.SetVSSpeed(self.settings['vs_speed_idx'])
         ret_code_list.append(ret_code)
         print('Set Vertical Shift Speed: {} -- {}: {}'.format(0, ret_code, andor_err_code_str(ret_code)))
 
         # 11. Set VS amplitude
-        ret_code = self.sdk.SetVSAmplitude(0)
+        ret_code = self.sdk.SetVSAmplitude(self.settings['vs_shift_amp'])
         ret_code_list.append(ret_code)
         print('Set Vertical Shift Ampltiude: {} -- {}: {}'.format(0, ret_code, andor_err_code_str(ret_code)))
 
@@ -357,21 +389,21 @@ class AndorNewton970:
         _, n_images, first_img, last_img = self.get_num_new_images()
         allImageSize = self.sgl_image_size * n_images
         (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(first_img, last_img, allImageSize)
-        return (ret_code, arr, validfirst, validlast)
+        return (ret_code, arr.astype(np.uint16), validfirst, validlast)
 
     def get_last_n_images16(self, k=1):
         """ Get k last images"""
         _, n_images, _, last_img = self.get_num_new_images()
         allImageSize = self.sgl_image_size * k
         (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(last_img-k+1, last_img, allImageSize)
-        return (ret_code, arr, validfirst, validlast)
+        return (ret_code, arr.astype(np.uint16), validfirst, validlast)
 
     def get_first_n_images16(self, k=1):
         """ Get k last images"""
         _, n_images, first_img, _ = self.get_num_new_images()
         allImageSize = self.sgl_image_size * k
         (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(first_img, first_img+k-1, allImageSize)
-        return (ret_code, arr, validfirst, validlast)
+        return (ret_code, arr.astype(np.uint16), validfirst, validlast)
 
 if __name__ == '__main__':
     ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'read_mode': 'FULL_VERTICAL_BINNING',
@@ -400,6 +432,7 @@ if __name__ == '__main__':
         ret_code = ccd.shutdown()
         print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
     else:
+        print('Meta data:\n{}'.format(ccd.meta))
         ret_code = ccd.start_acquisition()
         print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
         # ccd.sdk.WaitForAcquisition()
