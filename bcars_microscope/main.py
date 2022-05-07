@@ -1,3 +1,14 @@
+"""
+Main controller for bcars microscope
+
+TODO: Configure CCD
+TODO: Configure Stage
+TODO: Configure Delay
+TODO: Configure Laser
+
+"""
+
+
 import sys
 import traceback
 
