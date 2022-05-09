@@ -150,6 +150,10 @@ class MainWindow(QMainWindow):
         """ This happens when the window is hidden"""
         self.timer_update_pos.stop()
         self.timer_update_delay_pos.stop()
+        if 'CCD' in self.devices:
+            if self.device['running']:
+                self.stop_acquisition()
+                
         return QWidget.hideEvent(self, ev)
 
     def start_acquisition(self):
