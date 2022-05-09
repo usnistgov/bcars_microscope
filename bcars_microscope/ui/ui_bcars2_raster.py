@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1511, 907)
+        MainWindow.resize(1511, 932)
         font = QFont()
         font.setFamily(u"Arial")
         font.setPointSize(11)
@@ -26,18 +26,23 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_6 = QGridLayout(self.centralwidget)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.verticalLayout_12 = QVBoxLayout()
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setFrameShape(QFrame.Panel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.gridLayout = QGridLayout(self.frame)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setHorizontalSpacing(3)
+        self.gridLayout.setVerticalSpacing(0)
+        self.gridLayout.setContentsMargins(1, 1, 1, 1)
         self.groupBox_2 = QGroupBox(self.frame)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.verticalLayout_6 = QVBoxLayout(self.groupBox_2)
-        self.verticalLayout_6.setSpacing(3)
+        self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5 = QVBoxLayout()
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.label_5 = QLabel(self.groupBox_2)
@@ -134,9 +139,9 @@ class Ui_MainWindow(object):
         self.groupBox_3 = QGroupBox(self.frame)
         self.groupBox_3.setObjectName(u"groupBox_3")
         self.verticalLayout_4 = QVBoxLayout(self.groupBox_3)
-        self.verticalLayout_4.setSpacing(3)
+        self.verticalLayout_4.setSpacing(0)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.label_9 = QLabel(self.groupBox_3)
@@ -233,10 +238,11 @@ class Ui_MainWindow(object):
         self.groupBox = QGroupBox(self.frame)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
-        self.verticalLayout_2.setSpacing(3)
+        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label_4 = QLabel(self.groupBox)
         self.label_4.setObjectName(u"label_4")
@@ -330,112 +336,22 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.frame, 0, 0, 1, 2)
+        self.verticalLayout_12.addWidget(self.frame)
 
-        self.frame_2 = QFrame(self.centralwidget)
-        self.frame_2.setObjectName(u"frame_2")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
-        self.frame_2.setSizePolicy(sizePolicy)
-        self.frame_2.setMinimumSize(QSize(739, 0))
-        self.frame_2.setFrameShape(QFrame.Panel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
-        self.gridLayout_4 = QGridLayout(self.frame_2)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.tabWidget_left = QTabWidget(self.frame_2)
-        self.tabWidget_left.setObjectName(u"tabWidget_left")
-        self.tabWidget_left.setFont(font)
-        self.tab = QWidget()
-        self.tab.setObjectName(u"tab")
-        self.gridLayout_2 = QGridLayout(self.tab)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.mpl_widget_left = QWidget(self.tab)
-        self.mpl_widget_left.setObjectName(u"mpl_widget_left")
-        sizePolicy.setHeightForWidth(self.mpl_widget_left.sizePolicy().hasHeightForWidth())
-        self.mpl_widget_left.setSizePolicy(sizePolicy)
-        self.mpl_widget_left.setMinimumSize(QSize(518, 451))
-        self.mpl_widget_left.setAutoFillBackground(False)
-        self.mpl_widget_left.setStyleSheet(u"background-color: rgb(53,53,53)")
-
-        self.gridLayout_2.addWidget(self.mpl_widget_left, 0, 0, 1, 1)
-
-        self.tabWidget_left.addTab(self.tab, "")
-        self.tab_2 = QWidget()
-        self.tab_2.setObjectName(u"tab_2")
-        self.verticalLayout_8 = QVBoxLayout(self.tab_2)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.formLayout_2 = QFormLayout()
-        self.formLayout_2.setObjectName(u"formLayout_2")
-        self.label_13 = QLabel(self.tab_2)
-        self.label_13.setObjectName(u"label_13")
-
-        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_13)
-
-        self.spinBox_left_index = QSpinBox(self.tab_2)
-        self.spinBox_left_index.setObjectName(u"spinBox_left_index")
-        self.spinBox_left_index.setMaximumSize(QSize(61, 16777215))
-        self.spinBox_left_index.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_left_index.setMinimum(0)
-        self.spinBox_left_index.setMaximum(1599)
-        self.spinBox_left_index.setValue(1000)
-
-        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.spinBox_left_index)
-
-
-        self.verticalLayout_8.addLayout(self.formLayout_2)
-
-        self.tabWidget_left.addTab(self.tab_2, "")
-
-        self.gridLayout_4.addWidget(self.tabWidget_left, 0, 0, 1, 1)
-
-        self.tabWidget_right = QTabWidget(self.frame_2)
-        self.tabWidget_right.setObjectName(u"tabWidget_right")
-        self.tab_3 = QWidget()
-        self.tab_3.setObjectName(u"tab_3")
-        self.gridLayout_3 = QGridLayout(self.tab_3)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.mpl_widget_right = QWidget(self.tab_3)
-        self.mpl_widget_right.setObjectName(u"mpl_widget_right")
-        sizePolicy.setHeightForWidth(self.mpl_widget_right.sizePolicy().hasHeightForWidth())
-        self.mpl_widget_right.setSizePolicy(sizePolicy)
-        self.mpl_widget_right.setMinimumSize(QSize(518, 451))
-        self.mpl_widget_right.setAutoFillBackground(False)
-        self.mpl_widget_right.setStyleSheet(u"background-color: rgb(53,53,53)")
-
-        self.gridLayout_3.addWidget(self.mpl_widget_right, 0, 0, 1, 1)
-
-        self.tabWidget_right.addTab(self.tab_3, "")
-        self.tab_4 = QWidget()
-        self.tab_4.setObjectName(u"tab_4")
-        self.tabWidget_right.addTab(self.tab_4, "")
-
-        self.gridLayout_4.addWidget(self.tabWidget_right, 0, 1, 1, 1)
-
-        self.mpl_widget_spectra = QWidget(self.frame_2)
-        self.mpl_widget_spectra.setObjectName(u"mpl_widget_spectra")
-        sizePolicy.setHeightForWidth(self.mpl_widget_spectra.sizePolicy().hasHeightForWidth())
-        self.mpl_widget_spectra.setSizePolicy(sizePolicy)
-        self.mpl_widget_spectra.setMinimumSize(QSize(1061, 281))
-        self.mpl_widget_spectra.setAutoFillBackground(False)
-        self.mpl_widget_spectra.setStyleSheet(u"background-color: rgb(53,53,53)")
-
-        self.gridLayout_4.addWidget(self.mpl_widget_spectra, 1, 0, 1, 2)
-
-
-        self.gridLayout_6.addWidget(self.frame_2, 0, 2, 5, 1)
-
-        self.formLayout = QFormLayout()
+        self.tabWidget_2 = QTabWidget(self.centralwidget)
+        self.tabWidget_2.setObjectName(u"tabWidget_2")
+        self.tab_7 = QWidget()
+        self.tab_7.setObjectName(u"tab_7")
+        self.formLayout = QFormLayout(self.tab_7)
         self.formLayout.setObjectName(u"formLayout")
-        self.label_14 = QLabel(self.centralwidget)
+        self.label_14 = QLabel(self.tab_7)
         self.label_14.setObjectName(u"label_14")
         self.label_14.setTextFormat(Qt.PlainText)
         self.label_14.setWordWrap(True)
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_14)
 
-        self.spinBox_post_image_z_pos = QDoubleSpinBox(self.centralwidget)
+        self.spinBox_post_image_z_pos = QDoubleSpinBox(self.tab_7)
         self.spinBox_post_image_z_pos.setObjectName(u"spinBox_post_image_z_pos")
         self.spinBox_post_image_z_pos.setMinimumSize(QSize(75, 25))
         self.spinBox_post_image_z_pos.setMaximumSize(QSize(75, 40))
@@ -449,13 +365,13 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.spinBox_post_image_z_pos)
 
-        self.label_16 = QLabel(self.centralwidget)
+        self.label_16 = QLabel(self.tab_7)
         self.label_16.setObjectName(u"label_16")
         self.label_16.setTextFormat(Qt.PlainText)
 
         self.formLayout.setWidget(1, QFormLayout.LabelRole, self.label_16)
 
-        self.spinBoxDelayImaging = QDoubleSpinBox(self.centralwidget)
+        self.spinBoxDelayImaging = QDoubleSpinBox(self.tab_7)
         self.spinBoxDelayImaging.setObjectName(u"spinBoxDelayImaging")
         self.spinBoxDelayImaging.setMinimumSize(QSize(75, 25))
         self.spinBoxDelayImaging.setMaximumSize(QSize(75, 40))
@@ -469,13 +385,14 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.spinBoxDelayImaging)
 
-        self.label_19 = QLabel(self.centralwidget)
+        self.label_19 = QLabel(self.tab_7)
         self.label_19.setObjectName(u"label_19")
         self.label_19.setTextFormat(Qt.PlainText)
 
         self.formLayout.setWidget(2, QFormLayout.LabelRole, self.label_19)
 
-        self.comboBoxRecNRB = QComboBox(self.centralwidget)
+        self.comboBoxRecNRB = QComboBox(self.tab_7)
+        self.comboBoxRecNRB.addItem("")
         self.comboBoxRecNRB.addItem("")
         self.comboBoxRecNRB.addItem("")
         self.comboBoxRecNRB.addItem("")
@@ -484,7 +401,7 @@ class Ui_MainWindow(object):
 
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.comboBoxRecNRB)
 
-        self.label_17 = QLabel(self.centralwidget)
+        self.label_17 = QLabel(self.tab_7)
         self.label_17.setObjectName(u"label_17")
         self.label_17.setTextFormat(Qt.PlainText)
 
@@ -492,26 +409,26 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.checkBoxCollectDark = QCheckBox(self.centralwidget)
+        self.checkBoxCollectDark = QCheckBox(self.tab_7)
         self.checkBoxCollectDark.setObjectName(u"checkBoxCollectDark")
-        self.checkBoxCollectDark.setEnabled(False)
-        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.checkBoxCollectDark.sizePolicy().hasHeightForWidth())
-        self.checkBoxCollectDark.setSizePolicy(sizePolicy1)
+        self.checkBoxCollectDark.setEnabled(True)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.checkBoxCollectDark.sizePolicy().hasHeightForWidth())
+        self.checkBoxCollectDark.setSizePolicy(sizePolicy)
         self.checkBoxCollectDark.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
 "QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
 
         self.horizontalLayout.addWidget(self.checkBoxCollectDark)
 
-        self.label_21 = QLabel(self.centralwidget)
+        self.label_21 = QLabel(self.tab_7)
         self.label_21.setObjectName(u"label_21")
         self.label_21.setTextFormat(Qt.PlainText)
 
         self.horizontalLayout.addWidget(self.label_21)
 
-        self.spinBoxDelayDark = QDoubleSpinBox(self.centralwidget)
+        self.spinBoxDelayDark = QDoubleSpinBox(self.tab_7)
         self.spinBoxDelayDark.setObjectName(u"spinBoxDelayDark")
         self.spinBoxDelayDark.setMinimumSize(QSize(75, 25))
         self.spinBoxDelayDark.setMaximumSize(QSize(75, 40))
@@ -528,7 +445,7 @@ class Ui_MainWindow(object):
 
         self.formLayout.setLayout(3, QFormLayout.FieldRole, self.horizontalLayout)
 
-        self.label_18 = QLabel(self.centralwidget)
+        self.label_18 = QLabel(self.tab_7)
         self.label_18.setObjectName(u"label_18")
         self.label_18.setTextFormat(Qt.PlainText)
 
@@ -536,23 +453,23 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.checkBoxCollectNRB = QCheckBox(self.centralwidget)
+        self.checkBoxCollectNRB = QCheckBox(self.tab_7)
         self.checkBoxCollectNRB.setObjectName(u"checkBoxCollectNRB")
-        self.checkBoxCollectNRB.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.checkBoxCollectNRB.sizePolicy().hasHeightForWidth())
-        self.checkBoxCollectNRB.setSizePolicy(sizePolicy1)
+        self.checkBoxCollectNRB.setEnabled(True)
+        sizePolicy.setHeightForWidth(self.checkBoxCollectNRB.sizePolicy().hasHeightForWidth())
+        self.checkBoxCollectNRB.setSizePolicy(sizePolicy)
         self.checkBoxCollectNRB.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
 "QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
 
         self.horizontalLayout_3.addWidget(self.checkBoxCollectNRB)
 
-        self.label_22 = QLabel(self.centralwidget)
+        self.label_22 = QLabel(self.tab_7)
         self.label_22.setObjectName(u"label_22")
         self.label_22.setTextFormat(Qt.PlainText)
 
         self.horizontalLayout_3.addWidget(self.label_22)
 
-        self.spinBoxDelayNRB = QDoubleSpinBox(self.centralwidget)
+        self.spinBoxDelayNRB = QDoubleSpinBox(self.tab_7)
         self.spinBoxDelayNRB.setObjectName(u"spinBoxDelayNRB")
         self.spinBoxDelayNRB.setMinimumSize(QSize(75, 25))
         self.spinBoxDelayNRB.setMaximumSize(QSize(75, 40))
@@ -569,7 +486,7 @@ class Ui_MainWindow(object):
 
         self.formLayout.setLayout(4, QFormLayout.FieldRole, self.horizontalLayout_3)
 
-        self.label_20 = QLabel(self.centralwidget)
+        self.label_20 = QLabel(self.tab_7)
         self.label_20.setObjectName(u"label_20")
         self.label_20.setTextFormat(Qt.PlainText)
 
@@ -577,23 +494,23 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.checkBoxCollectNRB_Early = QCheckBox(self.centralwidget)
+        self.checkBoxCollectNRB_Early = QCheckBox(self.tab_7)
         self.checkBoxCollectNRB_Early.setObjectName(u"checkBoxCollectNRB_Early")
-        self.checkBoxCollectNRB_Early.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.checkBoxCollectNRB_Early.sizePolicy().hasHeightForWidth())
-        self.checkBoxCollectNRB_Early.setSizePolicy(sizePolicy1)
+        self.checkBoxCollectNRB_Early.setEnabled(True)
+        sizePolicy.setHeightForWidth(self.checkBoxCollectNRB_Early.sizePolicy().hasHeightForWidth())
+        self.checkBoxCollectNRB_Early.setSizePolicy(sizePolicy)
         self.checkBoxCollectNRB_Early.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
 "QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
 
         self.horizontalLayout_4.addWidget(self.checkBoxCollectNRB_Early)
 
-        self.label_23 = QLabel(self.centralwidget)
+        self.label_23 = QLabel(self.tab_7)
         self.label_23.setObjectName(u"label_23")
         self.label_23.setTextFormat(Qt.PlainText)
 
         self.horizontalLayout_4.addWidget(self.label_23)
 
-        self.spinBoxDelayNRB_Early = QDoubleSpinBox(self.centralwidget)
+        self.spinBoxDelayNRB_Early = QDoubleSpinBox(self.tab_7)
         self.spinBoxDelayNRB_Early.setObjectName(u"spinBoxDelayNRB_Early")
         self.spinBoxDelayNRB_Early.setMinimumSize(QSize(75, 25))
         self.spinBoxDelayNRB_Early.setMaximumSize(QSize(75, 40))
@@ -610,22 +527,242 @@ class Ui_MainWindow(object):
 
         self.formLayout.setLayout(5, QFormLayout.FieldRole, self.horizontalLayout_4)
 
+        self.tabWidget_2.addTab(self.tab_7, "")
+        self.tab_8 = QWidget()
+        self.tab_8.setObjectName(u"tab_8")
+        self.horizontalLayout_8 = QHBoxLayout(self.tab_8)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.groupBox_4 = QGroupBox(self.tab_8)
+        self.groupBox_4.setObjectName(u"groupBox_4")
+        self.verticalLayout_13 = QVBoxLayout(self.groupBox_4)
+        self.verticalLayout_13.setSpacing(0)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_14 = QVBoxLayout()
+        self.verticalLayout_14.setSpacing(0)
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.label_31 = QLabel(self.groupBox_4)
+        self.label_31.setObjectName(u"label_31")
 
-        self.gridLayout_6.addLayout(self.formLayout, 1, 0, 1, 2)
+        self.verticalLayout_14.addWidget(self.label_31)
+
+        self.comboBox_nrb_fast_axis = QComboBox(self.groupBox_4)
+        self.comboBox_nrb_fast_axis.addItem("")
+        self.comboBox_nrb_fast_axis.addItem("")
+        self.comboBox_nrb_fast_axis.addItem("")
+        self.comboBox_nrb_fast_axis.setObjectName(u"comboBox_nrb_fast_axis")
+        self.comboBox_nrb_fast_axis.setEnabled(False)
+
+        self.verticalLayout_14.addWidget(self.comboBox_nrb_fast_axis)
+
+        self.label_32 = QLabel(self.groupBox_4)
+        self.label_32.setObjectName(u"label_32")
+
+        self.verticalLayout_14.addWidget(self.label_32)
+
+        self.spinBox_nrb_fast_start = QDoubleSpinBox(self.groupBox_4)
+        self.spinBox_nrb_fast_start.setObjectName(u"spinBox_nrb_fast_start")
+        self.spinBox_nrb_fast_start.setMinimumSize(QSize(75, 25))
+        self.spinBox_nrb_fast_start.setMaximumSize(QSize(200, 40))
+        self.spinBox_nrb_fast_start.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_nrb_fast_start.setReadOnly(False)
+        self.spinBox_nrb_fast_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_fast_start.setDecimals(3)
+        self.spinBox_nrb_fast_start.setMinimum(-1.000000000000000)
+        self.spinBox_nrb_fast_start.setMaximum(201.000000000000000)
+        self.spinBox_nrb_fast_start.setValue(90.000000000000000)
+
+        self.verticalLayout_14.addWidget(self.spinBox_nrb_fast_start)
+
+        self.label_33 = QLabel(self.groupBox_4)
+        self.label_33.setObjectName(u"label_33")
+
+        self.verticalLayout_14.addWidget(self.label_33)
+
+        self.spinBox_nrb_fast_stop = QDoubleSpinBox(self.groupBox_4)
+        self.spinBox_nrb_fast_stop.setObjectName(u"spinBox_nrb_fast_stop")
+        self.spinBox_nrb_fast_stop.setMinimumSize(QSize(75, 25))
+        self.spinBox_nrb_fast_stop.setMaximumSize(QSize(200, 40))
+        self.spinBox_nrb_fast_stop.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_nrb_fast_stop.setReadOnly(False)
+        self.spinBox_nrb_fast_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_fast_stop.setDecimals(3)
+        self.spinBox_nrb_fast_stop.setMinimum(-1.000000000000000)
+        self.spinBox_nrb_fast_stop.setMaximum(201.000000000000000)
+        self.spinBox_nrb_fast_stop.setValue(110.000000000000000)
+
+        self.verticalLayout_14.addWidget(self.spinBox_nrb_fast_stop)
+
+        self.label_34 = QLabel(self.groupBox_4)
+        self.label_34.setObjectName(u"label_34")
+
+        self.verticalLayout_14.addWidget(self.label_34)
+
+        self.spinBox_nrb_fast_steps = QSpinBox(self.groupBox_4)
+        self.spinBox_nrb_fast_steps.setObjectName(u"spinBox_nrb_fast_steps")
+        self.spinBox_nrb_fast_steps.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_fast_steps.setMinimum(1)
+        self.spinBox_nrb_fast_steps.setMaximum(5000)
+        self.spinBox_nrb_fast_steps.setValue(120)
+
+        self.verticalLayout_14.addWidget(self.spinBox_nrb_fast_steps)
+
+
+        self.verticalLayout_13.addLayout(self.verticalLayout_14)
+
+
+        self.horizontalLayout_8.addWidget(self.groupBox_4)
+
+        self.groupBox_5 = QGroupBox(self.tab_8)
+        self.groupBox_5.setObjectName(u"groupBox_5")
+        self.verticalLayout_15 = QVBoxLayout(self.groupBox_5)
+        self.verticalLayout_15.setSpacing(0)
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
+        self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_16 = QVBoxLayout()
+        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.label_36 = QLabel(self.groupBox_5)
+        self.label_36.setObjectName(u"label_36")
+
+        self.verticalLayout_16.addWidget(self.label_36)
+
+        self.comboBox_nrb_slow_axis = QComboBox(self.groupBox_5)
+        self.comboBox_nrb_slow_axis.addItem("")
+        self.comboBox_nrb_slow_axis.addItem("")
+        self.comboBox_nrb_slow_axis.addItem("")
+        self.comboBox_nrb_slow_axis.setObjectName(u"comboBox_nrb_slow_axis")
+        self.comboBox_nrb_slow_axis.setEnabled(False)
+
+        self.verticalLayout_16.addWidget(self.comboBox_nrb_slow_axis)
+
+        self.label_37 = QLabel(self.groupBox_5)
+        self.label_37.setObjectName(u"label_37")
+
+        self.verticalLayout_16.addWidget(self.label_37)
+
+        self.spinBox_nrb_slow_start = QDoubleSpinBox(self.groupBox_5)
+        self.spinBox_nrb_slow_start.setObjectName(u"spinBox_nrb_slow_start")
+        self.spinBox_nrb_slow_start.setMinimumSize(QSize(75, 25))
+        self.spinBox_nrb_slow_start.setMaximumSize(QSize(200, 40))
+        self.spinBox_nrb_slow_start.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_nrb_slow_start.setReadOnly(False)
+        self.spinBox_nrb_slow_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_slow_start.setDecimals(3)
+        self.spinBox_nrb_slow_start.setMinimum(-1.000000000000000)
+        self.spinBox_nrb_slow_start.setMaximum(201.000000000000000)
+        self.spinBox_nrb_slow_start.setValue(90.000000000000000)
+
+        self.verticalLayout_16.addWidget(self.spinBox_nrb_slow_start)
+
+        self.label_38 = QLabel(self.groupBox_5)
+        self.label_38.setObjectName(u"label_38")
+
+        self.verticalLayout_16.addWidget(self.label_38)
+
+        self.spinBox_nrb_slow_stop = QDoubleSpinBox(self.groupBox_5)
+        self.spinBox_nrb_slow_stop.setObjectName(u"spinBox_nrb_slow_stop")
+        self.spinBox_nrb_slow_stop.setMinimumSize(QSize(75, 25))
+        self.spinBox_nrb_slow_stop.setMaximumSize(QSize(200, 40))
+        self.spinBox_nrb_slow_stop.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_nrb_slow_stop.setReadOnly(False)
+        self.spinBox_nrb_slow_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_slow_stop.setDecimals(3)
+        self.spinBox_nrb_slow_stop.setMinimum(-1.000000000000000)
+        self.spinBox_nrb_slow_stop.setMaximum(201.000000000000000)
+        self.spinBox_nrb_slow_stop.setValue(110.000000000000000)
+
+        self.verticalLayout_16.addWidget(self.spinBox_nrb_slow_stop)
+
+        self.label_39 = QLabel(self.groupBox_5)
+        self.label_39.setObjectName(u"label_39")
+
+        self.verticalLayout_16.addWidget(self.label_39)
+
+        self.spinBox_nrb_slow_steps = QSpinBox(self.groupBox_5)
+        self.spinBox_nrb_slow_steps.setObjectName(u"spinBox_nrb_slow_steps")
+        self.spinBox_nrb_slow_steps.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_slow_steps.setMinimum(1)
+        self.spinBox_nrb_slow_steps.setMaximum(5000)
+        self.spinBox_nrb_slow_steps.setValue(5)
+
+        self.verticalLayout_16.addWidget(self.spinBox_nrb_slow_steps)
+
+
+        self.verticalLayout_15.addLayout(self.verticalLayout_16)
+
+
+        self.horizontalLayout_8.addWidget(self.groupBox_5)
+
+        self.groupBox_6 = QGroupBox(self.tab_8)
+        self.groupBox_6.setObjectName(u"groupBox_6")
+        self.verticalLayout_17 = QVBoxLayout(self.groupBox_6)
+        self.verticalLayout_17.setSpacing(0)
+        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.verticalLayout_17.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_18 = QVBoxLayout()
+        self.verticalLayout_18.setObjectName(u"verticalLayout_18")
+        self.label_41 = QLabel(self.groupBox_6)
+        self.label_41.setObjectName(u"label_41")
+
+        self.verticalLayout_18.addWidget(self.label_41)
+
+        self.comboBox_nrb_fixed_axis = QComboBox(self.groupBox_6)
+        self.comboBox_nrb_fixed_axis.addItem("")
+        self.comboBox_nrb_fixed_axis.addItem("")
+        self.comboBox_nrb_fixed_axis.addItem("")
+        self.comboBox_nrb_fixed_axis.setObjectName(u"comboBox_nrb_fixed_axis")
+        self.comboBox_nrb_fixed_axis.setEnabled(False)
+
+        self.verticalLayout_18.addWidget(self.comboBox_nrb_fixed_axis)
+
+        self.label_42 = QLabel(self.groupBox_6)
+        self.label_42.setObjectName(u"label_42")
+
+        self.verticalLayout_18.addWidget(self.label_42)
+
+        self.spinBox_nrb_fixed_start = QDoubleSpinBox(self.groupBox_6)
+        self.spinBox_nrb_fixed_start.setObjectName(u"spinBox_nrb_fixed_start")
+        self.spinBox_nrb_fixed_start.setMinimumSize(QSize(75, 25))
+        self.spinBox_nrb_fixed_start.setMaximumSize(QSize(200, 40))
+        self.spinBox_nrb_fixed_start.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_nrb_fixed_start.setReadOnly(False)
+        self.spinBox_nrb_fixed_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_nrb_fixed_start.setDecimals(3)
+        self.spinBox_nrb_fixed_start.setMinimum(-1.000000000000000)
+        self.spinBox_nrb_fixed_start.setMaximum(201.000000000000000)
+        self.spinBox_nrb_fixed_start.setValue(100.000000000000000)
+
+        self.verticalLayout_18.addWidget(self.spinBox_nrb_fixed_start)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_18.addItem(self.verticalSpacer)
+
+
+        self.verticalLayout_17.addLayout(self.verticalLayout_18)
+
+
+        self.horizontalLayout_8.addWidget(self.groupBox_6)
+
+        self.tabWidget_2.addTab(self.tab_8, "")
+
+        self.verticalLayout_12.addWidget(self.tabWidget_2)
 
         self.frame_3 = QFrame(self.centralwidget)
         self.frame_3.setObjectName(u"frame_3")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
-        self.frame_3.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Minimum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
+        self.frame_3.setSizePolicy(sizePolicy1)
         self.frame_3.setMinimumSize(QSize(100, 0))
-        self.frame_3.setMaximumSize(QSize(321, 16777215))
+        self.frame_3.setMaximumSize(QSize(1000, 70))
         self.frame_3.setFrameShape(QFrame.Panel)
         self.frame_3.setFrameShadow(QFrame.Raised)
         self.verticalLayout_7 = QVBoxLayout(self.frame_3)
+        self.verticalLayout_7.setSpacing(1)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(1, 1, 1, 1)
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -634,8 +771,8 @@ class Ui_MainWindow(object):
 
         self.pushButtonStartAcq = QPushButton(self.frame_3)
         self.pushButtonStartAcq.setObjectName(u"pushButtonStartAcq")
-        sizePolicy1.setHeightForWidth(self.pushButtonStartAcq.sizePolicy().hasHeightForWidth())
-        self.pushButtonStartAcq.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.pushButtonStartAcq.sizePolicy().hasHeightForWidth())
+        self.pushButtonStartAcq.setSizePolicy(sizePolicy)
         self.pushButtonStartAcq.setMinimumSize(QSize(50, 50))
         self.pushButtonStartAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStartAcq.setBaseSize(QSize(50, 50))
@@ -657,8 +794,8 @@ class Ui_MainWindow(object):
 
         self.pushButtonStopAcq = QPushButton(self.frame_3)
         self.pushButtonStopAcq.setObjectName(u"pushButtonStopAcq")
-        sizePolicy1.setHeightForWidth(self.pushButtonStopAcq.sizePolicy().hasHeightForWidth())
-        self.pushButtonStopAcq.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.pushButtonStopAcq.sizePolicy().hasHeightForWidth())
+        self.pushButtonStopAcq.setSizePolicy(sizePolicy)
         self.pushButtonStopAcq.setMinimumSize(QSize(50, 50))
         self.pushButtonStopAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStopAcq.setBaseSize(QSize(50, 50))
@@ -678,7 +815,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.horizontalLayout_2)
 
 
-        self.gridLayout_6.addWidget(self.frame_3, 2, 0, 1, 2)
+        self.verticalLayout_12.addWidget(self.frame_3)
 
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
@@ -702,8 +839,8 @@ class Ui_MainWindow(object):
         self.checkBoxSave = QCheckBox(self.tab_5)
         self.checkBoxSave.setObjectName(u"checkBoxSave")
         self.checkBoxSave.setEnabled(True)
-        sizePolicy1.setHeightForWidth(self.checkBoxSave.sizePolicy().hasHeightForWidth())
-        self.checkBoxSave.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.checkBoxSave.sizePolicy().hasHeightForWidth())
+        self.checkBoxSave.setSizePolicy(sizePolicy)
         self.checkBoxSave.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
 "QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
         self.checkBoxSave.setChecked(False)
@@ -800,7 +937,104 @@ class Ui_MainWindow(object):
 
         self.tabWidget.addTab(self.tab_6, "")
 
-        self.gridLayout_6.addWidget(self.tabWidget, 3, 0, 2, 2)
+        self.verticalLayout_12.addWidget(self.tabWidget)
+
+
+        self.gridLayout_6.addLayout(self.verticalLayout_12, 0, 0, 1, 1)
+
+        self.frame_2 = QFrame(self.centralwidget)
+        self.frame_2.setObjectName(u"frame_2")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
+        self.frame_2.setSizePolicy(sizePolicy2)
+        self.frame_2.setMinimumSize(QSize(739, 0))
+        self.frame_2.setFrameShape(QFrame.Panel)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.gridLayout_4 = QGridLayout(self.frame_2)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.tabWidget_left = QTabWidget(self.frame_2)
+        self.tabWidget_left.setObjectName(u"tabWidget_left")
+        self.tabWidget_left.setFont(font)
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.gridLayout_2 = QGridLayout(self.tab)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.mpl_widget_left = QWidget(self.tab)
+        self.mpl_widget_left.setObjectName(u"mpl_widget_left")
+        sizePolicy2.setHeightForWidth(self.mpl_widget_left.sizePolicy().hasHeightForWidth())
+        self.mpl_widget_left.setSizePolicy(sizePolicy2)
+        self.mpl_widget_left.setMinimumSize(QSize(518, 451))
+        self.mpl_widget_left.setAutoFillBackground(False)
+        self.mpl_widget_left.setStyleSheet(u"background-color: rgb(53,53,53)")
+
+        self.gridLayout_2.addWidget(self.mpl_widget_left, 0, 0, 1, 1)
+
+        self.tabWidget_left.addTab(self.tab, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.verticalLayout_8 = QVBoxLayout(self.tab_2)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.formLayout_2 = QFormLayout()
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.label_13 = QLabel(self.tab_2)
+        self.label_13.setObjectName(u"label_13")
+
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_13)
+
+        self.spinBox_left_index = QSpinBox(self.tab_2)
+        self.spinBox_left_index.setObjectName(u"spinBox_left_index")
+        self.spinBox_left_index.setMaximumSize(QSize(61, 16777215))
+        self.spinBox_left_index.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_left_index.setMinimum(0)
+        self.spinBox_left_index.setMaximum(1599)
+        self.spinBox_left_index.setValue(1000)
+
+        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.spinBox_left_index)
+
+
+        self.verticalLayout_8.addLayout(self.formLayout_2)
+
+        self.tabWidget_left.addTab(self.tab_2, "")
+
+        self.gridLayout_4.addWidget(self.tabWidget_left, 0, 0, 1, 1)
+
+        self.tabWidget_right = QTabWidget(self.frame_2)
+        self.tabWidget_right.setObjectName(u"tabWidget_right")
+        self.tab_3 = QWidget()
+        self.tab_3.setObjectName(u"tab_3")
+        self.gridLayout_3 = QGridLayout(self.tab_3)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.mpl_widget_right = QWidget(self.tab_3)
+        self.mpl_widget_right.setObjectName(u"mpl_widget_right")
+        sizePolicy2.setHeightForWidth(self.mpl_widget_right.sizePolicy().hasHeightForWidth())
+        self.mpl_widget_right.setSizePolicy(sizePolicy2)
+        self.mpl_widget_right.setMinimumSize(QSize(518, 451))
+        self.mpl_widget_right.setAutoFillBackground(False)
+        self.mpl_widget_right.setStyleSheet(u"background-color: rgb(53,53,53)")
+
+        self.gridLayout_3.addWidget(self.mpl_widget_right, 0, 0, 1, 1)
+
+        self.tabWidget_right.addTab(self.tab_3, "")
+        self.tab_4 = QWidget()
+        self.tab_4.setObjectName(u"tab_4")
+        self.tabWidget_right.addTab(self.tab_4, "")
+
+        self.gridLayout_4.addWidget(self.tabWidget_right, 0, 1, 1, 1)
+
+        self.mpl_widget_spectra = QWidget(self.frame_2)
+        self.mpl_widget_spectra.setObjectName(u"mpl_widget_spectra")
+        sizePolicy2.setHeightForWidth(self.mpl_widget_spectra.sizePolicy().hasHeightForWidth())
+        self.mpl_widget_spectra.setSizePolicy(sizePolicy2)
+        self.mpl_widget_spectra.setMinimumSize(QSize(1061, 281))
+        self.mpl_widget_spectra.setAutoFillBackground(False)
+        self.mpl_widget_spectra.setStyleSheet(u"background-color: rgb(53,53,53)")
+
+        self.gridLayout_4.addWidget(self.mpl_widget_spectra, 1, 0, 1, 2)
+
+
+        self.gridLayout_6.addWidget(self.frame_2, 0, 1, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -840,10 +1074,13 @@ class Ui_MainWindow(object):
 
         self.comboBoxSlow.setCurrentIndex(1)
         self.comboBoxFixed.setCurrentIndex(2)
+        self.tabWidget_2.setCurrentIndex(0)
+        self.comboBoxRecNRB.setCurrentIndex(0)
+        self.comboBox_nrb_slow_axis.setCurrentIndex(1)
+        self.comboBox_nrb_fixed_axis.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         self.tabWidget_left.setCurrentIndex(0)
         self.tabWidget_right.setCurrentIndex(0)
-        self.comboBoxRecNRB.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -881,17 +1118,13 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Step Size (um)", None))
-        self.tabWidget_left.setTabText(self.tabWidget_left.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Image", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Frequency Index", None))
-        self.tabWidget_left.setTabText(self.tabWidget_left.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Settings", None))
-        self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Image", None))
-        self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"Settings", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Post-Image Z  (um)", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Imaging Delay (mm)", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Before/After", None))
-        self.comboBoxRecNRB.setItemText(0, QCoreApplication.translate("MainWindow", u"Before", None))
-        self.comboBoxRecNRB.setItemText(1, QCoreApplication.translate("MainWindow", u"After", None))
-        self.comboBoxRecNRB.setItemText(2, QCoreApplication.translate("MainWindow", u"Both", None))
+        self.comboBoxRecNRB.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
+        self.comboBoxRecNRB.setItemText(1, QCoreApplication.translate("MainWindow", u"Before", None))
+        self.comboBoxRecNRB.setItemText(2, QCoreApplication.translate("MainWindow", u"After", None))
+        self.comboBoxRecNRB.setItemText(3, QCoreApplication.translate("MainWindow", u"Both", None))
 
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Collect Dark", None))
         self.checkBoxCollectDark.setText("")
@@ -902,6 +1135,33 @@ class Ui_MainWindow(object):
         self.label_20.setText(QCoreApplication.translate("MainWindow", u"Early-Time NRB", None))
         self.checkBoxCollectNRB_Early.setText("")
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"Delay (mm)", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_7), QCoreApplication.translate("MainWindow", u"NRB/Dark Collection", None))
+        self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Fast Axis", None))
+        self.label_31.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
+        self.comboBox_nrb_fast_axis.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
+        self.comboBox_nrb_fast_axis.setItemText(1, QCoreApplication.translate("MainWindow", u"Y", None))
+        self.comboBox_nrb_fast_axis.setItemText(2, QCoreApplication.translate("MainWindow", u"Z", None))
+
+        self.label_32.setText(QCoreApplication.translate("MainWindow", u"Start (um)", None))
+        self.label_33.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
+        self.label_34.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
+        self.groupBox_5.setTitle(QCoreApplication.translate("MainWindow", u"Slow Axis", None))
+        self.label_36.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
+        self.comboBox_nrb_slow_axis.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
+        self.comboBox_nrb_slow_axis.setItemText(1, QCoreApplication.translate("MainWindow", u"Y", None))
+        self.comboBox_nrb_slow_axis.setItemText(2, QCoreApplication.translate("MainWindow", u"Z", None))
+
+        self.label_37.setText(QCoreApplication.translate("MainWindow", u"Start (um)", None))
+        self.label_38.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
+        self.label_39.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
+        self.groupBox_6.setTitle(QCoreApplication.translate("MainWindow", u"Fixed Axis", None))
+        self.label_41.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
+        self.comboBox_nrb_fixed_axis.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
+        self.comboBox_nrb_fixed_axis.setItemText(1, QCoreApplication.translate("MainWindow", u"Y", None))
+        self.comboBox_nrb_fixed_axis.setItemText(2, QCoreApplication.translate("MainWindow", u"Z", None))
+
+        self.label_42.setText(QCoreApplication.translate("MainWindow", u"Position (um)", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_8), QCoreApplication.translate("MainWindow", u"Params", None))
         self.pushButtonStartAcq.setText(QCoreApplication.translate("MainWindow", u"Start", None))
         self.pushButtonStopAcq.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.label_30.setText(QCoreApplication.translate("MainWindow", u"Save?", None))
@@ -921,5 +1181,10 @@ class Ui_MainWindow(object):
 "Probe Power = 21 mW\n"
 "SC Power = 11 mW", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_6), QCoreApplication.translate("MainWindow", u"Memo", None))
+        self.tabWidget_left.setTabText(self.tabWidget_left.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Image", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Frequency Index", None))
+        self.tabWidget_left.setTabText(self.tabWidget_left.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Image", None))
+        self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"Settings", None))
     # retranslateUi
 

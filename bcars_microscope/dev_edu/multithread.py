@@ -27,6 +27,7 @@ class WorkerSignals(QObject):
         int indicating % progress
 
     '''
+    started = Signal()
     finished = Signal()
     error = Signal(tuple)
     result = Signal(object)
@@ -69,6 +70,7 @@ class Worker(QRunnable):
 
         # Retrieve args/kwargs here; and fire processing using them
         try:
+            self.signals.started.emit()
             result = self.fn(*self.args, **self.kwargs)
         except:
             traceback.print_exc()
