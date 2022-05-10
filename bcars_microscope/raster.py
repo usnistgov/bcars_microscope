@@ -6,7 +6,8 @@ Started
 
 Not Started
 -----------
-TODO: Enable Z-stack
+TODO: Redo check-save messagebox text to be clearer
+TODO: Z-stack related meta data
 TODO: Save H5 files
 TODO: Set velocities and acceleration of ESP and Nanostage
 TODO: Alert if memo untouched
@@ -20,6 +21,8 @@ import sys
 import traceback
 from timeit import default_timer as timer
 from time import sleep
+
+import h5py
 
 import matplotlib as mpl
 import matplotlib.style
@@ -69,6 +72,7 @@ from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
 from bcars_microscope.multithread import Worker
 from bcars_microscope.mpl import MplCanvas
+from bcars_microscope.h5 import save_location_is_valid
 from pipython import pitools
 
 
@@ -273,9 +277,10 @@ class MainWindow(QMainWindow):
         self._update_nrb_scan_params()
 
     def select_save_file(self):
-        fname,_ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)')
+        fname,_ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)', options=QFileDialog.DontConfirmOverwrite)
         if fname:
             self.ui.lineEditPathFileName.setText(fname)
+
 
 
     @property
@@ -367,14 +372,14 @@ class MainWindow(QMainWindow):
                     self.ui.mpl_canvas_left.cbar.remove()
                     self.ui.mpl_canvas_left.cbar = None
                 try:
-                    minner = self._midscan_img_left[1:,:self._acq_ct].min()
-                    img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[2:,:], vmin=minner)  # Trim off first row
+                    minner = self._midscan_img_left[:self._acq_ct,2:].min()
+                    img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[:,2:], vmin=minner)  # Trim off first col
                     self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
                 except Exception as e:
                     print('-------------ERROR-----------')
                     print(traceback.format_exc())
                     print(self._midscan_img_left.shape)
-                    print(self._midscan_img_left[1:,:self._acq_ct])
+                    # print(self._midscan_img_left[1:,:self._acq_ct])
                     print(self._acq_ct)
 
 
@@ -427,6 +432,37 @@ class MainWindow(QMainWindow):
     def start_acquisition(self):
 
         self.double_check_save()
+        if self.ui.checkBoxSave.isChecked():
+            pfname = self.ui.lineEditPathFileName.text()
+            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())
+            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname
+                        
+            try:
+                pth,fname = pfname.rsplit('/', 1)
+            except:
+                pth=None
+                fname=None
+
+            save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname, dsetname)
+            if not save_loc_valid:
+                msg = QMessageBox(self)
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText('Save location is not valid.')
+                msg.setInformativeText(save_loc_str)
+                msg.setWindowTitle('Save location not valid')
+                msg.setStandardButtons(QMessageBox.Ok)
+                # msg.setButtonText(0, 'A')
+                msg.setDefaultButton(QMessageBox.Ok)
+                out = msg.exec()
+                del pth, fname, grpname, dsetname
+                return
+            else:
+                del pth, fname
+                self.save_info = {'save':True, 'pfname':pfname, 'groupname':grpname, 'dsetname':dsetname}
+        else:
+            self.save_info = {'save':False, 'pfname':None, 'groupname':None, 'dsetname':None}
+
+
         devs, not_acq, status_str = self.is_ready()
         print(status_str)
         if not (devs & not_acq):  # System is NOT ready to acquire
@@ -514,128 +550,156 @@ class MainWindow(QMainWindow):
         
         n_image_steps = len(img_list)  # may not be true if there are multiple fixed axes
         
-
-        fname = self.ui.lineEditPathFileName.text()
-        gname = self.ui.lineEditGroupName.text()
-        dset_name = self.ui.lineEditDatasetName.text()
-
-        # TODO: Check validity of filename, groupname, and dataset name
-
         # TODO: Open HDF file
+        try:
+            if self.save_info['save'] == True:
+                fid = h5py.File(self.save_info['pfname'],'a')
+                grp = fid.create_group(self.save_info['groupname'])
+            else:
+                fid = None
+                grp = None
+            
+            for iter_imgs, img_inst in enumerate(img_list):
+                # TODO: Open dataset
+                # TODO: Check if actually saving
+                print('Data will be saved to group: {}'.format(self.save_info['groupname']))
 
-        for iter_imgs, img_inst in enumerate(img_list):
-            # TODO: Write wavegen program 
-            # name, nanoscan_params_list, delay
-
-            # Plotting setup
-            self._midscan_img_left = np.zeros((img_inst.ns_list[0].n_steps,img_inst.ns_list[1].n_steps), dtype=np.uint16)
-
-            # Delay position
-            self.devices['DelayStage'].set_pos(img_inst.delay)
-
-            # CCD Preparation
-            self.devices['CCD'].sdk.PrepareAcquisition()
-
-            # NANOSTAGE SETUP
-            self.devices['NanoStage'].WAV_LIN(table=axis_str_to_num[img_inst.ns_list[0].axis],
-                                              firstpoint=0, numpoints=img_inst.ns_list[0].n_steps,
-                                              append='X', speedupdown=0,
-                                              amplitude=img_inst.ns_list[0].stop-img_inst.ns_list[0].start,
-                                              offset=img_inst.ns_list[0].start,
-                                              seglength=img_inst.ns_list[0].n_steps)
-
-            # Make sure delay stage is done moving
-            self.devices['DelayStage'].wait_till_done(n_iter=10, pause=1, let_settle=True, settle_pause=0.25)
-
-            # 3. Move Slow, Fast, then Fixed
-            self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis:img_inst.ns_list[1].start})
-            self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
-            self.devices['NanoStage'].MOV({img_inst.ns_list[2].axis:img_inst.ns_list[2].start})
-
-            self._acq_ct = -1
-            for num in range(img_inst.ns_list[1].n_steps):
-                self._acq_ct += 1
-                tmr_per_loop = timer()
-                if num == 0: # 4. Start if 1st iter
-                    self.devices['CCD'].start_acquisition()
-                    sleep(0.001)
-
-                # 5. Wait
-                # maybe insert some sort of wait
-                # sleep(0.1)
-
-                # 6. WGO
-                self.devices['NanoStage'].WGO(1,mode=9)
-
-                # 7. Wait on Stage movement
-                tmr = timer()
-                sleep((2+img_inst.ns_list[0].n_steps)*self.devices['CCD'].net_acquisition_time)  # Wait an extra 2 pixels worth
-                # WaitOnTarget takes waaaaaay too long and is not stable
-                # pitools.waitontarget(self.devices['NanoStage'], timeout=10,
-                #                      predelay=self.acq_params['Raster.Fast.Steps']*pixel_time*1, polldelay=0.01)
-                tmr -= timer()
-
-                print('Waited {} sec'.format(-tmr))
-
-                # 8. Get new images
-                ret_code, n_images, first_img, last_img = self.devices['CCD'].get_num_new_images()
-                print('New Images: {}'.format(n_images))
-                (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
-                if n_images < img_inst.ns_list[0].n_steps:
-                    print('TOO FEW IMAGES')
-                    img_arr = np.zeros((img_inst.ns_list[0].n_steps,1600))
-                else:
-                    img_arr = arr.reshape((n_images, -1))
-                    # print(arr.dtype)
-
-                # 9. Write slice
-
-                # 10. Graphical stuff
-                # print('Arr==0: {}'.format((img_arr[1:1+self._n_spectra_to_collect,:]==0).sum()))
-
-                # Idexes of evenly spaces spectra in a single line scan
-                sp_idxs = np.arange(2,img_inst.ns_list[0].n_steps-2+1,
-                                    (img_inst.ns_list[0].n_steps-3)//(self._n_spectra_to_collect-1)).tolist()
-                self._midscan_spectra = img_arr[sp_idxs,:]
-
-                # print('Img_left shape:{}'.format(self._midscan_img_left.shape))
-                # print('Img Arr Shape: {}'.format(img_arr.shape))
-
-                self._midscan_img_left[:,num] = 1*img_arr[:,self.ui.spinBox_left_index.value()]
+                # Delay position
+                self.devices['DelayStage'].set_pos(img_inst.delay)
 
 
-                # 11. Move slow then fast to next position
-                if (num+1) < img_inst.ns_list[1].n_steps:
-                    if np.abs(img_inst.ns_list[1].step_size) > 0.0:
-                        next_pos = img_inst.ns_list[1].step_vec[num+1]
-                        self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis:next_pos})
-                    if np.abs(img_inst.ns_list[0].step_size) > 0.0:
-                        self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
+                # NANOSTAGE SETUP
+                self.devices['NanoStage'].WAV_LIN(table=axis_str_to_num[img_inst.ns_list[0].axis],
+                                                firstpoint=0, numpoints=img_inst.ns_list[0].n_steps,
+                                                append='X', speedupdown=0,
+                                                amplitude=img_inst.ns_list[0].stop-img_inst.ns_list[0].start,
+                                                offset=img_inst.ns_list[0].start,
+                                                seglength=img_inst.ns_list[0].n_steps)
 
-                # Check for Stop Signal
-                # QtCore.QCoreApplication.processEvents()
-                if self.ui.pushButtonStopAcq.isChecked():
-                    print('STOPPING...')
-                    self.ui.pushButtonStopAcq.setChecked(False)
-                    break
+                # Make sure delay stage is done moving
+                self.devices['DelayStage'].wait_till_done(n_iter=10, pause=1, let_settle=True, settle_pause=0.25)
 
-                tmr_per_loop -= timer()
-                print('Time per loop: {} sec'.format(-tmr_per_loop))
-                progress_callback.emit(num+1, img_inst.ns_list[1].n_steps, 'Image columns complete: ')
-                    # self.devices['CCD'].stop_acquisition()
-            # -- END LOOP
-            # 12. Move Z to end position
-            self.devices['NanoStage'].MOV({'Z':self.ui.spinBox_post_image_z_pos.value()})
+                n_fixed_steps = img_inst.ns_list[2].n_steps
+                fixed_step_vec = img_inst.ns_list[2].step_vec
 
-            # 13. Abort CCD and Free memory
-            self.devices['CCD'].stop_acquisition()
-            self.devices['CCD'].free_memory()
-            # 14. Close H5 file
+                for num_z_stack in range(n_fixed_steps):
+                    if self.save_info['save'] == True:
+                        if n_fixed_steps == 1:
+                            dset_name = img_inst.name + '_{}'.format(self.ui.spinBoxDatasetIndex.value())
+                        else:
+                            dset_name = img_inst.name + '_z{}_{}'.format(num_z_stack, self.ui.spinBoxDatasetIndex.value())
+                        dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps,1600),
+                                                dtype=np.uint16)
+                    else:
+                        dset = None
+                    
+                    curr_fixed_pos = fixed_step_vec[num_z_stack]
 
-            progress_callback.emit(iter_imgs+1, n_image_steps, 'Imaging steps: ')
+                    # Plotting setup
+                    self._midscan_img_left = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
 
-        # This is now in thread finished fcn
-        # self.devices['running'] = False
+
+                    # CCD Preparation
+                    # TODO: consider moving outside of loop
+                    self.devices['CCD'].sdk.PrepareAcquisition()
+
+                    # 3. Move Slow, Fast, then Fixed
+                    self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis:img_inst.ns_list[1].start})
+                    self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
+                    self.devices['NanoStage'].MOV({img_inst.ns_list[2].axis:curr_fixed_pos})
+
+                    self._acq_ct = -1
+                    for num in range(img_inst.ns_list[1].n_steps):
+                        self._acq_ct += 1
+                        tmr_per_loop = timer()
+                        if num == 0: # 4. Start if 1st iter
+                            self.devices['CCD'].start_acquisition()
+                            sleep(0.001)
+
+                        # 5. Wait
+                        # maybe insert some sort of wait
+                        # sleep(0.1)
+
+                        # 6. WGO
+                        self.devices['NanoStage'].WGO(1,mode=9)
+
+                        # 7. Wait on Stage movement
+                        tmr = timer()
+                        sleep((2+img_inst.ns_list[0].n_steps)*self.devices['CCD'].net_acquisition_time)  # Wait an extra 2 pixels worth
+                        # WaitOnTarget takes waaaaaay too long and is not stable
+                        # pitools.waitontarget(self.devices['NanoStage'], timeout=10,
+                        #                      predelay=self.acq_params['Raster.Fast.Steps']*pixel_time*1, polldelay=0.01)
+                        tmr -= timer()
+
+                        print('Waited {} sec'.format(-tmr))
+
+                        # 8. Get new images
+                        ret_code, n_images, first_img, last_img = self.devices['CCD'].get_num_new_images()
+                        print('New Images: {}'.format(n_images))
+                        (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
+                        if n_images < img_inst.ns_list[0].n_steps:
+                            print('TOO FEW IMAGES')
+                            img_arr = np.zeros((img_inst.ns_list[0].n_steps,1600))
+                        else:
+                            img_arr = arr.reshape((n_images, -1))
+                            # print(arr.dtype)
+                        
+                        if dset is not None:
+                            dset[num,:,:] = 1*img_arr
+                        # 9. Write slice
+
+                        # 10. Graphical stuff
+                        # print('Arr==0: {}'.format((img_arr[1:1+self._n_spectra_to_collect,:]==0).sum()))
+
+                        # Idexes of evenly spaces spectra in a single line scan
+                        sp_idxs = np.arange(2,img_inst.ns_list[0].n_steps-2+1,
+                                            (img_inst.ns_list[0].n_steps-3)//(self._n_spectra_to_collect-1)).tolist()
+                        self._midscan_spectra = img_arr[sp_idxs,:]
+
+                        # print('Img_left shape:{}'.format(self._midscan_img_left.shape))
+                        # print('Img Arr Shape: {}'.format(img_arr.shape))
+
+                        self._midscan_img_left[num,:] = 1*img_arr[:,self.ui.spinBox_left_index.value()]
+
+
+                        # 11. Move slow then fast to next position
+                        if (num+1) < img_inst.ns_list[1].n_steps:
+                            if np.abs(img_inst.ns_list[1].step_size) > 0.0:
+                                next_pos = img_inst.ns_list[1].step_vec[num+1]
+                                self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis:next_pos})
+                            if np.abs(img_inst.ns_list[0].step_size) > 0.0:
+                                self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
+
+                        # Check for Stop Signal
+                        # QtCore.QCoreApplication.processEvents()
+                        if self.ui.pushButtonStopAcq.isChecked():
+                            print('STOPPING...')
+                            self.ui.pushButtonStopAcq.setChecked(False)
+                            break
+
+                        tmr_per_loop -= timer()
+                        print('Time per loop: {} sec'.format(-tmr_per_loop))
+                        progress_callback.emit(num+1, img_inst.ns_list[1].n_steps, 'Image columns complete: ')
+                            # self.devices['CCD'].stop_acquisition()
+                    # -- END LOOP
+                    # 12. Move Z to end position
+                    self.devices['NanoStage'].MOV({'Z':self.ui.spinBox_post_image_z_pos.value()})
+
+                    # 13. Abort CCD and Free memory
+                    self.devices['CCD'].stop_acquisition()
+                    self.devices['CCD'].free_memory()
+                    # 14. Close H5 file
+                    progress_callback.emit(iter_imgs+1, n_image_steps, 'Fixed-Axis Imaging steps: ')
+
+                progress_callback.emit(iter_imgs+1, n_image_steps, 'Imaging steps: ')
+        except Exception as e:
+            print(traceback.format_exc())
+        finally:
+            if fid is not None:
+                print('Closing HDF5 file.')
+                fid.close()
+            # This is now in thread finished fcn
+            # self.devices['running'] = False
 
     def progress_fn(self, num, num_of, desc):
         print('{} {} / {}'.format(desc, num, num_of))
@@ -676,6 +740,7 @@ if __name__ == '__main__':
         # print('Meta data:')
         # print(window.meta)
 
+        window.ui.spinBox_slow_steps.setValue(12)
         window.show()
 
         app.exec_()

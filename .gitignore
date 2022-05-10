@@ -78,3 +78,5 @@ Examples/.ipynb_checkpoints
 
 # Qt for Python Builds
 .qt_for_python/*
+
+*.h5
