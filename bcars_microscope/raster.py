@@ -6,21 +6,17 @@ Started
 
 Not Started
 -----------
+TODO: Spectral axis selectable and calibratable to wavelength or wavenumber
 TODO: Redo check-save messagebox text to be clearer
-TODO: Z-stack related meta data
-TODO: Save H5 files
 TODO: Set velocities and acceleration of ESP and Nanostage
-TODO: Alert if memo untouched
-TODO: Iterate index if previous image saved
-TODO: Check file and dataset for saves
-TODO: Check status of before/after nrb collection if checkboxes are checked as is save
+TODO: H5 file meta data for Laser
 """
-
 
 import sys
 import traceback
 from timeit import default_timer as timer
 from time import sleep
+import datetime
 
 import h5py
 
@@ -68,6 +64,8 @@ from ui.ui_bcars2_raster import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
+import debugpy
+
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
 from bcars_microscope.multithread import Worker
@@ -101,10 +99,17 @@ class ImageParams:
         self.groupname = groupname
         self.save = save
 
+    @property
+    def meta(self):
+        output = {}
+        for ns in self.ns_list:
+            output.update(ns.meta)
+        return output
+
 class NanoScanAxisParams:
     """Container describing single-axis NanoScan (stage) settings (for a single image)
     """    
-    def __init__(self, axis, start, stop, n_steps, name_prefix=''):
+    def __init__(self, axis, start, stop, n_steps, prefix=''):
         """_summary_
 
         Parameters
@@ -117,7 +122,7 @@ class NanoScanAxisParams:
             Stopping position
         n_steps : int
             Number of steps (minimum 2)
-        name_prefix : str
+        prefix : str
             Prefix for parameter names such as "Raster.Fast." that will be used for metadata later.
         """        
         assert axis.upper() in ['X', 'Y', 'Z'], 'Axis need be specified as X, Y, or Z'
@@ -125,7 +130,7 @@ class NanoScanAxisParams:
         self.start = start
         self.stop = stop
         self.n_steps = n_steps
-        self.prefix = name_prefix
+        self.prefix = prefix
 
     @property
     def step_vec(self):
@@ -266,6 +271,7 @@ class MainWindow(QMainWindow):
         self.ui.spinBox_nrb_fixed_start.editingFinished.connect(self._update_nrb_scan_params)
 
         self.ui.pushButtonBrowseFiles.pressed.connect(self.select_save_file)
+        self.ui.plainTextEditMemo.textChanged.connect(self.memo_changed_fcn)
 
         # Variables
         self.nanoscan_fast_params = None
@@ -282,6 +288,9 @@ class MainWindow(QMainWindow):
         self._update_step_sizes()
         self._update_nrb_scan_params()
 
+    def memo_changed_fcn(self):
+        self.memo_altered_bool = True
+        
     def select_save_file(self):
         fname,_ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)', options=QFileDialog.DontConfirmOverwrite)
         if fname:
@@ -308,18 +317,18 @@ class MainWindow(QMainWindow):
                                               start=self.ui.spinBox_nrb_fast_start.value(),
                                               stop=self.ui.spinBox_nrb_fast_stop.value(),
                                               n_steps=self.ui.spinBox_nrb_fast_steps.value(),
-                                              name_prefix='Raster.NRB.Fast.')
+                                              prefix='Raster.NRB.Fast.')
         self.nanoscan_nrb_slow_params = NanoScanAxisParams(axis=self.ui.comboBox_nrb_slow_axis.currentText(),
                                               start=self.ui.spinBox_nrb_slow_start.value(),
                                               stop=self.ui.spinBox_nrb_slow_stop.value(),
                                               n_steps=self.ui.spinBox_nrb_slow_steps.value(),
-                                              name_prefix='Raster.NRB.Slow.')
+                                              prefix='Raster.NRB.Slow.')
 
         self.nanoscan_nrb_fixed_params = NanoScanAxisParams(axis=self.ui.comboBox_nrb_fixed_axis.currentText(),
                                               start=self.ui.spinBox_nrb_fixed_start.value(),
                                               stop=self.ui.spinBox_nrb_fixed_start.value(),
                                               n_steps=1,
-                                              name_prefix='Raster.NRB.Fixed.')
+                                              prefix='Raster.NRB.Fixed.')
 
     def _update_step_sizes(self):
         sender = self.sender()
@@ -330,7 +339,7 @@ class MainWindow(QMainWindow):
                                               start=self.ui.spinBox_fast_start.value(),
                                               stop=self.ui.spinBox_fast_stop.value(),
                                               n_steps=self.ui.spinBox_fast_steps.value(),
-                                              name_prefix='Raster.Fast.')
+                                              prefix='Raster.Fast.')
             self.ui.spinBox_fast_stepsize.setValue(self.nanoscan_fast_params.step_size)
 
         if sender in [self.ui.spinBox_slow_start, self.ui.spinBox_slow_stop, self.ui.spinBox_slow_steps, None]:
@@ -338,7 +347,7 @@ class MainWindow(QMainWindow):
                                               start=self.ui.spinBox_slow_start.value(),
                                               stop=self.ui.spinBox_slow_stop.value(),
                                               n_steps=self.ui.spinBox_slow_steps.value(),
-                                              name_prefix='Raster.Slow.')
+                                              prefix='Raster.Slow.')
             self.ui.spinBox_slow_stepsize.setValue(self.nanoscan_slow_params.step_size)
 
         if sender in [self.ui.spinBox_fixed_start, self.ui.spinBox_fixed_stop, self.ui.spinBox_fixed_steps, None]:
@@ -346,7 +355,7 @@ class MainWindow(QMainWindow):
                                               start=self.ui.spinBox_fixed_start.value(),
                                               stop=self.ui.spinBox_fixed_stop.value(),
                                               n_steps=self.ui.spinBox_fixed_steps.value(),
-                                              name_prefix='Raster.Fixed.')
+                                              prefix='Raster.Fixed.')
             self.ui.spinBox_fixed_stepsize.setValue(self.nanoscan_fixed_params.step_size)
 
     def _wait_till_not_running(self, predelay=1, delay_bw_polls=1):
@@ -360,8 +369,12 @@ class MainWindow(QMainWindow):
         self._midscan_plot_ref = None  # Right-side image array
         self._midscan_img_left = None  # Left-side image array
         self._acq_ct = -1  # How many image columns have been acquired
+        self.memo_altered_bool = False  # Has the memo been changed
 
     def _midscan_update_plots(self):
+        rows_to_skip = 1
+        cols_to_skip = 2
+
         if self._acq_ct > 0:
             if self._midscan_spectra is not None:
                 if self._midscan_plot_ref is None:
@@ -378,9 +391,9 @@ class MainWindow(QMainWindow):
                     self.ui.mpl_canvas_left.cbar.remove()
                     self.ui.mpl_canvas_left.cbar = None
                 try:
-                    if self._midscan_img_left[:self._acq_ct,2:].size > 0:
-                        minner = self._midscan_img_left[:self._acq_ct,2:].min()
-                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[:,2:], vmin=minner)  # Trim off first col
+                    if self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].size > 0:
+                        minner = self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].min()
+                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[rows_to_skip:,cols_to_skip:], vmin=minner)  # Trim off first col
                         self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
                 except Exception as e:
                     print('-------------ERROR-----------')
@@ -474,6 +487,18 @@ class MainWindow(QMainWindow):
                 return
             else:
                 del pth, fname
+
+            if not self.memo_altered_bool:
+                msg = QMessageBox(self)
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText('The memo has not been changed for this acquisition. Continue?')
+                msg.setWindowTitle('Memo not updated')
+                msg.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+                # msg.setButtonText(0, 'A')
+                msg.setDefaultButton(QMessageBox.Yes)
+                out = msg.exec()
+                if out == QMessageBox.No:
+                    return
                 
         devs, not_acq, status_str = self.is_ready()
         print(status_str)
@@ -544,7 +569,6 @@ class MainWindow(QMainWindow):
         # self.timer_update_plots.setInterval(1.5 * pixel_time * self.acq_params['Raster.NRB.Fast.Steps'])
         self.timer_update_plots.setInterval(1)
 
-        # TODO: Should we setup timer in other thread? Probably not
         # Start QTimer for plotting
         self.timer_update_plots.start()
 
@@ -561,26 +585,27 @@ class MainWindow(QMainWindow):
         self.devices['running'] = False
 
     def _data_collect_thread_run(self, img_list, progress_callback):
-        # TODO: check every location that sets running to true
+        try:
+            debugpy.debug_this_thread()
+        except ConnectionRefusedError:
+            pass
+
         self.devices['running'] = True  # Need this for timing
         
         axis_str_to_num = {'X':1, 'Y':2, 'Z': 3}
         
         n_image_steps = len(img_list)  # may not be true if there are multiple fixed axes
         
-        # TODO: Open HDF file
         try:
             if img_list[0].save == True:
                 fid = h5py.File(img_list[0].path_filename,'a')
                 grp = fid.create_group(img_list[0].groupname)
+                print('Data will be saved to group: {}'.format(img_list[0].groupname))
             else:
                 fid = None
                 grp = None
             
             for iter_imgs, img_inst in enumerate(img_list):
-                # TODO: Open dataset
-                # TODO: Check if actually saving
-                print('Data will be saved to group: {}'.format(img_list[0].groupname))
 
                 # Delay position
                 self.devices['DelayStage'].set_pos(img_inst.delay)
@@ -601,6 +626,9 @@ class MainWindow(QMainWindow):
                 fixed_step_vec = img_inst.ns_list[2].step_vec
 
                 for num_z_stack in range(n_fixed_steps):
+
+                    curr_fixed_pos = fixed_step_vec[num_z_stack]
+
                     if img_inst.save == True:
                         if n_fixed_steps == 1:
                             dset_name = img_inst.name
@@ -608,11 +636,16 @@ class MainWindow(QMainWindow):
                             dset_name = img_inst.name + '_z{}'.format(num_z_stack)
                         dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps,1600),
                                                 dtype=np.uint16)
+                        # WRITE ATTRIBUTES
+                        dset.attrs.update(img_inst.meta)
+                        dset.attrs.update(self.devices['CCD'].meta)
+                        dset.attrs['TimeStage.Position'] = img_inst.delay
+                        dset.attrs['Memo'] = self.ui.plainTextEditMemo.toPlainText()
+                        dset.attrs['Date'] = '{}'.format(datetime.datetime.now())
+                        dset.attrs[img_inst.ns_list[2].prefix + 'Position'] = curr_fixed_pos
                     else:
                         dset = None
                     
-                    curr_fixed_pos = fixed_step_vec[num_z_stack]
-
                     # Plotting setup
                     self._midscan_img_left = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
 

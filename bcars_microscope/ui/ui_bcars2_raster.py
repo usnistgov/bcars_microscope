@@ -930,10 +930,10 @@ class Ui_MainWindow(object):
         self.tab_6.setObjectName(u"tab_6")
         self.gridLayout_5 = QGridLayout(self.tab_6)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.plainTextEdit = QPlainTextEdit(self.tab_6)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
+        self.plainTextEditMemo = QPlainTextEdit(self.tab_6)
+        self.plainTextEditMemo.setObjectName(u"plainTextEditMemo")
 
-        self.gridLayout_5.addWidget(self.plainTextEdit, 0, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.plainTextEditMemo, 0, 0, 1, 1)
 
         self.tabWidget.addTab(self.tab_6, "")
 
@@ -1174,7 +1174,7 @@ class Ui_MainWindow(object):
         self.label_29.setText(QCoreApplication.translate("MainWindow", u"Group Name", None))
         self.lineEditGroupName.setText(QCoreApplication.translate("MainWindow", u"/BCARSImage", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), QCoreApplication.translate("MainWindow", u"Save", None))
-        self.plainTextEdit.setPlainText(QCoreApplication.translate("MainWindow", u"Sample:\n"
+        self.plainTextEditMemo.setPlainText(QCoreApplication.translate("MainWindow", u"Sample:\n"
 "\n"
 "Notes:\n"
 "\n"

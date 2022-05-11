@@ -1927,7 +1927,7 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="QPlainTextEdit" name="plainTextEdit">
+           <widget class="QPlainTextEdit" name="plainTextEditMemo">
             <property name="plainText">
              <string>Sample:
 
