@@ -378,9 +378,10 @@ class MainWindow(QMainWindow):
                     self.ui.mpl_canvas_left.cbar.remove()
                     self.ui.mpl_canvas_left.cbar = None
                 try:
-                    minner = self._midscan_img_left[:self._acq_ct,2:].min()
-                    img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[:,2:], vmin=minner)  # Trim off first col
-                    self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
+                    if self._midscan_img_left[:self._acq_ct,2:].size > 0:
+                        minner = self._midscan_img_left[:self._acq_ct,2:].min()
+                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[:,2:], vmin=minner)  # Trim off first col
+                        self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
                 except Exception as e:
                     print('-------------ERROR-----------')
                     print(traceback.format_exc())
