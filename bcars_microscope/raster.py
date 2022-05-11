@@ -75,11 +75,10 @@ from bcars_microscope.mpl import MplCanvas
 from bcars_microscope.h5 import save_location_is_valid
 from pipython import pitools
 
-
 class ImageParams:
     """Container that describes a single image acqusition
     """    
-    def __init__(self, name, nanoscan_params_list, delay):
+    def __init__(self, name, nanoscan_params_list, delay, save=False, path_filename=None, groupname=None):
         """Container that describes a single image acqusition
 
         Parameters
@@ -90,10 +89,17 @@ class ImageParams:
             List of NanoScan params in order [Fast, Slow, Fixed] axes.
         delay : _type_
             Delay stage setting for this image.
+        path_filename : str
+            Full path including HDF5 filename
+        groupname : str
+            Group name within HDF5 file. (Note: ImageParams.name will be the dataset name within group)
         """             
         self.ns_list = nanoscan_params_list
         self.delay = delay
         self.name = name
+        self.path_filename = path_filename
+        self.groupname = groupname
+        self.save = save
 
 class NanoScanAxisParams:
     """Container describing single-axis NanoScan (stage) settings (for a single image)
@@ -432,18 +438,27 @@ class MainWindow(QMainWindow):
     def start_acquisition(self):
 
         self.double_check_save()
-        if self.ui.checkBoxSave.isChecked():
-            pfname = self.ui.lineEditPathFileName.text()
-            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())
-            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname
-                        
+        yes_save = self.ui.checkBoxSave.isChecked()
+        
+        if not yes_save:
+            pfname = None  # path + filename
+            dsetname = None  # dataset name
+            grpname = None  # group name
+            pth = None  # path
+            fname = None  # filename
+        else:
+            pfname = self.ui.lineEditPathFileName.text()  # Path + filename
+            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value()) # Dataset name
+            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
+
             try:
                 pth,fname = pfname.rsplit('/', 1)
             except:
                 pth=None
                 fname=None
 
-            save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname, dsetname)
+            # NOTE: Has to write to a new group
+            save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
             if not save_loc_valid:
                 msg = QMessageBox(self)
                 msg.setIcon(QMessageBox.Warning)
@@ -458,11 +473,7 @@ class MainWindow(QMainWindow):
                 return
             else:
                 del pth, fname
-                self.save_info = {'save':True, 'pfname':pfname, 'groupname':grpname, 'dsetname':dsetname}
-        else:
-            self.save_info = {'save':False, 'pfname':None, 'groupname':None, 'dsetname':None}
-
-
+                
         devs, not_acq, status_str = self.is_ready()
         print(status_str)
         if not (devs & not_acq):  # System is NOT ready to acquire
@@ -487,39 +498,45 @@ class MainWindow(QMainWindow):
             if self.ui.checkBoxCollectNRB_Early.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayNRB_Early.value()
-                to_scan_img_list.append(ImageParams('NRB_Early_Pre', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('NRB_Early_Pre', ns_param_list, delay, save=yes_save, 
+                                                    path_filename=pfname, groupname=grpname))
 
             if self.ui.checkBoxCollectDark.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayDark.value()
-                to_scan_img_list.append(ImageParams('Dark_Pre', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('Dark_Pre', ns_param_list, delay, save=yes_save,
+                                                    path_filename=pfname, groupname=grpname))
 
             if self.ui.checkBoxCollectNRB.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayNRB.value()
-                to_scan_img_list.append(ImageParams('NRB_Pre', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('NRB_Pre', ns_param_list, delay, save=yes_save,
+                                                    path_filename=pfname, groupname=grpname))
 
         ns_param_list = [self.nanoscan_fast_params, self.nanoscan_slow_params, self.nanoscan_fixed_params]
         delay = self.ui.spinBoxDelayImaging.value()
-        dset_name = self.ui.lineEditDatasetName.text()
-        to_scan_img_list.append(ImageParams(dset_name, ns_param_list, delay))
+        to_scan_img_list.append(ImageParams(dsetname, ns_param_list, delay, save=yes_save,
+                                            path_filename=pfname, groupname=grpname))
 
         # NRB, NRB_early, Dark, so we start at the same time as the main imaging
         if self.ui.comboBoxRecNRB.currentText() in ['After', 'Both']:
             if self.ui.checkBoxCollectNRB.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayNRB.value()
-                to_scan_img_list.append(ImageParams('NRB_Post', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('NRB_Post', ns_param_list, delay, save=yes_save,
+                                                    path_filename=pfname, groupname=grpname))
 
             if self.ui.checkBoxCollectNRB_Early.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayNRB_Early.value()
-                to_scan_img_list.append(ImageParams('NRB_Early_Post', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('NRB_Early_Post', ns_param_list, delay, save=yes_save,
+                                                    path_filename=pfname, groupname=grpname))
 
             if self.ui.checkBoxCollectDark.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayDark.value()
-                to_scan_img_list.append(ImageParams('Dark_Post', ns_param_list, delay))
+                to_scan_img_list.append(ImageParams('Dark_Post', ns_param_list, delay, save=yes_save,
+                                                    path_filename=pfname, groupname=grpname))
 
         # Adjust timer for plotting so it's ~1 linescan delay
         # TODO Dynamically adjust plotting timer
@@ -552,9 +569,9 @@ class MainWindow(QMainWindow):
         
         # TODO: Open HDF file
         try:
-            if self.save_info['save'] == True:
-                fid = h5py.File(self.save_info['pfname'],'a')
-                grp = fid.create_group(self.save_info['groupname'])
+            if img_list[0].save == True:
+                fid = h5py.File(img_list[0].path_filename,'a')
+                grp = fid.create_group(img_list[0].groupname)
             else:
                 fid = None
                 grp = None
@@ -562,7 +579,7 @@ class MainWindow(QMainWindow):
             for iter_imgs, img_inst in enumerate(img_list):
                 # TODO: Open dataset
                 # TODO: Check if actually saving
-                print('Data will be saved to group: {}'.format(self.save_info['groupname']))
+                print('Data will be saved to group: {}'.format(img_list[0].groupname))
 
                 # Delay position
                 self.devices['DelayStage'].set_pos(img_inst.delay)
@@ -583,11 +600,11 @@ class MainWindow(QMainWindow):
                 fixed_step_vec = img_inst.ns_list[2].step_vec
 
                 for num_z_stack in range(n_fixed_steps):
-                    if self.save_info['save'] == True:
+                    if img_inst.save == True:
                         if n_fixed_steps == 1:
-                            dset_name = img_inst.name + '_{}'.format(self.ui.spinBoxDatasetIndex.value())
+                            dset_name = img_inst.name
                         else:
-                            dset_name = img_inst.name + '_z{}_{}'.format(num_z_stack, self.ui.spinBoxDatasetIndex.value())
+                            dset_name = img_inst.name + '_z{}'.format(num_z_stack)
                         dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps,1600),
                                                 dtype=np.uint16)
                     else:
@@ -698,6 +715,10 @@ class MainWindow(QMainWindow):
             if fid is not None:
                 print('Closing HDF5 file.')
                 fid.close()
+
+            # Increment image index if previous data was saved
+            if img_inst.save:
+                self.ui.spinBoxDatasetIndex.stepUp()
             # This is now in thread finished fcn
             # self.devices['running'] = False
 
@@ -741,6 +762,7 @@ if __name__ == '__main__':
         # print(window.meta)
 
         window.ui.spinBox_slow_steps.setValue(12)
+        window.ui.spinBox_slow_steps.editingFinished.emit()
         window.show()
 
         app.exec_()
