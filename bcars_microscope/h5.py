@@ -5,8 +5,8 @@ import h5py
 
 __all__ = ['save_location_is_valid']
 
-def save_location_is_valid(path, filename, groupname, dsetname):
-    """Returns whether the save info (path, file, group, dset) are valid
+def save_location_is_valid(path, filename, groupname):
+    """Returns whether the save info (path, file, group) are valid. Note: the group has to not exist.
 
     Parameters
     ----------
@@ -16,12 +16,10 @@ def save_location_is_valid(path, filename, groupname, dsetname):
         File name
     groupname : str
         Group name
-    dsetname : str
-        Dataset name
 
     Returns
     -------
-    bool, list, str
+    bool, str
         Valid bool, str description
     """    
     if path is None:
@@ -30,15 +28,11 @@ def save_location_is_valid(path, filename, groupname, dsetname):
         return False, 'Filename is empty'
     elif groupname is None:
         return False, 'Group name is empty'
-    elif dsetname is None:
-        return False, 'Dataset name is empty'
     elif '\\' in path:
         return False, 'Orient slashes as /'
     elif '\\' in filename:
         return False, 'Orient slashes as /'
     elif '\\' in groupname:
-        return False, 'Orient slashes as /'
-    elif '\\' in dsetname:
         return False, 'Orient slashes as /'
     else:
         does_path_exist = os.path.exists(path)
@@ -58,13 +52,7 @@ def save_location_is_valid(path, filename, groupname, dsetname):
             print(temp)
             does_grp_exist = groupname.lstrip('/').rstrip('/') in temp
             print('Group exists: {}'.format(does_grp_exist))
-            does_dset_exist = (groupname.lstrip('/').rstrip('/') + '/' + dsetname.lstrip('/')) in temp
-            print(groupname.lstrip('/').rstrip('/') + '/' + dsetname.lstrip('/'))
-            print('Dset exists: {}'.format(does_dset_exist))
-            del temp
-            if does_dset_exist:
-                return False, 'Dataset {} already exists'.format(dsetname)
-            elif does_grp_exist:
-                return False, 'Group exists but dataset does not exist'
+            if does_grp_exist:
+                return False, 'Group exists already. Try again.'
             else:
-                return True, 'Group does not exist and will be created'
+                return True, 'Group does not exist and will be created.'
