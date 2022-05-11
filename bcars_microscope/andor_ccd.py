@@ -112,8 +112,10 @@ class AndorNewton970:
         output = {}
         prefix = 'CCD'
         # Prepend prefix to settings and put in meta
-        output.update({'{}.{}'.format(prefix,k): self.settings[k] for k in self.settings})
+        output.update({'{}.{}'.format(prefix,k): self.settings[k] for k in self.settings if not isinstance(self.settings[k], dict)})
         
+        # output.update({'{}.{}'.format(prefix,kk): self.settings[k][kk] for kk in self.settings[k] for k in self.settings if isinstance(self.settings[k], dict)})
+
         # Manually set things:
         output['CCD.cooler'] = self.settings['cooler']
         output['CCD.fanmode'] = 'full'
@@ -127,7 +129,8 @@ class AndorNewton970:
         output['CCD.VS_shift_time'] = '{} us'.format(self.sdk.GetVSSpeed(self.settings['vs_speed_idx'])[1])
         output['CCD.preamp_gain'] = self.sdk.GetPreAmpGain(self.settings['preamp_gain_idx'])[1]
         for k in self.mode_codes:
-            output['CCD.modecode.{}'.format(k)] = self.mode_codes[k]
+            for kk in self.mode_codes[k]:
+                output['CCD.modecode.{}.{}'.format(k,kk)] = self.mode_codes[k][kk]
         return output
 
     def init_camera(self):
