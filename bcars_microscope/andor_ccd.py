@@ -1,3 +1,4 @@
+import sys
 import traceback
 from time import sleep
 from hypothesis import settings
@@ -6,8 +7,11 @@ import numpy as np
 
 from pyAndorSDK2 import atmcd, atmcd_codes, atmcd_errors
 
+from bcars_microscope import dark_style_sheet as stylesheet
+
 err_codes = atmcd_errors.Error_Codes
 
+__all__ = ['AndorNewton970', 'DialogAndorConfig']
 
 # Steps from LabView initialize
 # 1. Init SDK
@@ -47,18 +51,18 @@ class AndorNewton970:
                    'exposure_time': 0.0035, 
                    'temperature': -70,
                    'amplifier': 'Conventional',
-                   'ad_channel': 1,
-                   'hs_speed_idx' : 0,
+                   'hs_speed': 2.5,
                    'vs_speed_idx' : 0,
                    'vs_shift_amp' : 0,
                    'preamp_gain_idx' : 2,
-                   'read_mode': 'FULL_VERTICAL_BINNING',
+                   'baseline_clamping' : True,
+                   'readout_mode': 'FULL_VERTICAL_BINNING',
                    'trigger_mode': 'INTERNAL',
                    'shutter_mode': 'PERMANENTLY_OPEN',
                    'acquisition_mode': 'RUN_TILL_ABORT'}
 
     default_imaging = default_fvb.copy()
-    default_imaging.update({'read_mode': 'IMAGE'})
+    default_imaging.update({'readout_mode': 'IMAGE'})
 
     default_imaging_trigd = default_imaging.copy()
     default_imaging_trigd.update({'trigger_mode':'EXTERNAL'})
@@ -123,15 +127,41 @@ class AndorNewton970:
         output['CCD.temperature.actual'] = round(self.sdk.GetTemperatureStatus()[1],2)
         output['CCD.temperature.set'] = round(self.sdk.GetTemperatureStatus()[2],2)
         output['CCD.amplifier_idx'] = [self.sdk.GetAmpDesc(num,25)[1] for num in range(self.sdk.GetNumberAmp()[1])].index(self.settings['amplifier'])
-        output['CCD.HS_shift_frequency'] = '{} MHz'.format(self.sdk.GetHSSpeed(self.settings['ad_channel'],
-                                                           output['CCD.amplifier_idx'],
-                                                           self.settings['hs_speed_idx'])[1])
+        output['CCD.HS_shift_frequency'] = '{} MHz'.format(self.settings['hs_speed'])
         output['CCD.VS_shift_time'] = '{} us'.format(self.sdk.GetVSSpeed(self.settings['vs_speed_idx'])[1])
         output['CCD.preamp_gain'] = self.sdk.GetPreAmpGain(self.settings['preamp_gain_idx'])[1]
+        output['CCD.baseline_clamping'] = (self.sdk.GetBaselineClamp()[1] == 1)
         for k in self.mode_codes:
             for kk in self.mode_codes[k]:
                 output['CCD.modecode.{}.{}'.format(k,kk)] = self.mode_codes[k][kk]
         return output
+
+    def get_hs_speed_info(self):
+        amp_type_idx = self.settings['amplifier_idx']
+
+        self._hs_speed_idx_dict = {}
+        
+        n_ads = self.sdk.GetNumberADChannels()[1]  # Number of A/D's
+        # print('Camera Capabilities:')
+        for num_ad in range(n_ads):
+            for num_speeds in range(self.sdk.GetNumberHSSpeeds(num_ad, amp_type_idx)[1]):
+                name_amp = self.sdk.GetAmpDesc(amp_type_idx,21)[1]
+                # print('Amp: {} ({}); AD: {}; Speed: {} MHz ({})'.format(name_amp, amp_type_idx, num_ad, self.sdk.GetHSSpeed(num_ad, amp_type_idx, num_speeds)[1], num_speeds))
+                self._hs_speed_idx_dict[self.sdk.GetHSSpeed(num_ad, amp_type_idx, num_speeds)[1]] = {'ad_channel': num_ad, 'hs_speed_idx': num_speeds}
+        
+
+    def set_hs_speed(self):
+        if not self._hs_speed_idx_dict:
+            self.get_hs_speed_info()
+
+        ad_speed_idx_dict = self._hs_speed_idx_dict[self.settings['hs_speed']]
+        
+        ret_code = self.sdk.SetADChannel(ad_speed_idx_dict['ad_channel'])
+        print('Set AD Channel: {} -- {}: {}'.format(ad_speed_idx_dict['ad_channel'], ret_code, andor_err_code_str(ret_code)))
+
+        # Set horizontal shift speed (MHz)
+        ret_code = self.sdk.SetHorizontalSpeed(ad_speed_idx_dict['hs_speed_idx'])
+        print('Set Horizontal Shift Speed: {} -- {}: {}'.format(ad_speed_idx_dict['hs_speed_idx'], ret_code, andor_err_code_str(ret_code)))
 
     def init_camera(self):
         ret_code_list = []
@@ -161,49 +191,29 @@ class AndorNewton970:
 
         # Set Acuqisition Mode
         # 1 Single Scan 2 Accumulate 3 Kinetics 4 Fast Kinetics 5 Run till abort
-        print('')
+        
         ret_code = self.sdk.SetAcquisitionMode(self.mode_codes['acquisition'][self.settings['acquisition_mode']])
         ret_code_list.append(ret_code)
         print('Set Acquisition Mode: {} -- {}: {}'.format(self.settings['acquisition_mode'], ret_code, andor_err_code_str(ret_code)))
 
-        n_ads = self.sdk.GetNumberADChannels()[1]  # Number of A/D's
-        n_amps = self.sdk.GetNumberAmp()[1]  # Number of amplifiers
-        print('Camera Capabilities:')
-        for num_ad in range(n_ads):
-            for num_amp in range(n_amps):
-                for num_speeds in range(self.sdk.GetNumberHSSpeeds(num_ad, num_amp)[1]):
-                    name_amp = self.sdk.GetAmpDesc(num_amp,21)[1]
-                    print('Amp: {} ({}); AD: {}; Speed: {} MHz ({})'.format(name_amp, num_amp, num_ad, self.sdk.GetHSSpeed(num_ad, num_amp, num_speeds)[1], num_speeds))
-        print('')
         # Set output amplifier (0 EM or 1 Conventional)
         ret_code = self.sdk.SetOutputAmplifier(self.settings['amplifier_idx'])
-        ret_code_list.append(ret_code)
         print('Set Amplifier: {} -- {}: {}'.format(self.settings['amplifier_idx'], ret_code, andor_err_code_str(ret_code)))
 
-        # print(get_amplifier_list())
-        # Set AD Chan = 0
-        ret_code = self.sdk.SetADChannel(self.settings['ad_channel'])
-        ret_code_list.append(ret_code)
-        print('Set AD Channel: {} -- {}: {}'.format(self.settings['ad_channel'], ret_code, andor_err_code_str(ret_code)))
-
-        # Set horizontal shift speed (MHz)
-        ret_code = self.sdk.SetHorizontalSpeed(self.settings['hs_speed_idx'])
-        ret_code_list.append(ret_code)
-        print('Set Horizontal Shift Speed: {} -- {}: {}'.format(self.settings['hs_speed_idx'], ret_code, andor_err_code_str(ret_code)))
+        self.get_hs_speed_info()
+        self.set_hs_speed()
 
         # Set preamp gain
         print('Number of Gains: {}'.format(self.sdk.GetNumberPreAmpGains()[1]))
-        for num_gain in range(self.sdk.GetNumberPreAmpGains()[1]):
-            print('Index: {}; Gain: {}x'.format(num_gain, self.sdk.GetPreAmpGain(num_gain)[1]))
         ret_code = self.sdk.SetPreAmpGain(self.settings['preamp_gain_idx'])
         ret_code_list.append(ret_code)
         print('Set Pre-Amp Gain: {} -- {}: {}'.format(self.settings['preamp_gain_idx'], ret_code, andor_err_code_str(ret_code)))
 
-        # Set VS shift speed ??
-        print(self.sdk.GetNumberVSSpeeds()[1])
-        for num_speeds in range(self.sdk.GetNumberVSSpeeds()[1]):
-            print('Index: {}; Vertical Shift Speed: {}us'.format(num_speeds, self.sdk.GetVSSpeed(num_speeds)[1]))
-        
+        # Set baseline clamping
+        ret_code = self.sdk.SetBaselineClamp(int(self.settings['baseline_clamping']))
+        ret_code_list.append(ret_code)
+        print('Set Baseline Clamping: {} -- {}: {}'.format(self.settings['baseline_clamping'], ret_code, andor_err_code_str(ret_code)))
+
         # self.sdk.GetNumberVSSpeeds
         ret_code = self.sdk.SetVSSpeed(self.settings['vs_speed_idx'])
         ret_code_list.append(ret_code)
@@ -258,10 +268,10 @@ class AndorNewton970:
         
         # Set read mode
         # 0 Full Vertical Binning; 1: Multi-Track; 2: Random-Track; 3: Single-Track; 4: Image
-        ret_code = self.sdk.SetReadMode(self.mode_codes['read'][self.settings['read_mode']])
+        ret_code = self.sdk.SetReadMode(self.mode_codes['read'][self.settings['readout_mode']])
         ret_code_list.append(ret_code)
-        print('Read Mode: {} -- {}: {}'.format(self.mode_codes['read'][self.settings['read_mode']], ret_code, andor_err_code_str(ret_code)))
-        if self.settings['read_mode'] == 'FULL_VERTICAL_BINNING':
+        print('Read Mode: {} -- {}: {}'.format(self.mode_codes['read'][self.settings['readout_mode']], ret_code, andor_err_code_str(ret_code)))
+        if self.settings['readout_mode'] == 'FULL_VERTICAL_BINNING':
             self.is_fvb_or_sgl_track = True
         else:
             self.is_fvb_or_sgl_track = False
@@ -408,56 +418,225 @@ class AndorNewton970:
         (ret_code, arr, validfirst, validlast) = self.sdk.GetImages16(first_img, first_img+k-1, allImageSize)
         return (ret_code, arr.astype(np.uint16), validfirst, validlast)
 
+from PySide2.QtWidgets import QDialog, QApplication
+from PySide2 import QtCore
+
+QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
+from ui.ui_andor_setup import Ui_Dialog as Ui_AndorConfig
+from PySide2.QtGui import QCloseEvent
+
+# default_fvb = {'cooler': True,
+#                 'exposure_time': 0.0035, 
+#                 'temperature': -70,
+#                 'amplifier': 'Conventional',
+#                 'ad_channel': 1,
+#                 'hs_speed_idx' : 0,
+#                 'vs_speed_idx' : 0,
+#                 'vs_shift_amp' : 0,
+#                 'preamp_gain_idx' : 2,
+#                 'readout_mode': 'FULL_VERTICAL_BINNING',
+#                 'trigger_mode': 'INTERNAL',
+#                 'shutter_mode': 'PERMANENTLY_OPEN',
+#                 'acquisition_mode': 'RUN_TILL_ABORT'}
+
+class DialogAndorConfig(QDialog):
+    def __init__(self, ccd):
+        # Boilerplate stuff
+        super().__init__()
+        self.ui = Ui_AndorConfig()
+        self.ui.setupUi(self)
+        self.ccd = ccd
+
+        if self.ccd is not None:
+            self.populate_ui()
+            self.ui_from_dict(self.ccd.settings)
+            self.ui.comboBoxAmpType.currentIndexChanged.connect(self.change_amp_type)
+
+    def change_amp_type(self):
+        """ Amplifier changed: EM or Conventional """
+        raise NotImplementedError        
+        
+    def populate_ui(self):
+        # Actual Exposure time
+        _,temp,_,_ = self.ccd.sdk.GetAcquisitionTimings()
+        self.ui.spinBox_Exposure.setValue(temp)
+        del temp
+
+        for k in atmcd_codes.Acquisition_Mode:
+            self.ui.comboBoxAcquisitionMode.addItem(k.name)
+
+        for k in atmcd_codes.Trigger_Mode:
+            self.ui.comboBoxTriggerMode.addItem(k.name)
+
+        for k in atmcd_codes.Read_Mode:
+            self.ui.comboBoxReadoutMode.addItem(k.name)
+
+        for num_speeds in range(self.ccd.sdk.GetNumberVSSpeeds()[1]):
+            self.ui.comboBoxVS.addItem('{}'.format(self.ccd.sdk.GetVSSpeed(num_speeds)[1]))
+
+        for num_voltages in range(self.ccd.sdk.GetNumberVSAmplitudes()[1]):
+            self.ui.comboBoxVoltage.addItem('{}'.format(num_voltages))
+        self.ui.comboBoxVoltage.setCurrentIndex(0)
+
+        # HS Speed
+        num_amp_type = self.ui.comboBoxAmpType.currentIndex()
+        temp = []
+        for num_ad in range(self.ccd.sdk.GetNumberADChannels()[1]):
+            for num_speeds in range(self.ccd.sdk.GetNumberHSSpeeds(num_ad, num_amp_type)[1]):
+                temp.append(float(self.ccd.sdk.GetHSSpeed(num_ad, num_amp_type, num_speeds)[1]))
+        temp = np.sort(temp)
+        for t in temp:
+            self.ui.comboBoxHSRate.addItem('{}'.format(t))
+        self.ui.comboBoxHSRate.setCurrentIndex(self.ui.comboBoxHSRate.count()-1)
+        del temp
+
+        #Preamp Gain
+        temp = self.ccd.sdk.GetNumberPreAmpGains()[1]
+        for num in range(temp):
+            self.ui.comboBoxPreAmpGain.addItem('{}'.format(self.ccd.sdk.GetPreAmpGain(num)[1]))
+        self.ui.comboBoxPreAmpGain.setCurrentIndex(self.ui.comboBoxPreAmpGain.count()-1)
+        del temp
+
+    
+    def accept(self):
+        if self.ccd is not None:
+            self.ccd.settings.update(self.dict_from_ui)
+            self.ccd.init_camera()
+
+        super().accept()
+
+    def reject(self):
+        super().reject()
+
+    @property
+    def dict_from_ui(self):
+        output_dict = {}
+        output_dict['acquisition_mode'] = self.ui.comboBoxAcquisitionMode.currentText()
+        output_dict['acquisition_mode_idx'] = self.ui.comboBoxAcquisitionMode.currentIndex()
+        output_dict['trigger_mode'] = self.ui.comboBoxTriggerMode.currentText()
+        output_dict['trigger_mode_idx'] = self.ui.comboBoxTriggerMode.currentIndex()
+        output_dict['readout_mode'] = self.ui.comboBoxReadoutMode.currentText()
+        output_dict['readout_mode_idx'] = self.ui.comboBoxReadoutMode.currentIndex()
+        output_dict['exposure_time'] = self.ui.spinBox_Exposure.value()
+        output_dict['vs_speed'] = self.ui.comboBoxVS.currentText()
+        output_dict['vs_speed_idx'] = self.ui.comboBoxVS.currentIndex()
+        output_dict['vs_shift_amp'] = int(self.ui.comboBoxVoltage.currentText())
+        output_dict['vs_shift_amp_idx'] = self.ui.comboBoxVoltage.currentIndex()
+        output_dict['preamp_gain'] = self.ui.comboBoxPreAmpGain.currentText()
+        output_dict['preamp_gain_idx'] = self.ui.comboBoxPreAmpGain.currentIndex()
+        output_dict['baseline_clamping'] = self.ui.checkBoxBaselineClamping.isChecked()
+        output_dict['hs_speed_idx'] = self.ui.comboBoxHSRate.currentIndex()
+        output_dict['hs_speed'] = float(self.ui.comboBoxHSRate.currentText())
+        output_dict['amplifier'] = self.ui.comboBoxAmpType.currentText()
+        output_dict['amplifier_idx'] = self.ui.comboBoxAmpType.currentIndex()
+        output_dict['cooler'] = True  # TODO: Cooler into settings ui
+        output_dict['temperature'] = -70  # TODO Temperature into settings ui
+
+        return output_dict
+
+    def ui_from_dict(self, settings_dict):
+        """ Use a dictionary of settings to set the ui state"""
+        self.ui.spinBox_Exposure.setValue(settings_dict['exposure_time'])
+        
+        self.ui.comboBoxAmpType.setCurrentIndex(settings_dict['amplifier_idx'])
+        self.ui.comboBoxHSRate.setCurrentIndex(self.ui.comboBoxHSRate.findText('{}'.format(settings_dict['hs_speed'])))
+        self.ui.comboBoxVS.setCurrentIndex(settings_dict['vs_speed_idx'])
+        self.ui.comboBoxVoltage.setCurrentIndex(self.ui.comboBoxVoltage.findText('{}'.format(settings_dict['vs_shift_amp'])))
+        self.ui.comboBoxPreAmpGain.setCurrentIndex(settings_dict['preamp_gain_idx'])
+        self.ui.checkBoxBaselineClamping.setChecked(settings_dict['baseline_clamping'])
+        readout_mode_idx = self.ui.comboBoxReadoutMode.findText(settings_dict['readout_mode'])
+        self.ui.comboBoxReadoutMode.setCurrentIndex(readout_mode_idx)
+
+        trigger_mode_idx = self.ui.comboBoxTriggerMode.findText(settings_dict['trigger_mode'])
+        self.ui.comboBoxTriggerMode.setCurrentIndex(trigger_mode_idx)
+
+        acq_mode_idx = self.ui.comboBoxAcquisitionMode.findText(settings_dict['acquisition_mode'])
+        self.ui.comboBoxAcquisitionMode.setCurrentIndex(acq_mode_idx)
+                 
+                  
+
 if __name__ == '__main__':
-    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'read_mode': 'FULL_VERTICAL_BINNING',
-                                          'trigger_mode': 'EXTERNAL'})
-    try:
-        ret = ccd.init_all()
 
-        print('==========================')
-        ccd.sdk.EnableKeepCleans(0)
-        ccd.sdk.SetKineticCycleTime(0)
-        ccd.sdk.SetFastExtTrigger(1)
-        read_out_time = ccd.sdk.GetReadOutTime()[1]
-        print('ReadOut Time: {:.6f} sec'.format(read_out_time))
-        print('Exposure Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[1]))
-        print('Accumulate Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[2]))
-        print('Kinetic Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[3]))
-        print('Estimated total time per acquisition: {}'.format(ccd.net_acquisition_time))
-        print('==========================')
-        # ccd.sdk.
+    just_ui = False
 
-        # ccd.sdk.EnableKeepCleans(1)
-        # ccd.init_sdk()
-        # ccd.init_camera()
-    except Exception as e:
-        print('ERROR: {}'.format(traceback.format_exc()))
-        ret_code = ccd.shutdown()
-        print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+    app.setStyleSheet(stylesheet)
+
+    if just_ui:
+        window = DialogAndorConfig(ccd=None)
+        ret = window.exec_()
+        print(ret)
+        # out = app.exec_()
     else:
-        print('Meta data:\n{}'.format(ccd.meta))
-        ret_code = ccd.start_acquisition()
-        print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
-        # ccd.sdk.WaitForAcquisition()
-        sleep(1)
-        ccd.stop_acquisition()
+        ccd = AndorNewton970()
+
+        try:
+            ret = ccd.init_all()
+            window = DialogAndorConfig(ccd=ccd)
+            ret = window.exec_()
+            print('==============Pulling Current Settings=============')
+                        
+            print('===================================================')
+            # out = app.exec_()  # Don't need with a modal dialog
+        except:
+            print(traceback.format_exc())
+        finally:
+            ccd.free_memory()
+            ret_code = ccd.shutdown()
+            print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
+        
+    
+    # ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'readout_mode': 'FULL_VERTICAL_BINNING',
+    #                                       'trigger_mode': 'EXTERNAL'})
+    # try:
+    #     ret = ccd.init_all()
+
+    #     print('==========================')
+    #     ccd.sdk.EnableKeepCleans(0)
+    #     ccd.sdk.SetKineticCycleTime(0)
+    #     ccd.sdk.SetFastExtTrigger(1)
+    #     read_out_time = ccd.sdk.GetReadOutTime()[1]
+    #     print('ReadOut Time: {:.6f} sec'.format(read_out_time))
+    #     print('Exposure Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[1]))
+    #     print('Accumulate Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[2]))
+    #     print('Kinetic Time: {} sec'.format(ccd.sdk.GetAcquisitionTimings()[3]))
+    #     print('Estimated total time per acquisition: {}'.format(ccd.net_acquisition_time))
+    #     print('==========================')
+    #     # ccd.sdk.
+
+    #     # ccd.sdk.EnableKeepCleans(1)
+    #     # ccd.init_sdk()
+    #     # ccd.init_camera()
+    # except Exception as e:
+    #     print('ERROR: {}'.format(traceback.format_exc()))
+    #     ret_code = ccd.shutdown()
+    #     print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
+    # else:
+    #     print('Meta data:\n{}'.format(ccd.meta))
+    #     ret_code = ccd.start_acquisition()
+    #     print('Starting Acquisition: {} -- {}'.format(ret_code, andor_err_code_str(ret_code)))
+    #     # ccd.sdk.WaitForAcquisition()
+    #     sleep(1)
+    #     ccd.stop_acquisition()
         
         
-        ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
-        if (first_img != 0) & (last_img != 0):
-            print('New Images: {} [{}:{}]'.format(n_images, first_img, last_img))
+    #     ret_code, n_images, first_img, last_img = ccd.get_num_new_images()
+    #     if (first_img != 0) & (last_img != 0):
+    #         print('New Images: {} [{}:{}]'.format(n_images, first_img, last_img))
 
 
-            (ret_code, arr, validfirst, validlast) = ccd.get_all_images16()
-            # arr = arr.reshape((n_images, sgl_image_size))
-            # del arr
-            print('Single_image size: {}'.format(ccd.sgl_image_size))
-            allImageSize = n_images * ccd.sgl_image_size
-            print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
-            print('arr[0]: {}'.format(arr[0]))
+    #         (ret_code, arr, validfirst, validlast) = ccd.get_all_images16()
+    #         # arr = arr.reshape((n_images, sgl_image_size))
+    #         # del arr
+    #         print('Single_image size: {}'.format(ccd.sgl_image_size))
+    #         allImageSize = n_images * ccd.sgl_image_size
+    #         print("Function GetImages16 returned {}; array shape = {}; array type: {}; size = {}".format(andor_err_code_str(ret_code), arr.shape, arr.dtype, allImageSize))
+    #         print('arr[0]: {}'.format(arr[0]))
         
-    finally:
-        ccd.free_memory()
-        ret_code = ccd.shutdown()
-        print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
-        # print(ccd.__dict__)
+    # finally:
+    #     ccd.free_memory()
+    #     ret_code = ccd.shutdown()
+    #     print("Function Shutdown returned {}: {}".format(ret_code, err_codes(ret_code).name))
+    #     # print(ccd.__dict__)

@@ -86,7 +86,7 @@ def do_scan(pixel_time=None, set_wavegen=False):
 
 if __name__ == '__main__':
     # print(AndorNewton970.default_imaging)
-    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'read_mode': 'FULL_VERTICAL_BINNING', 'trigger_mode': 'EXTERNAL'})
+    ccd = AndorNewton970(settings_kwargs={'exposure_time':0.0035, 'readout_mode': 'FULL_VERTICAL_BINNING', 'trigger_mode': 'EXTERNAL'})
     try:
         ret = ccd.init_all()
         print('==========================')

@@ -25,7 +25,7 @@ from ui.ui_bcars2_main import Ui_MainWindow
 from spectroscopy import MainWindow as WinSpectroscopy
 from raster import MainWindow as WinRaster
 
-from andor_ccd import AndorNewton970
+from andor_ccd import AndorNewton970, DialogAndorConfig
 from pipython import GCSDevice
 from esp301 import ESP301
 
@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.devices = {}
+        self.devices['CCD'] = None
         self.devices['running'] = False
 
         # Signals and Slots
@@ -55,7 +56,7 @@ class MainWindow(QMainWindow):
         self.windows['Raster'] = WinRaster(self.devices)
         self.windows['Raster'].hide()
         self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
-
+        
 
     def closeEvent(self, ev):
         print('Close')
@@ -65,19 +66,36 @@ class MainWindow(QMainWindow):
     def init_ccd(self):
         """ Initialize CCD camera """
 
-        # Default to FVB spectroscopy
-        self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
-                                                              'read_mode': 'FULL_VERTICAL_BINNING',
-                                                              'trigger_mode': 'EXTERNAL'})
-        
-        ret = self.devices['CCD'].init_all()
-        self.devices['CCD'].set_fast_external_trigger()
+        # Disable init button during initialization
+        self.ui.pushButtonInitCCD.setEnabled(False)
 
-        # Disable init button if CCD initialized just fine
-        self.ui.pushButtonInitCCD.setEnabled(not ret)
+        #TODO: Use user-settings for init
+        # Default to FVB spectroscopy
+        if self.devices['CCD'] is None:
+            
+            self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
+                                                                'readout_mode': 'FULL_VERTICAL_BINNING',
+                                                                'trigger_mode': 'EXTERNAL'})
+            
+            ret = self.devices['CCD'].init_all()
+            self.devices['CCD'].set_fast_external_trigger()
+
+            # Indicator light on
+            self.ui.radioButtonCCD.setChecked(ret)
+
         
-        # Indicator light on
-        self.ui.radioButtonCCD.setChecked(ret)
+
+        dlg = DialogAndorConfig(ccd=self.devices['CCD'])
+        ret = dlg.exec_()
+        if ret == 1:
+            print('Settings OKd')
+        else:
+            print('Settings Canceled')
+        
+        
+        # Re-enable init button
+        self.ui.pushButtonInitCCD.setEnabled(True)
+        
 
     def init_nano_stage(self):
         """ Initialize nanostage"""

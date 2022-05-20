@@ -781,7 +781,7 @@ if __name__ == '__main__':
         devices = {}
 
         if not just_ui:
-            devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,'read_mode': 'FULL_VERTICAL_BINNING',
+            devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,'readout_mode': 'FULL_VERTICAL_BINNING',
                                                             'trigger_mode': 'EXTERNAL'})
 
             devices['CCD'].init_all()

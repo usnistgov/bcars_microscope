@@ -2,10 +2,16 @@
 
 from ._version import __version__
 
+# TODO: Greyed out for disabled group boxes (or their super)
+
 dark_style_sheet = ('QWidget {background-color: rgb(53,53,53); font: 11pt "Arial";}\n'
                     'QLabel {color: white}\n'
                     'QPushButton {background-color: rgb(53,53,53); color: rgb(255,255,255)}\n'
                     'QPushButton:disabled {color: rgb(100,100,100)}\n'
+                    'QCheckBox:disabled {background-color: rgb(100,100,100)}\n'
+                    'QAbstractSpinBox:disabled {background-color: rgb(100,100,100)}\n'
+                    'QLabel:disabled {color: rgb(100,100,100)}\n'
+                    'QGroupBox:disabled {color: rgb(100,100,100)}\n'
                     'QAbstractSpinBox {background-color: rgb(255,255,255)}\n'
                     'QCheckBox {color: red; background-color: white; width: 0; height: 0; spacing: 0px}\n'
                     'QCheckBox::indicator {color: red; width: 25; height: 25}\n'

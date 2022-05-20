@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
         self.timer_update_pos.stop()
         self.timer_update_delay_pos.stop()
         if 'CCD' in self.devices:
-            if self.device['running']:
+            if self.devices['running']:
                 self.stop_acquisition()
                 
         return QWidget.hideEvent(self, ev)
