@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1511, 932)
+        MainWindow.resize(1511, 950)
         font = QFont()
         font.setFamily(u"Arial")
         font.setPointSize(11)
@@ -28,221 +28,20 @@ class Ui_MainWindow(object):
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.verticalLayout_12 = QVBoxLayout()
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
-        self.frame = QFrame(self.centralwidget)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.Panel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.gridLayout = QGridLayout(self.frame)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setHorizontalSpacing(3)
-        self.gridLayout.setVerticalSpacing(0)
-        self.gridLayout.setContentsMargins(1, 1, 1, 1)
-        self.groupBox_2 = QGroupBox(self.frame)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.verticalLayout_6 = QVBoxLayout(self.groupBox_2)
-        self.verticalLayout_6.setSpacing(0)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_5 = QVBoxLayout()
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.label_5 = QLabel(self.groupBox_2)
-        self.label_5.setObjectName(u"label_5")
-
-        self.verticalLayout_5.addWidget(self.label_5)
-
-        self.comboBoxSlow = QComboBox(self.groupBox_2)
-        self.comboBoxSlow.addItem("")
-        self.comboBoxSlow.addItem("")
-        self.comboBoxSlow.addItem("")
-        self.comboBoxSlow.setObjectName(u"comboBoxSlow")
-
-        self.verticalLayout_5.addWidget(self.comboBoxSlow)
-
-        self.label_6 = QLabel(self.groupBox_2)
-        self.label_6.setObjectName(u"label_6")
-
-        self.verticalLayout_5.addWidget(self.label_6)
-
-        self.spinBox_slow_start = QDoubleSpinBox(self.groupBox_2)
-        self.spinBox_slow_start.setObjectName(u"spinBox_slow_start")
-        self.spinBox_slow_start.setMinimumSize(QSize(75, 25))
-        self.spinBox_slow_start.setMaximumSize(QSize(200, 40))
-        self.spinBox_slow_start.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_slow_start.setReadOnly(False)
-        self.spinBox_slow_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_slow_start.setDecimals(3)
-        self.spinBox_slow_start.setMinimum(-1.000000000000000)
-        self.spinBox_slow_start.setMaximum(201.000000000000000)
-        self.spinBox_slow_start.setValue(1.000000000000000)
-
-        self.verticalLayout_5.addWidget(self.spinBox_slow_start)
-
-        self.label_7 = QLabel(self.groupBox_2)
-        self.label_7.setObjectName(u"label_7")
-
-        self.verticalLayout_5.addWidget(self.label_7)
-
-        self.spinBox_slow_stop = QDoubleSpinBox(self.groupBox_2)
-        self.spinBox_slow_stop.setObjectName(u"spinBox_slow_stop")
-        self.spinBox_slow_stop.setMinimumSize(QSize(75, 25))
-        self.spinBox_slow_stop.setMaximumSize(QSize(200, 40))
-        self.spinBox_slow_stop.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_slow_stop.setReadOnly(False)
-        self.spinBox_slow_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_slow_stop.setDecimals(3)
-        self.spinBox_slow_stop.setMinimum(-1.000000000000000)
-        self.spinBox_slow_stop.setMaximum(201.000000000000000)
-        self.spinBox_slow_stop.setValue(199.000000000000000)
-
-        self.verticalLayout_5.addWidget(self.spinBox_slow_stop)
-
-        self.label_8 = QLabel(self.groupBox_2)
-        self.label_8.setObjectName(u"label_8")
-
-        self.verticalLayout_5.addWidget(self.label_8)
-
-        self.spinBox_slow_steps = QSpinBox(self.groupBox_2)
-        self.spinBox_slow_steps.setObjectName(u"spinBox_slow_steps")
-        self.spinBox_slow_steps.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_slow_steps.setMinimum(1)
-        self.spinBox_slow_steps.setMaximum(5000)
-        self.spinBox_slow_steps.setValue(50)
-
-        self.verticalLayout_5.addWidget(self.spinBox_slow_steps)
-
-        self.label_24 = QLabel(self.groupBox_2)
-        self.label_24.setObjectName(u"label_24")
-
-        self.verticalLayout_5.addWidget(self.label_24)
-
-        self.spinBox_slow_stepsize = QDoubleSpinBox(self.groupBox_2)
-        self.spinBox_slow_stepsize.setObjectName(u"spinBox_slow_stepsize")
-        self.spinBox_slow_stepsize.setEnabled(False)
-        self.spinBox_slow_stepsize.setMinimumSize(QSize(75, 25))
-        self.spinBox_slow_stepsize.setMaximumSize(QSize(200, 40))
-        self.spinBox_slow_stepsize.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_slow_stepsize.setReadOnly(True)
-        self.spinBox_slow_stepsize.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_slow_stepsize.setDecimals(3)
-        self.spinBox_slow_stepsize.setMinimum(-200.000000000000000)
-        self.spinBox_slow_stepsize.setMaximum(200.000000000000000)
-        self.spinBox_slow_stepsize.setValue(1.000000000000000)
-
-        self.verticalLayout_5.addWidget(self.spinBox_slow_stepsize)
-
-
-        self.verticalLayout_6.addLayout(self.verticalLayout_5)
-
-
-        self.gridLayout.addWidget(self.groupBox_2, 0, 1, 1, 1)
-
-        self.groupBox_3 = QGroupBox(self.frame)
-        self.groupBox_3.setObjectName(u"groupBox_3")
-        self.verticalLayout_4 = QVBoxLayout(self.groupBox_3)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3 = QVBoxLayout()
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.label_9 = QLabel(self.groupBox_3)
-        self.label_9.setObjectName(u"label_9")
-
-        self.verticalLayout_3.addWidget(self.label_9)
-
-        self.comboBoxFixed = QComboBox(self.groupBox_3)
-        self.comboBoxFixed.addItem("")
-        self.comboBoxFixed.addItem("")
-        self.comboBoxFixed.addItem("")
-        self.comboBoxFixed.setObjectName(u"comboBoxFixed")
-
-        self.verticalLayout_3.addWidget(self.comboBoxFixed)
-
-        self.label_10 = QLabel(self.groupBox_3)
-        self.label_10.setObjectName(u"label_10")
-
-        self.verticalLayout_3.addWidget(self.label_10)
-
-        self.spinBox_fixed_start = QDoubleSpinBox(self.groupBox_3)
-        self.spinBox_fixed_start.setObjectName(u"spinBox_fixed_start")
-        self.spinBox_fixed_start.setMinimumSize(QSize(75, 25))
-        self.spinBox_fixed_start.setMaximumSize(QSize(200, 40))
-        self.spinBox_fixed_start.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_fixed_start.setReadOnly(False)
-        self.spinBox_fixed_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_fixed_start.setDecimals(3)
-        self.spinBox_fixed_start.setMinimum(-1.000000000000000)
-        self.spinBox_fixed_start.setMaximum(201.000000000000000)
-        self.spinBox_fixed_start.setValue(100.000000000000000)
-
-        self.verticalLayout_3.addWidget(self.spinBox_fixed_start)
-
-        self.label_11 = QLabel(self.groupBox_3)
-        self.label_11.setObjectName(u"label_11")
-
-        self.verticalLayout_3.addWidget(self.label_11)
-
-        self.spinBox_fixed_stop = QDoubleSpinBox(self.groupBox_3)
-        self.spinBox_fixed_stop.setObjectName(u"spinBox_fixed_stop")
-        self.spinBox_fixed_stop.setMinimumSize(QSize(75, 25))
-        self.spinBox_fixed_stop.setMaximumSize(QSize(200, 40))
-        self.spinBox_fixed_stop.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_fixed_stop.setReadOnly(False)
-        self.spinBox_fixed_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_fixed_stop.setDecimals(3)
-        self.spinBox_fixed_stop.setMinimum(-1.000000000000000)
-        self.spinBox_fixed_stop.setMaximum(201.000000000000000)
-        self.spinBox_fixed_stop.setValue(100.000000000000000)
-
-        self.verticalLayout_3.addWidget(self.spinBox_fixed_stop)
-
-        self.label_12 = QLabel(self.groupBox_3)
-        self.label_12.setObjectName(u"label_12")
-
-        self.verticalLayout_3.addWidget(self.label_12)
-
-        self.spinBox_fixed_steps = QSpinBox(self.groupBox_3)
-        self.spinBox_fixed_steps.setObjectName(u"spinBox_fixed_steps")
-        self.spinBox_fixed_steps.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_fixed_steps.setMinimum(1)
-        self.spinBox_fixed_steps.setMaximum(5000)
-        self.spinBox_fixed_steps.setValue(1)
-
-        self.verticalLayout_3.addWidget(self.spinBox_fixed_steps)
-
-        self.label_25 = QLabel(self.groupBox_3)
-        self.label_25.setObjectName(u"label_25")
-
-        self.verticalLayout_3.addWidget(self.label_25)
-
-        self.spinBox_fixed_stepsize = QDoubleSpinBox(self.groupBox_3)
-        self.spinBox_fixed_stepsize.setObjectName(u"spinBox_fixed_stepsize")
-        self.spinBox_fixed_stepsize.setEnabled(False)
-        self.spinBox_fixed_stepsize.setMinimumSize(QSize(75, 25))
-        self.spinBox_fixed_stepsize.setMaximumSize(QSize(200, 40))
-        self.spinBox_fixed_stepsize.setStyleSheet(u"font: 11pt \"Arial\";")
-        self.spinBox_fixed_stepsize.setReadOnly(True)
-        self.spinBox_fixed_stepsize.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.spinBox_fixed_stepsize.setDecimals(3)
-        self.spinBox_fixed_stepsize.setMinimum(-200.000000000000000)
-        self.spinBox_fixed_stepsize.setMaximum(200.000000000000000)
-        self.spinBox_fixed_stepsize.setValue(1.000000000000000)
-
-        self.verticalLayout_3.addWidget(self.spinBox_fixed_stepsize)
-
-
-        self.verticalLayout_4.addLayout(self.verticalLayout_3)
-
-
-        self.gridLayout.addWidget(self.groupBox_3, 0, 2, 1, 1)
-
-        self.groupBox = QGroupBox(self.frame)
+        self.tabWidget_3 = QTabWidget(self.centralwidget)
+        self.tabWidget_3.setObjectName(u"tabWidget_3")
+        self.tab_9 = QWidget()
+        self.tab_9.setObjectName(u"tab_9")
+        self.horizontalLayout_9 = QHBoxLayout(self.tab_9)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.groupBox = QGroupBox(self.tab_9)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label_4 = QLabel(self.groupBox)
         self.label_4.setObjectName(u"label_4")
@@ -302,7 +101,7 @@ class Ui_MainWindow(object):
 
         self.spinBox_fast_steps = QSpinBox(self.groupBox)
         self.spinBox_fast_steps.setObjectName(u"spinBox_fast_steps")
-        self.spinBox_fast_steps.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_fast_steps.setButtonSymbols(QAbstractSpinBox.UpDownArrows)
         self.spinBox_fast_steps.setMinimum(1)
         self.spinBox_fast_steps.setMaximum(5000)
         self.spinBox_fast_steps.setValue(50)
@@ -333,10 +132,246 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addLayout(self.verticalLayout)
 
 
-        self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.horizontalLayout_9.addWidget(self.groupBox)
+
+        self.groupBox_2 = QGroupBox(self.tab_9)
+        self.groupBox_2.setObjectName(u"groupBox_2")
+        self.verticalLayout_6 = QVBoxLayout(self.groupBox_2)
+        self.verticalLayout_6.setSpacing(0)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5 = QVBoxLayout()
+        self.verticalLayout_5.setSpacing(3)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.label_5 = QLabel(self.groupBox_2)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout_5.addWidget(self.label_5)
+
+        self.comboBoxSlow = QComboBox(self.groupBox_2)
+        self.comboBoxSlow.addItem("")
+        self.comboBoxSlow.addItem("")
+        self.comboBoxSlow.addItem("")
+        self.comboBoxSlow.setObjectName(u"comboBoxSlow")
+
+        self.verticalLayout_5.addWidget(self.comboBoxSlow)
+
+        self.label_6 = QLabel(self.groupBox_2)
+        self.label_6.setObjectName(u"label_6")
+
+        self.verticalLayout_5.addWidget(self.label_6)
+
+        self.spinBox_slow_start = QDoubleSpinBox(self.groupBox_2)
+        self.spinBox_slow_start.setObjectName(u"spinBox_slow_start")
+        self.spinBox_slow_start.setMinimumSize(QSize(75, 25))
+        self.spinBox_slow_start.setMaximumSize(QSize(200, 40))
+        self.spinBox_slow_start.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_slow_start.setReadOnly(False)
+        self.spinBox_slow_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_slow_start.setDecimals(3)
+        self.spinBox_slow_start.setMinimum(-1.000000000000000)
+        self.spinBox_slow_start.setMaximum(201.000000000000000)
+        self.spinBox_slow_start.setValue(1.000000000000000)
+
+        self.verticalLayout_5.addWidget(self.spinBox_slow_start)
+
+        self.label_7 = QLabel(self.groupBox_2)
+        self.label_7.setObjectName(u"label_7")
+
+        self.verticalLayout_5.addWidget(self.label_7)
+
+        self.spinBox_slow_stop = QDoubleSpinBox(self.groupBox_2)
+        self.spinBox_slow_stop.setObjectName(u"spinBox_slow_stop")
+        self.spinBox_slow_stop.setMinimumSize(QSize(75, 25))
+        self.spinBox_slow_stop.setMaximumSize(QSize(200, 40))
+        self.spinBox_slow_stop.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_slow_stop.setReadOnly(False)
+        self.spinBox_slow_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_slow_stop.setDecimals(3)
+        self.spinBox_slow_stop.setMinimum(-1.000000000000000)
+        self.spinBox_slow_stop.setMaximum(201.000000000000000)
+        self.spinBox_slow_stop.setValue(199.000000000000000)
+
+        self.verticalLayout_5.addWidget(self.spinBox_slow_stop)
+
+        self.label_8 = QLabel(self.groupBox_2)
+        self.label_8.setObjectName(u"label_8")
+
+        self.verticalLayout_5.addWidget(self.label_8)
+
+        self.spinBox_slow_steps = QSpinBox(self.groupBox_2)
+        self.spinBox_slow_steps.setObjectName(u"spinBox_slow_steps")
+        self.spinBox_slow_steps.setButtonSymbols(QAbstractSpinBox.UpDownArrows)
+        self.spinBox_slow_steps.setMinimum(1)
+        self.spinBox_slow_steps.setMaximum(5000)
+        self.spinBox_slow_steps.setValue(50)
+
+        self.verticalLayout_5.addWidget(self.spinBox_slow_steps)
+
+        self.label_24 = QLabel(self.groupBox_2)
+        self.label_24.setObjectName(u"label_24")
+
+        self.verticalLayout_5.addWidget(self.label_24)
+
+        self.spinBox_slow_stepsize = QDoubleSpinBox(self.groupBox_2)
+        self.spinBox_slow_stepsize.setObjectName(u"spinBox_slow_stepsize")
+        self.spinBox_slow_stepsize.setEnabled(False)
+        self.spinBox_slow_stepsize.setMinimumSize(QSize(75, 25))
+        self.spinBox_slow_stepsize.setMaximumSize(QSize(200, 40))
+        self.spinBox_slow_stepsize.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_slow_stepsize.setReadOnly(True)
+        self.spinBox_slow_stepsize.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_slow_stepsize.setDecimals(3)
+        self.spinBox_slow_stepsize.setMinimum(-200.000000000000000)
+        self.spinBox_slow_stepsize.setMaximum(200.000000000000000)
+        self.spinBox_slow_stepsize.setValue(1.000000000000000)
+
+        self.verticalLayout_5.addWidget(self.spinBox_slow_stepsize)
 
 
-        self.verticalLayout_12.addWidget(self.frame)
+        self.verticalLayout_6.addLayout(self.verticalLayout_5)
+
+
+        self.horizontalLayout_9.addWidget(self.groupBox_2)
+
+        self.groupBox_3 = QGroupBox(self.tab_9)
+        self.groupBox_3.setObjectName(u"groupBox_3")
+        self.verticalLayout_4 = QVBoxLayout(self.groupBox_3)
+        self.verticalLayout_4.setSpacing(0)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setSpacing(3)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.label_9 = QLabel(self.groupBox_3)
+        self.label_9.setObjectName(u"label_9")
+
+        self.verticalLayout_3.addWidget(self.label_9)
+
+        self.comboBoxFixed = QComboBox(self.groupBox_3)
+        self.comboBoxFixed.addItem("")
+        self.comboBoxFixed.addItem("")
+        self.comboBoxFixed.addItem("")
+        self.comboBoxFixed.setObjectName(u"comboBoxFixed")
+
+        self.verticalLayout_3.addWidget(self.comboBoxFixed)
+
+        self.label_10 = QLabel(self.groupBox_3)
+        self.label_10.setObjectName(u"label_10")
+
+        self.verticalLayout_3.addWidget(self.label_10)
+
+        self.spinBox_fixed_start = QDoubleSpinBox(self.groupBox_3)
+        self.spinBox_fixed_start.setObjectName(u"spinBox_fixed_start")
+        self.spinBox_fixed_start.setMinimumSize(QSize(75, 25))
+        self.spinBox_fixed_start.setMaximumSize(QSize(200, 40))
+        self.spinBox_fixed_start.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_fixed_start.setReadOnly(False)
+        self.spinBox_fixed_start.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_fixed_start.setDecimals(3)
+        self.spinBox_fixed_start.setMinimum(-1.000000000000000)
+        self.spinBox_fixed_start.setMaximum(201.000000000000000)
+        self.spinBox_fixed_start.setValue(100.000000000000000)
+
+        self.verticalLayout_3.addWidget(self.spinBox_fixed_start)
+
+        self.label_11 = QLabel(self.groupBox_3)
+        self.label_11.setObjectName(u"label_11")
+
+        self.verticalLayout_3.addWidget(self.label_11)
+
+        self.spinBox_fixed_stop = QDoubleSpinBox(self.groupBox_3)
+        self.spinBox_fixed_stop.setObjectName(u"spinBox_fixed_stop")
+        self.spinBox_fixed_stop.setMinimumSize(QSize(75, 25))
+        self.spinBox_fixed_stop.setMaximumSize(QSize(200, 40))
+        self.spinBox_fixed_stop.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_fixed_stop.setReadOnly(False)
+        self.spinBox_fixed_stop.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_fixed_stop.setDecimals(3)
+        self.spinBox_fixed_stop.setMinimum(-1.000000000000000)
+        self.spinBox_fixed_stop.setMaximum(201.000000000000000)
+        self.spinBox_fixed_stop.setValue(100.000000000000000)
+
+        self.verticalLayout_3.addWidget(self.spinBox_fixed_stop)
+
+        self.label_12 = QLabel(self.groupBox_3)
+        self.label_12.setObjectName(u"label_12")
+
+        self.verticalLayout_3.addWidget(self.label_12)
+
+        self.spinBox_fixed_steps = QSpinBox(self.groupBox_3)
+        self.spinBox_fixed_steps.setObjectName(u"spinBox_fixed_steps")
+        self.spinBox_fixed_steps.setButtonSymbols(QAbstractSpinBox.UpDownArrows)
+        self.spinBox_fixed_steps.setMinimum(1)
+        self.spinBox_fixed_steps.setMaximum(5000)
+        self.spinBox_fixed_steps.setValue(1)
+
+        self.verticalLayout_3.addWidget(self.spinBox_fixed_steps)
+
+        self.label_25 = QLabel(self.groupBox_3)
+        self.label_25.setObjectName(u"label_25")
+
+        self.verticalLayout_3.addWidget(self.label_25)
+
+        self.spinBox_fixed_stepsize = QDoubleSpinBox(self.groupBox_3)
+        self.spinBox_fixed_stepsize.setObjectName(u"spinBox_fixed_stepsize")
+        self.spinBox_fixed_stepsize.setEnabled(False)
+        self.spinBox_fixed_stepsize.setMinimumSize(QSize(75, 25))
+        self.spinBox_fixed_stepsize.setMaximumSize(QSize(200, 40))
+        self.spinBox_fixed_stepsize.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_fixed_stepsize.setReadOnly(True)
+        self.spinBox_fixed_stepsize.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_fixed_stepsize.setDecimals(3)
+        self.spinBox_fixed_stepsize.setMinimum(-200.000000000000000)
+        self.spinBox_fixed_stepsize.setMaximum(200.000000000000000)
+        self.spinBox_fixed_stepsize.setValue(1.000000000000000)
+
+        self.verticalLayout_3.addWidget(self.spinBox_fixed_stepsize)
+
+
+        self.verticalLayout_4.addLayout(self.verticalLayout_3)
+
+
+        self.horizontalLayout_9.addWidget(self.groupBox_3)
+
+        self.tabWidget_3.addTab(self.tab_9, "")
+        self.tab_10 = QWidget()
+        self.tab_10.setObjectName(u"tab_10")
+        self.gridLayout = QGridLayout(self.tab_10)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.pushButtonMacroXZ = QPushButton(self.tab_10)
+        self.pushButtonMacroXZ.setObjectName(u"pushButtonMacroXZ")
+
+        self.gridLayout.addWidget(self.pushButtonMacroXZ, 0, 1, 1, 1)
+
+        self.pushButtonMacroXY = QPushButton(self.tab_10)
+        self.pushButtonMacroXY.setObjectName(u"pushButtonMacroXY")
+
+        self.gridLayout.addWidget(self.pushButtonMacroXY, 0, 0, 1, 1)
+
+        self.pushButtonMacroHighRes = QPushButton(self.tab_10)
+        self.pushButtonMacroHighRes.setObjectName(u"pushButtonMacroHighRes")
+
+        self.gridLayout.addWidget(self.pushButtonMacroHighRes, 1, 1, 1, 1)
+
+        self.pushButtonMacroLowRes = QPushButton(self.tab_10)
+        self.pushButtonMacroLowRes.setObjectName(u"pushButtonMacroLowRes")
+
+        self.gridLayout.addWidget(self.pushButtonMacroLowRes, 1, 0, 1, 1)
+
+        self.pushButtonMacroXYRange = QPushButton(self.tab_10)
+        self.pushButtonMacroXYRange.setObjectName(u"pushButtonMacroXYRange")
+
+        self.gridLayout.addWidget(self.pushButtonMacroXYRange, 3, 0, 1, 1)
+
+        self.pushButtonMacroXZRange = QPushButton(self.tab_10)
+        self.pushButtonMacroXZRange.setObjectName(u"pushButtonMacroXZRange")
+
+        self.gridLayout.addWidget(self.pushButtonMacroXZRange, 3, 1, 1, 1)
+
+        self.tabWidget_3.addTab(self.tab_10, "")
+
+        self.verticalLayout_12.addWidget(self.tabWidget_3)
 
         self.tabWidget_2 = QTabWidget(self.centralwidget)
         self.tabWidget_2.setObjectName(u"tabWidget_2")
@@ -1019,6 +1054,28 @@ class Ui_MainWindow(object):
         self.tabWidget_right.addTab(self.tab_3, "")
         self.tab_4 = QWidget()
         self.tab_4.setObjectName(u"tab_4")
+        self.gridLayout_7 = QGridLayout(self.tab_4)
+        self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.label_35 = QLabel(self.tab_4)
+        self.label_35.setObjectName(u"label_35")
+
+        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.label_35)
+
+        self.spinBox_right_index = QSpinBox(self.tab_4)
+        self.spinBox_right_index.setObjectName(u"spinBox_right_index")
+        self.spinBox_right_index.setMaximumSize(QSize(61, 16777215))
+        self.spinBox_right_index.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_right_index.setMinimum(0)
+        self.spinBox_right_index.setMaximum(1599)
+        self.spinBox_right_index.setValue(1000)
+
+        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.spinBox_right_index)
+
+
+        self.gridLayout_7.addLayout(self.formLayout_3, 0, 0, 1, 1)
+
         self.tabWidget_right.addTab(self.tab_4, "")
 
         self.gridLayout_4.addWidget(self.tabWidget_right, 0, 1, 1, 1)
@@ -1072,6 +1129,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
+        self.tabWidget_3.setCurrentIndex(0)
         self.comboBoxSlow.setCurrentIndex(1)
         self.comboBoxFixed.setCurrentIndex(2)
         self.tabWidget_2.setCurrentIndex(0)
@@ -1088,6 +1146,16 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Raster Scanning", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Fast Axis", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
+        self.comboBoxFast.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
+        self.comboBoxFast.setItemText(1, QCoreApplication.translate("MainWindow", u"Y", None))
+        self.comboBoxFast.setItemText(2, QCoreApplication.translate("MainWindow", u"Z", None))
+
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Start (um)", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Step Size (um)", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Slow Axis", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
         self.comboBoxSlow.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
@@ -1108,16 +1176,14 @@ class Ui_MainWindow(object):
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"Step Size (um)", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Fast Axis", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Axis", None))
-        self.comboBoxFast.setItemText(0, QCoreApplication.translate("MainWindow", u"X", None))
-        self.comboBoxFast.setItemText(1, QCoreApplication.translate("MainWindow", u"Y", None))
-        self.comboBoxFast.setItemText(2, QCoreApplication.translate("MainWindow", u"Z", None))
-
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Start (um)", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Stop (um)", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Steps", None))
-        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Step Size (um)", None))
+        self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.tab_9), QCoreApplication.translate("MainWindow", u"Raster Parameters", None))
+        self.pushButtonMacroXZ.setText(QCoreApplication.translate("MainWindow", u"X-Z", None))
+        self.pushButtonMacroXY.setText(QCoreApplication.translate("MainWindow", u"X-Y", None))
+        self.pushButtonMacroHighRes.setText(QCoreApplication.translate("MainWindow", u"High Res", None))
+        self.pushButtonMacroLowRes.setText(QCoreApplication.translate("MainWindow", u"Low Res", None))
+        self.pushButtonMacroXYRange.setText(QCoreApplication.translate("MainWindow", u"Full XY Range", None))
+        self.pushButtonMacroXZRange.setText(QCoreApplication.translate("MainWindow", u"XZ Range", None))
+        self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.tab_10), QCoreApplication.translate("MainWindow", u"Macros", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Post-Image Z  (um)", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Imaging Delay (mm)", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Before/After", None))
@@ -1185,6 +1251,7 @@ class Ui_MainWindow(object):
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Frequency Index", None))
         self.tabWidget_left.setTabText(self.tabWidget_left.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Settings", None))
         self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Image", None))
+        self.label_35.setText(QCoreApplication.translate("MainWindow", u"Frequency Index", None))
         self.tabWidget_right.setTabText(self.tabWidget_right.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"Settings", None))
     # retranslateUi
 

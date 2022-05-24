@@ -2,8 +2,6 @@
 
 from ._version import __version__
 
-# TODO: Greyed out for disabled group boxes (or their super)
-
 dark_style_sheet = ('QWidget {background-color: rgb(53,53,53); font: 11pt "Arial";}\n'
                     'QLabel {color: white}\n'
                     'QPushButton {background-color: rgb(53,53,53); color: rgb(255,255,255)}\n'

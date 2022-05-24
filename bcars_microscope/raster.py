@@ -12,17 +12,28 @@ TODO: Set velocities and acceleration of ESP and Nanostage
 TODO: H5 file meta data for Laser
 """
 
-import sys
-import traceback
+from cycler import cycler
 from timeit import default_timer as timer
 from time import sleep
+from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
+from PySide2.QtCore import QTimer, QThreadPool
+from PySide2 import QtCore
+from ui.ui_bcars2_raster import Ui_MainWindow
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from bcars_microscope import dark_style_sheet
+from bcars_microscope.multithread import Worker
+from bcars_microscope.mpl import MplCanvas
+from bcars_microscope.h5 import save_location_is_valid
+
+import sys
+import traceback
 import datetime
-
 import h5py
-
 import matplotlib as mpl
 import matplotlib.style
-from sympy import N
+import numpy as np
+import debugpy
+
 mpl.style.use('seaborn-dark-palette')
 mpl.use('Qt5Agg')
 mpl.rcParams['font.size'] = 11
@@ -37,41 +48,23 @@ mpl.rcParams['ytick.color'] = TEXT_COLOR
 mpl.rcParams['axes.labelsize'] = 11
 # print(mpl.rcParams)
 
-MPL_BG_COLOR = (53/255,53/255,53/255)
+MPL_BG_COLOR = (53/255, 53/255, 53/255)
 mpl.rcParams['figure.facecolor'] = MPL_BG_COLOR
 mpl.rcParams['axes.facecolor'] = MPL_BG_COLOR
 # print(mpl.style.available)
 
 mpl.rcParams['lines.linewidth'] = 0.5
-from cycler import cycler
-mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF', '#A239A0','#DE350B', '#36B37E'])
+mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF', 
+                                                '#A239A0', '#DE350B',
+                                                '#36B37E'])
 mpl.rcParams['image.interpolation'] = 'none'
 mpl.rcParams['image.aspect'] = 'auto'
 mpl.rcParams['image.origin'] = 'lower'
 
-import numpy as np
-
-from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication, QFileDialog, QMessageBox
-from PySide2.QtCore import QTimer, Qt, QThreadPool, QRunnable, QObject, Signal, Slot
-
-from PySide2 import QtCore
-
-from PySide2.QtGui import QPalette, QColor
-
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
-from ui.ui_bcars2_raster import Ui_MainWindow
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
-from matplotlib.figure import Figure
-
-import debugpy
-
-from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
-from bcars_microscope.multithread import Worker
-from bcars_microscope.mpl import MplCanvas
-from bcars_microscope.h5 import save_location_is_valid
-from pipython import pitools
+
 
 class ImageParams:
     """Container that describes a single image acqusition
@@ -105,6 +98,7 @@ class ImageParams:
         for ns in self.ns_list:
             output.update(ns.meta)
         return output
+
 
 class NanoScanAxisParams:
     """Container describing single-axis NanoScan (stage) settings (for a single image)
@@ -175,6 +169,7 @@ class NanoScanAxisParams:
         output['{}StepSize'.format(self.prefix)] = self.step_size
         return output
 
+
 class MainWindow(QMainWindow):
     def __init__(self, devices={}):
         # Boilerplate stuff
@@ -211,7 +206,6 @@ class MainWindow(QMainWindow):
         layout_spectra.addWidget(toolbar_spectra)
         layout_spectra.addWidget(self.ui.mpl_canvas_spectra)
 
-
         # Using the placeholder widget (mpl_widget) to hold our toolbar and canvas.
         self.ui.mpl_widget_left.setLayout(layout_left)
         self.ui.mpl_widget_right.setLayout(layout_right)
@@ -222,13 +216,12 @@ class MainWindow(QMainWindow):
         # self.ui.mpl_canvas_left.axes.axis('square')
         self.ui.mpl_canvas_left.fig.set_tight_layout(True)
         self.ui.mpl_canvas_left.axes.autoscale(True)
-        self.ui.mpl_canvas_left.axes.axis([0,200,0,200])
+        self.ui.mpl_canvas_left.axes.axis([0, 200, 0, 200])
 
         # self.ui.mpl_canvas_right.axes.axis('square')
         self.ui.mpl_canvas_right.fig.set_tight_layout(True)
         self.ui.mpl_canvas_right.axes.autoscale(True)
-        self.ui.mpl_canvas_right.axes.axis([0,200,0,200])
-
+        self.ui.mpl_canvas_right.axes.axis([0, 200, 0, 200])
 
         self.ui.mpl_canvas_left.draw()
         self.ui.mpl_canvas_right.draw()
@@ -250,17 +243,17 @@ class MainWindow(QMainWindow):
         self.ui.comboBoxFast.currentIndexChanged.connect(self._update_step_sizes)
         self.ui.spinBox_fast_start.editingFinished.connect(self._update_step_sizes)
         self.ui.spinBox_fast_stop.editingFinished.connect(self._update_step_sizes)
-        self.ui.spinBox_fast_steps.editingFinished.connect(self._update_step_sizes)
+        self.ui.spinBox_fast_steps.valueChanged.connect(self._update_step_sizes)
 
         self.ui.comboBoxSlow.currentIndexChanged.connect(self._update_step_sizes)
         self.ui.spinBox_slow_start.editingFinished.connect(self._update_step_sizes)
         self.ui.spinBox_slow_stop.editingFinished.connect(self._update_step_sizes)
-        self.ui.spinBox_slow_steps.editingFinished.connect(self._update_step_sizes)
+        self.ui.spinBox_slow_steps.valueChanged.connect(self._update_step_sizes)
 
         self.ui.comboBoxFixed.currentIndexChanged.connect(self._update_step_sizes)
         self.ui.spinBox_fixed_start.editingFinished.connect(self._update_step_sizes)
         self.ui.spinBox_fixed_stop.editingFinished.connect(self._update_step_sizes)
-        self.ui.spinBox_fixed_steps.editingFinished.connect(self._update_step_sizes)
+        self.ui.spinBox_fixed_steps.valueChanged.connect(self._update_step_sizes)
 
         self.ui.spinBox_nrb_fast_start.editingFinished.connect(self._update_nrb_scan_params)
         self.ui.spinBox_nrb_fast_stop.editingFinished.connect(self._update_nrb_scan_params)
@@ -272,6 +265,13 @@ class MainWindow(QMainWindow):
 
         self.ui.pushButtonBrowseFiles.pressed.connect(self.select_save_file)
         self.ui.plainTextEditMemo.textChanged.connect(self.memo_changed_fcn)
+
+        self.ui.pushButtonMacroXY.pressed.connect(self.update_macro)
+        self.ui.pushButtonMacroXZ.pressed.connect(self.update_macro)
+        self.ui.pushButtonMacroLowRes.pressed.connect(self.update_macro)
+        self.ui.pushButtonMacroHighRes.pressed.connect(self.update_macro)
+        self.ui.pushButtonMacroXYRange.pressed.connect(self.update_macro)
+        self.ui.pushButtonMacroXZRange.pressed.connect(self.update_macro)
 
         # Variables
         self.nanoscan_fast_params = None
@@ -292,12 +292,46 @@ class MainWindow(QMainWindow):
         self.memo_altered_bool = True
         
     def select_save_file(self):
-        fname,_ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)', options=QFileDialog.DontConfirmOverwrite)
+        fname, _ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)', 
+                                               options=QFileDialog.DontConfirmOverwrite)
         if fname:
             self.ui.lineEditPathFileName.setText(fname)
 
-
-
+    def update_macro(self):
+        """ Run when macro buttons are pressed """
+        sender = self.sender()
+        
+        if sender == self.ui.pushButtonMacroXY:
+            self.ui.comboBoxFast.setCurrentIndex(0)
+            self.ui.comboBoxSlow.setCurrentIndex(1)
+            self.ui.comboBoxFixed.setCurrentIndex(2)
+            self._update_step_sizes(ignore_sender=True)
+        elif sender == self.ui.pushButtonMacroXZ:
+            self.ui.comboBoxFast.setCurrentIndex(0)
+            self.ui.comboBoxSlow.setCurrentIndex(2)
+            self.ui.comboBoxFixed.setCurrentIndex(1)
+            self._update_step_sizes(ignore_sender=True)
+        elif sender == self.ui.pushButtonMacroLowRes:
+            self.ui.spinBox_fast_steps.setValue(50)
+            self.ui.spinBox_slow_steps.setValue(50)
+            self._update_step_sizes(ignore_sender=True)
+        elif sender == self.ui.pushButtonMacroHighRes:
+            self.ui.spinBox_fast_steps.setValue(300)
+            self.ui.spinBox_slow_steps.setValue(300)
+            self._update_step_sizes(ignore_sender=True)
+        elif sender == self.ui.pushButtonMacroXYRange:
+            self.ui.spinBox_fast_start.setValue(1)
+            self.ui.spinBox_fast_stop.setValue(199)
+            self.ui.spinBox_slow_start.setValue(1)
+            self.ui.spinBox_slow_stop.setValue(199)
+            self._update_step_sizes(ignore_sender=True)
+        elif sender == self.ui.pushButtonMacroXZRange:
+            self.ui.spinBox_fast_start.setValue(1)
+            self.ui.spinBox_fast_stop.setValue(199)
+            self.ui.spinBox_slow_start.setValue(70)
+            self.ui.spinBox_slow_stop.setValue(130)
+            self._update_step_sizes(ignore_sender=True)
+        # print(self.nanoscan_slow_params.__dict__)
     @property
     def meta(self):
 
@@ -330,8 +364,12 @@ class MainWindow(QMainWindow):
                                               n_steps=1,
                                               prefix='Raster.NRB.Fixed.')
 
-    def _update_step_sizes(self):
-        sender = self.sender()
+    def _update_step_sizes(self, ignore_sender=False):
+        if not ignore_sender:
+            sender = self.sender()
+        else:
+            sender = None
+        # print('Sender: {}'.format(sender))
 
         # 3 if's b/c if sender == None, want all 3 to run
         if sender in [self.ui.spinBox_fast_start, self.ui.spinBox_fast_stop, self.ui.spinBox_fast_steps, None]:
@@ -366,14 +404,18 @@ class MainWindow(QMainWindow):
 
     def _reset_state(self):
         self._midscan_spectra = None  # N spectra that are recorded for each column
-        self._midscan_plot_ref = None  # Right-side image array
+        self._midscan_plot_ref = None  # Reference to spectral plot
         self._midscan_img_left = None  # Left-side image array
+        self._midscan_img_right = None  # Right-side image array
         self._acq_ct = -1  # How many image columns have been acquired
         self.memo_altered_bool = False  # Has the memo been changed
 
     def _midscan_update_plots(self):
         rows_to_skip = 1
         cols_to_skip = 2
+
+        extent = [self.nanoscan_fast_params.start, self.nanoscan_fast_params.stop,
+                  self.nanoscan_slow_params.start, self.nanoscan_slow_params.stop]
 
         if self._acq_ct > 0:
             if self._midscan_spectra is not None:
@@ -393,17 +435,36 @@ class MainWindow(QMainWindow):
                 try:
                     if self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].size > 0:
                         minner = self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].min()
-                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[rows_to_skip:,cols_to_skip:], vmin=minner)  # Trim off first col
+                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[rows_to_skip:,cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
                         self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
                 except Exception as e:
                     print('-------------ERROR-----------')
                     print(traceback.format_exc())
                     print(self._midscan_img_left.shape)
-                    # print(self._midscan_img_left[1:,:self._acq_ct])
+                    # print(self._midscan_img_left[1:, :self._acq_ct])
+                    print(self._acq_ct)
+
+                self.ui.mpl_canvas_left.draw()
+            
+            if self._midscan_img_right is not None:
+                self.ui.mpl_canvas_right.axes.cla()
+                if self.ui.mpl_canvas_right.cbar is not None:
+                    self.ui.mpl_canvas_right.cbar.remove()
+                    self.ui.mpl_canvas_right.cbar = None
+                try:
+                    if self._midscan_img_right[rows_to_skip:self._acq_ct,cols_to_skip:].size > 0:
+                        minner = self._midscan_img_right[rows_to_skip:self._acq_ct,cols_to_skip:].min()
+                        img = self.ui.mpl_canvas_right.axes.imshow(self._midscan_img_right[rows_to_skip:,cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
+                        self.ui.mpl_canvas_right.cbar = self.ui.mpl_canvas_right.fig.colorbar(img)
+                except Exception as e:
+                    print('-------------ERROR-----------')
+                    print(traceback.format_exc())
+                    print(self._midscan_img_right.shape)
+                    # print(self._midscan_img_right[1:, :self._acq_ct])
                     print(self._acq_ct)
 
 
-                self.ui.mpl_canvas_left.draw()
+                self.ui.mpl_canvas_right.draw()
 
     def is_ready(self):
         """Returns status information about instrument
@@ -648,6 +709,7 @@ class MainWindow(QMainWindow):
                     
                     # Plotting setup
                     self._midscan_img_left = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
+                    self._midscan_img_right = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
 
 
                     # CCD Preparation
@@ -696,30 +758,30 @@ class MainWindow(QMainWindow):
                             # print(arr.dtype)
                         
                         if dset is not None:
-                            dset[num,:,:] = 1*img_arr
+                            dset[num, :, :] = 1 * img_arr
                         # 9. Write slice
 
                         # 10. Graphical stuff
-                        # print('Arr==0: {}'.format((img_arr[1:1+self._n_spectra_to_collect,:]==0).sum()))
+                        # print('Arr==0: {}'.format((img_arr[1:1+self._n_spectra_to_collect, :]==0).sum()))
 
                         # Idexes of evenly spaces spectra in a single line scan
-                        sp_idxs = np.arange(2,img_inst.ns_list[0].n_steps-2+1,
-                                            (img_inst.ns_list[0].n_steps-3)//(self._n_spectra_to_collect-1)).tolist()
-                        self._midscan_spectra = img_arr[sp_idxs,:]
+                        sp_idxs = np.arange(2, img_inst.ns_list[0].n_steps - 2 + 1,
+                                            (img_inst.ns_list[0].n_steps - 3) // (self._n_spectra_to_collect - 1)).tolist()
+                        self._midscan_spectra = img_arr[sp_idxs, :]
 
                         # print('Img_left shape:{}'.format(self._midscan_img_left.shape))
                         # print('Img Arr Shape: {}'.format(img_arr.shape))
 
-                        self._midscan_img_left[num,:] = 1*img_arr[:,self.ui.spinBox_left_index.value()]
-
-
+                        self._midscan_img_left[num, :] = 1 * img_arr[:, self.ui.spinBox_left_index.value()]
+                        self._midscan_img_right[num, :] = 1 * img_arr[:, self.ui.spinBox_right_index.value()]
+                        
                         # 11. Move slow then fast to next position
-                        if (num+1) < img_inst.ns_list[1].n_steps:
+                        if (num + 1) < img_inst.ns_list[1].n_steps:
                             if np.abs(img_inst.ns_list[1].step_size) > 0.0:
-                                next_pos = img_inst.ns_list[1].step_vec[num+1]
-                                self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis:next_pos})
+                                next_pos = img_inst.ns_list[1].step_vec[num + 1]
+                                self.devices['NanoStage'].MOV({img_inst.ns_list[1].axis: next_pos})
                             if np.abs(img_inst.ns_list[0].step_size) > 0.0:
-                                self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
+                                self.devices['NanoStage'].MOV({img_inst.ns_list[0].axis: img_inst.ns_list[0].start})
 
                         # Check for Stop Signal
                         # QtCore.QCoreApplication.processEvents()
@@ -730,19 +792,19 @@ class MainWindow(QMainWindow):
 
                         tmr_per_loop -= timer()
                         print('Time per loop: {} sec'.format(-tmr_per_loop))
-                        progress_callback.emit(num+1, img_inst.ns_list[1].n_steps, 'Image columns complete: ')
+                        progress_callback.emit(num + 1, img_inst.ns_list[1].n_steps, 'Image columns complete: ')
                             # self.devices['CCD'].stop_acquisition()
                     # -- END LOOP
                     # 12. Move Z to end position
-                    self.devices['NanoStage'].MOV({'Z':self.ui.spinBox_post_image_z_pos.value()})
+                    self.devices['NanoStage'].MOV({'Z': self.ui.spinBox_post_image_z_pos.value()})
 
                     # 13. Abort CCD and Free memory
                     self.devices['CCD'].stop_acquisition()
                     self.devices['CCD'].free_memory()
                     # 14. Close H5 file
-                    progress_callback.emit(iter_imgs+1, n_image_steps, 'Fixed-Axis Imaging steps: ')
+                    progress_callback.emit(iter_imgs + 1, n_image_steps, 'Fixed-Axis Imaging steps: ')
 
-                progress_callback.emit(iter_imgs+1, n_image_steps, 'Imaging steps: ')
+                progress_callback.emit(iter_imgs + 1, n_image_steps, 'Imaging steps: ')
         except Exception as e:
             print(traceback.format_exc())
         finally:
@@ -770,7 +832,7 @@ if __name__ == '__main__':
     from pipython import GCSDevice
     from esp301 import ESP301
 
-    just_ui = False
+    just_ui = True
 
     try:
         # Boilerplate
@@ -795,8 +857,10 @@ if __name__ == '__main__':
         # print('Meta data:')
         # print(window.meta)
 
-        window.ui.spinBox_slow_steps.setValue(12)
-        window.ui.spinBox_slow_steps.editingFinished.emit()
+        # window.ui.spinBox_slow_steps.setValue(12)
+        # window.ui.spinBox_slow_steps.editingFinished.emit()
+        window.ui.spinBox_left_index.setValue(365)
+        window.ui.spinBox_right_index.setValue(392)
         window.show()
 
         app.exec_()

@@ -1,7 +1,6 @@
 """
 Main controller for bcars microscope
 
-TODO: Configure CCD
 TODO: Configure Stage
 TODO: Configure Delay
 TODO: Configure Laser
@@ -51,12 +50,11 @@ class MainWindow(QMainWindow):
         self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
         self.windows['Spectroscopy'].hide()
         self.ui.pushButtonWinSpectroscopy.pressed.connect(self.windows['Spectroscopy'].show)
-        
-        
+
+
         self.windows['Raster'] = WinRaster(self.devices)
         self.windows['Raster'].hide()
         self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
-        
 
     def closeEvent(self, ev):
         print('Close')
@@ -72,18 +70,18 @@ class MainWindow(QMainWindow):
         #TODO: Use user-settings for init
         # Default to FVB spectroscopy
         if self.devices['CCD'] is None:
-            
+
             self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
                                                                 'readout_mode': 'FULL_VERTICAL_BINNING',
                                                                 'trigger_mode': 'EXTERNAL'})
-            
+
             ret = self.devices['CCD'].init_all()
             self.devices['CCD'].set_fast_external_trigger()
 
             # Indicator light on
             self.ui.radioButtonCCD.setChecked(ret)
 
-        
+
 
         dlg = DialogAndorConfig(ccd=self.devices['CCD'])
         ret = dlg.exec_()
@@ -91,29 +89,29 @@ class MainWindow(QMainWindow):
             print('Settings OKd')
         else:
             print('Settings Canceled')
-        
-        
+
+
         # Re-enable init button
         self.ui.pushButtonInitCCD.setEnabled(True)
-        
+
 
     def init_nano_stage(self):
         """ Initialize nanostage"""
         self.devices['NanoStage'] = GCSDevice('E-545')
         self.devices['NanoStage'].ConnectUSB('PI E-517 Display and Interface SN 0114071272')
-        # print('NanoStage ID: {}'.format(self.devices['NanoStage'].qIDN())) 
+        # print('NanoStage ID: {}'.format(self.devices['NanoStage'].qIDN()))
         # Disable init button if CCD initialized just fine
         self.ui.pushButtonInitNanoStage.setEnabled(False)
-        
+
         # Indicator light on
-        self.ui.radioButtonNanoStage.setChecked(True)      
+        self.ui.radioButtonNanoStage.setChecked(True)
 
     def init_delay_stage(self):
         """ Initialize delay stage"""
         self.devices['DelayStage'] = ESP301()
         # Disable init button if CCD initialized just fine
         self.ui.pushButtonInitDelayStage.setEnabled(False)
-    
+
         # Indicator light on
         self.ui.radioButtonDelayStage.setChecked(True)
 
@@ -130,11 +128,14 @@ if __name__ == '__main__':
         window = MainWindow()
         screen_geo = app.screens()[0].availableGeometry()
         app_geo = window.geometry()
-        
+
         window.show()
-        window.setGeometry(screen_geo.width()/2 - app_geo.width()/2, 
+        window.setGeometry(screen_geo.width()/2 - app_geo.width()/2,
                            screen_geo.height()*0.05, app_geo.width(), app_geo.height())
 
+
+        window.windows['Raster'].ui.spinBox_left_index.setValue(365)
+        window.windows['Raster'].ui.spinBox_right_index.setValue(392)
 
         app.exec_()
     except Exception as e:
