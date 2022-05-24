@@ -1,7 +1,6 @@
 import sys
 import traceback
-from time import sleep
-from hypothesis import settings
+
 
 import numpy as np
 
@@ -41,9 +40,11 @@ __all__ = ['AndorNewton970', 'DialogAndorConfig']
 # def get_ad_speed_list():
 #     sdk.GetHSSpeed()
 
+
 def andor_err_code_str(code):
     """ Return the associated text of an error code """
     return err_codes(code).name
+
 
 class AndorNewton970:
     """ Andor Newton 970 Settings EMCCD model """
@@ -52,10 +53,10 @@ class AndorNewton970:
                    'temperature': -70,
                    'amplifier': 'Conventional',
                    'hs_speed': 2.5,
-                   'vs_speed_idx' : 0,
-                   'vs_shift_amp' : 0,
-                   'preamp_gain_idx' : 2,
-                   'baseline_clamping' : True,
+                   'vs_speed_idx': 0,
+                   'vs_shift_amp': 0,
+                   'preamp_gain_idx': 2,
+                   'baseline_clamping': True,
                    'readout_mode': 'FULL_VERTICAL_BINNING',
                    'trigger_mode': 'INTERNAL',
                    'shutter_mode': 'PERMANENTLY_OPEN',
@@ -65,10 +66,10 @@ class AndorNewton970:
     default_imaging.update({'readout_mode': 'IMAGE'})
 
     default_imaging_trigd = default_imaging.copy()
-    default_imaging_trigd.update({'trigger_mode':'EXTERNAL'})
+    default_imaging_trigd.update({'trigger_mode': 'EXTERNAL'})
     
     default_fvb_trigd = default_fvb.copy()
-    default_fvb_trigd.update({'trigger_mode':'EXTERNAL'})
+    default_fvb_trigd.update({'trigger_mode': 'EXTERNAL'})
 
     defaults = default_fvb.copy()
 
@@ -89,10 +90,10 @@ class AndorNewton970:
         self.n_rows = None
         self.n_cols = None
         self.mode_codes = {}
-        self.mode_codes['acquisition'] = {k.name:k.value for k in atmcd_codes.Acquisition_Mode}
-        self.mode_codes['read'] = {k.name:k.value for k in atmcd_codes.Read_Mode}
-        self.mode_codes['shutter'] = {k.name:k.value for k in atmcd_codes.Shutter_Mode}
-        self.mode_codes['trigger_mode'] = {k.name:k.value for k in atmcd_codes.Trigger_Mode}
+        self.mode_codes['acquisition'] = {k.name: k.value for k in atmcd_codes.Acquisition_Mode}
+        self.mode_codes['read'] = {k.name: k.value for k in atmcd_codes.Read_Mode}
+        self.mode_codes['shutter'] = {k.name: k.value for k in atmcd_codes.Shutter_Mode}
+        self.mode_codes['trigger_mode'] = {k.name: k.value for k in atmcd_codes.Trigger_Mode}
 
         self.settings = self.defaults.copy()
 
