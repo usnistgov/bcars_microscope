@@ -1,3 +1,10 @@
+"""
+Spectroscopy window for bcars microscope
+
+TODO: De-enable controls for uninitialized devices
+
+"""
+
 import sys
 import traceback
 

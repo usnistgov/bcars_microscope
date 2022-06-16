@@ -75,6 +75,7 @@ Examples/*.png
 Examples/*.eps
 Examples/*.svg
 Examples/.ipynb_checkpoints
+.ipynb_checkpoints
 
 # Qt for Python Builds
 .qt_for_python/*

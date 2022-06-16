@@ -578,7 +578,7 @@ if __name__ == '__main__':
             window = DialogAndorConfig(ccd=ccd)
             ret = window.exec_()
             print('==============Pulling Current Settings=============')
-                        
+            print(ccd.settings)
             print('===================================================')
             # out = app.exec_()  # Don't need with a modal dialog
         except:
