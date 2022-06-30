@@ -27,6 +27,8 @@ from raster import MainWindow as WinRaster
 from andor_ccd import AndorNewton970, DialogAndorConfig
 from pipython import GCSDevice
 from esp301 import ESP301
+from pi_nano_stage import NanoStage
+from pi_micro_stage import MicroStage
 
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
@@ -45,6 +47,7 @@ class MainWindow(QMainWindow):
         # Signals and Slots
         self.ui.pushButtonInitCCD.pressed.connect(self.init_ccd)
         self.ui.pushButtonInitNanoStage.pressed.connect(self.init_nano_stage)
+        self.ui.pushButtonInitMicroStage.pressed.connect(self.init_micro_stage)
         self.ui.pushButtonInitDelayStage.pressed.connect(self.init_delay_stage)
         self.windows = {}
         self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
@@ -72,8 +75,8 @@ class MainWindow(QMainWindow):
         if self.devices['CCD'] is None:
 
             self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
-                                                                'readout_mode': 'FULL_VERTICAL_BINNING',
-                                                                'trigger_mode': 'EXTERNAL'})
+                                                                  'readout_mode': 'FULL_VERTICAL_BINNING',
+                                                                  'trigger_mode': 'EXTERNAL'})
 
             ret = self.devices['CCD'].init_all()
             self.devices['CCD'].set_fast_external_trigger()
@@ -97,18 +100,30 @@ class MainWindow(QMainWindow):
 
     def init_nano_stage(self):
         """ Initialize nanostage"""
-        self.devices['NanoStage'] = GCSDevice('E-545')
-        self.devices['NanoStage'].ConnectUSB('PI E-517 Display and Interface SN 0114071272')
-        # print('NanoStage ID: {}'.format(self.devices['NanoStage'].qIDN()))
-        # Disable init button if CCD initialized just fine
+        self.devices['NanoStage'] = NanoStage()
+        self.devices['NanoStage'].open()
+        # Disable init button if initialized just fine
+        # TODO: Make a small UI to set velocity and acceleration once already initialized
         self.ui.pushButtonInitNanoStage.setEnabled(False)
 
         # Indicator light on
         self.ui.radioButtonNanoStage.setChecked(True)
 
+    def init_micro_stage(self):
+        """Initialize micro stage"""
+        self.devices['MicroStage'] = MicroStage()
+        self.devices['MicroStage'].open()
+        # Disable init button if initialized just fine
+        # TODO: Make a small UI to set velocity and acceleration once already initialized
+        self.ui.pushButtonInitMicroStage.setEnabled(False)
+
+        # Indicator light on
+        self.ui.radioButtonMicroStage.setChecked(True)
+
     def init_delay_stage(self):
         """ Initialize delay stage"""
-        self.devices['DelayStage'] = ESP301()
+        self.devices['DelayStage'] = ESP301(com_port='COM9')
+        self.devices['DelayStage'].open()
         # Disable init button if CCD initialized just fine
         self.ui.pushButtonInitDelayStage.setEnabled(False)
 
@@ -144,13 +159,17 @@ if __name__ == '__main__':
         pass
     finally:
         print('Shutting Down All Devices...')
-        if 'CCD' in window.devices:
+        if window.devices['CCD']:
             print('CCD...')
             window.devices['CCD'].shutdown()
 
         if 'NanoStage' in window.devices:
             print('NanoStage...')
-            window.devices['NanoStage'].CloseConnection()
+            window.devices['NanoStage'].close()
+
+        if 'MicroStage' in window.devices:
+            print('MicroStage...')
+            window.devices['MicroStage'].close()
 
         if 'DelayStage' in window.devices:
             print('Delay Stage...')

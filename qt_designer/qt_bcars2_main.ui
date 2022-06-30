@@ -100,6 +100,90 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
      </widget>
     </item>
     <item>
+     <widget class="QFrame" name="frame_4">
+      <property name="maximumSize">
+       <size>
+        <width>165</width>
+        <height>144</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Micro Stage</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QRadioButton" name="radioButtonMicroStage">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QRadioButton { color: white}
+QRadioButton::indicator { width: 50; height: 50; border-radius: 20px}
+QRadioButton::indicator:checked {background-color: rgb(85, 255, 0); border: 2px solid white}
+QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QPushButton" name="pushButtonInitMicroStage">
+         <property name="minimumSize">
+          <size>
+           <width>75</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>75</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Initialize</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QFrame" name="frame_2">
       <property name="maximumSize">
        <size>
@@ -307,6 +391,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -327,6 +412,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>

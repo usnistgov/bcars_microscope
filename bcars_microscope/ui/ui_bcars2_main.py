@@ -66,6 +66,44 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.frame)
 
+        self.frame_4 = QFrame(self.centralwidget)
+        self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setMaximumSize(QSize(165, 144))
+        self.frame_4.setFrameShape(QFrame.Panel)
+        self.frame_4.setFrameShadow(QFrame.Plain)
+        self.frame_4.setLineWidth(2)
+        self.verticalLayout_3 = QVBoxLayout(self.frame_4)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.label_4 = QLabel(self.frame_4)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setFont(font)
+
+        self.verticalLayout_3.addWidget(self.label_4)
+
+        self.radioButtonMicroStage = QRadioButton(self.frame_4)
+        self.radioButtonMicroStage.setObjectName(u"radioButtonMicroStage")
+        self.radioButtonMicroStage.setEnabled(False)
+        self.radioButtonMicroStage.setStyleSheet(u"QRadioButton { color: white}\n"
+"QRadioButton::indicator { width: 50; height: 50; border-radius: 20px}\n"
+"QRadioButton::indicator:checked {background-color: rgb(85, 255, 0); border: 2px solid white}\n"
+"QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}")
+        self.radioButtonMicroStage.setCheckable(True)
+        self.radioButtonMicroStage.setChecked(False)
+        self.radioButtonMicroStage.setAutoExclusive(False)
+
+        self.verticalLayout_3.addWidget(self.radioButtonMicroStage, 0, Qt.AlignHCenter)
+
+        self.pushButtonInitMicroStage = QPushButton(self.frame_4)
+        self.pushButtonInitMicroStage.setObjectName(u"pushButtonInitMicroStage")
+        self.pushButtonInitMicroStage.setMinimumSize(QSize(75, 0))
+        self.pushButtonInitMicroStage.setMaximumSize(QSize(75, 16777215))
+        self.pushButtonInitMicroStage.setFont(font1)
+
+        self.verticalLayout_3.addWidget(self.pushButtonInitMicroStage, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout.addWidget(self.frame_4)
+
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
         self.frame_2.setMaximumSize(QSize(165, 144))
@@ -161,6 +199,7 @@ class Ui_MainWindow(object):
         self.pushButtonWinSpectroscopy.setObjectName(u"pushButtonWinSpectroscopy")
         self.pushButtonWinSpectroscopy.setMaximumSize(QSize(134, 50))
         font3 = QFont()
+        font3.setFamily(u"Arial")
         font3.setPointSize(14)
         font3.setBold(True)
         font3.setWeight(75)
@@ -201,6 +240,9 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"CCD", None))
         self.radioButtonCCD.setText("")
         self.pushButtonInitCCD.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Micro Stage", None))
+        self.radioButtonMicroStage.setText("")
+        self.pushButtonInitMicroStage.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Nano Stage", None))
         self.radioButtonNanoStage.setText("")
         self.pushButtonInitNanoStage.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))

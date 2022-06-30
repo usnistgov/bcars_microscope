@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1141, 838)
+        MainWindow.resize(1141, 906)
         MainWindow.setMinimumSize(QSize(800, 400))
         font = QFont()
         font.setFamily(u"Arial")
@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
-        self.frame.setMinimumSize(QSize(391, 0))
+        self.frame.setMinimumSize(QSize(391, 411))
         self.frame.setMaximumSize(QSize(391, 16777215))
         self.frame.setFrameShape(QFrame.Panel)
         self.frame.setFrameShadow(QFrame.Raised)
@@ -263,6 +263,176 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.gridLayout)
 
+        self.gridLayout_5 = QGridLayout()
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.spinBox_y_pos_micro = QDoubleSpinBox(self.frame)
+        self.spinBox_y_pos_micro.setObjectName(u"spinBox_y_pos_micro")
+        self.spinBox_y_pos_micro.setMinimumSize(QSize(75, 25))
+        self.spinBox_y_pos_micro.setMaximumSize(QSize(200, 40))
+        self.spinBox_y_pos_micro.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_y_pos_micro.setReadOnly(True)
+        self.spinBox_y_pos_micro.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_y_pos_micro.setDecimals(3)
+        self.spinBox_y_pos_micro.setMinimum(1.000000000000000)
+        self.spinBox_y_pos_micro.setMaximum(24.000000000000000)
+        self.spinBox_y_pos_micro.setValue(12.000000000000000)
+
+        self.gridLayout_5.addWidget(self.spinBox_y_pos_micro, 4, 1, 1, 1)
+
+        self.checkBoxJoyStickOn = QCheckBox(self.frame)
+        self.checkBoxJoyStickOn.setObjectName(u"checkBoxJoyStickOn")
+        self.checkBoxJoyStickOn.setEnabled(True)
+        sizePolicy.setHeightForWidth(self.checkBoxJoyStickOn.sizePolicy().hasHeightForWidth())
+        self.checkBoxJoyStickOn.setSizePolicy(sizePolicy)
+        self.checkBoxJoyStickOn.setStyleSheet(u"QCheckBox::indicator { width: 25; height: 25 }\n"
+"QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}")
+        self.checkBoxJoyStickOn.setChecked(False)
+
+        self.gridLayout_5.addWidget(self.checkBoxJoyStickOn, 5, 1, 1, 1)
+
+        self.pushButton_moveYMicro = QPushButton(self.frame)
+        self.pushButton_moveYMicro.setObjectName(u"pushButton_moveYMicro")
+        self.pushButton_moveYMicro.setMinimumSize(QSize(0, 25))
+        self.pushButton_moveYMicro.setMaximumSize(QSize(16777215, 40))
+        self.pushButton_moveYMicro.setStyleSheet(u"")
+
+        self.gridLayout_5.addWidget(self.pushButton_moveYMicro, 4, 4, 1, 1)
+
+        self.pushButton_moveXMicro = QPushButton(self.frame)
+        self.pushButton_moveXMicro.setObjectName(u"pushButton_moveXMicro")
+        sizePolicy1.setHeightForWidth(self.pushButton_moveXMicro.sizePolicy().hasHeightForWidth())
+        self.pushButton_moveXMicro.setSizePolicy(sizePolicy1)
+        self.pushButton_moveXMicro.setMinimumSize(QSize(0, 25))
+        self.pushButton_moveXMicro.setMaximumSize(QSize(16777215, 40))
+        self.pushButton_moveXMicro.setStyleSheet(u"")
+
+        self.gridLayout_5.addWidget(self.pushButton_moveXMicro, 3, 4, 1, 1)
+
+        self.label_15 = QLabel(self.frame)
+        self.label_15.setObjectName(u"label_15")
+        self.label_15.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_5.addWidget(self.label_15, 4, 0, 1, 1)
+
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.pushButton_moveAllMicro = QPushButton(self.frame)
+        self.pushButton_moveAllMicro.setObjectName(u"pushButton_moveAllMicro")
+        self.pushButton_moveAllMicro.setStyleSheet(u"")
+
+        self.horizontalLayout_6.addWidget(self.pushButton_moveAllMicro)
+
+        self.pushButton_setPos_getCurrentMicro = QPushButton(self.frame)
+        self.pushButton_setPos_getCurrentMicro.setObjectName(u"pushButton_setPos_getCurrentMicro")
+        self.pushButton_setPos_getCurrentMicro.setStyleSheet(u"")
+
+        self.horizontalLayout_6.addWidget(self.pushButton_setPos_getCurrentMicro)
+
+
+        self.gridLayout_5.addLayout(self.horizontalLayout_6, 2, 3, 1, 2)
+
+        self.spinBox_x_setpos_micro = QDoubleSpinBox(self.frame)
+        self.spinBox_x_setpos_micro.setObjectName(u"spinBox_x_setpos_micro")
+        self.spinBox_x_setpos_micro.setMinimumSize(QSize(75, 25))
+        self.spinBox_x_setpos_micro.setMaximumSize(QSize(200, 40))
+        self.spinBox_x_setpos_micro.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_x_setpos_micro.setReadOnly(False)
+        self.spinBox_x_setpos_micro.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_x_setpos_micro.setDecimals(3)
+        self.spinBox_x_setpos_micro.setMinimum(1.000000000000000)
+        self.spinBox_x_setpos_micro.setMaximum(24.000000000000000)
+        self.spinBox_x_setpos_micro.setValue(12.000000000000000)
+
+        self.gridLayout_5.addWidget(self.spinBox_x_setpos_micro, 3, 3, 1, 1)
+
+        self.pushButton_moveCenterMicro = QPushButton(self.frame)
+        self.pushButton_moveCenterMicro.setObjectName(u"pushButton_moveCenterMicro")
+        self.pushButton_moveCenterMicro.setStyleSheet(u"")
+
+        self.gridLayout_5.addWidget(self.pushButton_moveCenterMicro, 5, 3, 1, 1)
+
+        self.label_13 = QLabel(self.frame)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setFont(font1)
+        self.label_13.setStyleSheet(u"")
+        self.label_13.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_5.addWidget(self.label_13, 1, 0, 1, 2)
+
+        self.label_14 = QLabel(self.frame)
+        self.label_14.setObjectName(u"label_14")
+        self.label_14.setFont(font1)
+        self.label_14.setStyleSheet(u"")
+        self.label_14.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_5.addWidget(self.label_14, 1, 3, 1, 2)
+
+        self.line_2 = QFrame(self.frame)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShadow(QFrame.Plain)
+        self.line_2.setLineWidth(2)
+        self.line_2.setFrameShape(QFrame.VLine)
+
+        self.gridLayout_5.addWidget(self.line_2, 1, 2, 5, 1)
+
+        self.label_16 = QLabel(self.frame)
+        self.label_16.setObjectName(u"label_16")
+        self.label_16.setTextFormat(Qt.PlainText)
+
+        self.gridLayout_5.addWidget(self.label_16, 3, 0, 1, 1)
+
+        self.pushButton_updateMicroPos = QPushButton(self.frame)
+        self.pushButton_updateMicroPos.setObjectName(u"pushButton_updateMicroPos")
+
+        self.gridLayout_5.addWidget(self.pushButton_updateMicroPos, 2, 0, 1, 2)
+
+        self.spinBox_y_setpos_micro = QDoubleSpinBox(self.frame)
+        self.spinBox_y_setpos_micro.setObjectName(u"spinBox_y_setpos_micro")
+        self.spinBox_y_setpos_micro.setMinimumSize(QSize(75, 25))
+        self.spinBox_y_setpos_micro.setMaximumSize(QSize(200, 40))
+        self.spinBox_y_setpos_micro.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_y_setpos_micro.setReadOnly(False)
+        self.spinBox_y_setpos_micro.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_y_setpos_micro.setDecimals(3)
+        self.spinBox_y_setpos_micro.setMinimum(1.000000000000000)
+        self.spinBox_y_setpos_micro.setMaximum(24.000000000000000)
+        self.spinBox_y_setpos_micro.setValue(12.000000000000000)
+
+        self.gridLayout_5.addWidget(self.spinBox_y_setpos_micro, 4, 3, 1, 1)
+
+        self.spinBox_x_pos_micro = QDoubleSpinBox(self.frame)
+        self.spinBox_x_pos_micro.setObjectName(u"spinBox_x_pos_micro")
+        self.spinBox_x_pos_micro.setMinimumSize(QSize(75, 25))
+        self.spinBox_x_pos_micro.setMaximumSize(QSize(200, 40))
+        self.spinBox_x_pos_micro.setStyleSheet(u"font: 11pt \"Arial\";")
+        self.spinBox_x_pos_micro.setReadOnly(True)
+        self.spinBox_x_pos_micro.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.spinBox_x_pos_micro.setDecimals(3)
+        self.spinBox_x_pos_micro.setMinimum(1.000000000000000)
+        self.spinBox_x_pos_micro.setMaximum(24.000000000000000)
+        self.spinBox_x_pos_micro.setValue(12.000000000000000)
+
+        self.gridLayout_5.addWidget(self.spinBox_x_pos_micro, 3, 1, 1, 1)
+
+        self.label_17 = QLabel(self.frame)
+        self.label_17.setObjectName(u"label_17")
+
+        self.gridLayout_5.addWidget(self.label_17, 5, 0, 1, 1)
+
+        self.label_18 = QLabel(self.frame)
+        self.label_18.setObjectName(u"label_18")
+        font2 = QFont()
+        font2.setFamily(u"Arial")
+        font2.setPointSize(16)
+        font2.setBold(True)
+        font2.setWeight(75)
+        self.label_18.setFont(font2)
+
+        self.gridLayout_5.addWidget(self.label_18, 0, 0, 1, 2)
+
+
+        self.verticalLayout.addLayout(self.gridLayout_5)
+
 
         self.verticalLayout_2.addWidget(self.frame)
 
@@ -270,8 +440,8 @@ class Ui_MainWindow(object):
         self.frame_2.setObjectName(u"frame_2")
         sizePolicy1.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
         self.frame_2.setSizePolicy(sizePolicy1)
-        self.frame_2.setMinimumSize(QSize(0, 106))
-        self.frame_2.setMaximumSize(QSize(16777215, 106))
+        self.frame_2.setMinimumSize(QSize(0, 0))
+        self.frame_2.setMaximumSize(QSize(16777215, 100))
         self.frame_2.setFrameShape(QFrame.Panel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.formLayout = QFormLayout(self.frame_2)
@@ -345,6 +515,7 @@ class Ui_MainWindow(object):
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
         self.frame_4.setSizePolicy(sizePolicy2)
+        self.frame_4.setMaximumSize(QSize(16777215, 70))
         self.frame_4.setFrameShape(QFrame.Panel)
         self.frame_4.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.frame_4)
@@ -396,6 +567,7 @@ class Ui_MainWindow(object):
 
         self.frame_5 = QFrame(self.centralwidget)
         self.frame_5.setObjectName(u"frame_5")
+        self.frame_5.setMaximumSize(QSize(16777215, 160))
         self.frame_5.setFrameShape(QFrame.Panel)
         self.frame_5.setFrameShadow(QFrame.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.frame_5)
@@ -516,13 +688,13 @@ class Ui_MainWindow(object):
         self.pushButtonStartAcq.setMinimumSize(QSize(50, 50))
         self.pushButtonStartAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStartAcq.setBaseSize(QSize(50, 50))
-        font2 = QFont()
-        font2.setFamily(u"Arial Black")
-        font2.setPointSize(14)
-        font2.setBold(False)
-        font2.setItalic(False)
-        font2.setWeight(10)
-        self.pushButtonStartAcq.setFont(font2)
+        font3 = QFont()
+        font3.setFamily(u"Arial Black")
+        font3.setPointSize(14)
+        font3.setBold(False)
+        font3.setItalic(False)
+        font3.setWeight(10)
+        self.pushButtonStartAcq.setFont(font3)
         self.pushButtonStartAcq.setStyleSheet(u"color: white;\n"
 "font: 87 14pt \"Arial Black\";")
 
@@ -539,7 +711,7 @@ class Ui_MainWindow(object):
         self.pushButtonStopAcq.setMinimumSize(QSize(50, 50))
         self.pushButtonStopAcq.setMaximumSize(QSize(75, 50))
         self.pushButtonStopAcq.setBaseSize(QSize(50, 50))
-        self.pushButtonStopAcq.setFont(font2)
+        self.pushButtonStopAcq.setFont(font3)
         self.pushButtonStopAcq.setStyleSheet(u"color:red;\n"
 "font: 87 14pt \"Arial Black\";")
 
@@ -594,7 +766,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1141, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1141, 23))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -621,6 +793,19 @@ class Ui_MainWindow(object):
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"X (um)", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Z (um)", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Z-Offset", None))
+        self.checkBoxJoyStickOn.setText("")
+        self.pushButton_moveYMicro.setText(QCoreApplication.translate("MainWindow", u"Move Y", None))
+        self.pushButton_moveXMicro.setText(QCoreApplication.translate("MainWindow", u"Move X", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Y (mm)", None))
+        self.pushButton_moveAllMicro.setText(QCoreApplication.translate("MainWindow", u"Move All", None))
+        self.pushButton_setPos_getCurrentMicro.setText(QCoreApplication.translate("MainWindow", u"Use Current", None))
+        self.pushButton_moveCenterMicro.setText(QCoreApplication.translate("MainWindow", u"Center", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Current Position", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Set Position", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"X (mm)", None))
+        self.pushButton_updateMicroPos.setText(QCoreApplication.translate("MainWindow", u"Update", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Joy Stick", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Micro Stage", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Averages ON", None))
         self.checkBoxAvgOn.setText("")
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"N Averages", None))

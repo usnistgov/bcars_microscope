@@ -2,7 +2,7 @@
 Spectroscopy window for bcars microscope
 
 TODO: De-enable controls for uninitialized devices
-
+TODO: Grid across plotting window (maybe a checkbox)
 """
 
 import sys
@@ -125,12 +125,20 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_updatePosition.pressed.connect(self.update_position)
         self.ui.pushButton_setPos_getCurrent.pressed.connect(self.update_position)
         
+        # NanoStage
         self.ui.pushButton_moveX.pressed.connect(self.move_nano_stage)
         self.ui.pushButton_moveY.pressed.connect(self.move_nano_stage)
         self.ui.pushButton_moveZ.pressed.connect(self.move_nano_stage)
         self.ui.pushButton_moveAll.pressed.connect(self.move_nano_stage)
         self.ui.pushButton_moveCenter.pressed.connect(self.move_nano_stage)
         self.ui.pushButton_moveCenter_Offset.pressed.connect(self.move_nano_stage)
+
+        # MicroStage
+        self.ui.pushButton_moveXMicro.pressed.connect(self.move_micro_stage)
+        self.ui.pushButton_moveYMicro.pressed.connect(self.move_micro_stage)
+        self.ui.pushButton_moveAllMicro.pressed.connect(self.move_micro_stage)
+        self.ui.pushButton_moveCenterMicro.pressed.connect(self.move_micro_stage)
+        self.ui.checkBoxJoyStickOn.stateChanged.connect(self.micro_joystick_change)
         
         self.ui.checkBoxAvgOn.stateChanged.connect(self.reset_avg)
         self.ui.spinBoxNAverages.valueChanged.connect(self.reset_avg)
@@ -160,7 +168,9 @@ class MainWindow(QMainWindow):
         if 'CCD' in self.devices:
             if self.devices['running']:
                 self.stop_acquisition()
-                
+        if 'MicroStage' in self.devices:
+            self.devices['MicroStage'].set_joystick_off()
+
         return QWidget.hideEvent(self, ev)
 
     def start_acquisition(self):
@@ -181,10 +191,6 @@ class MainWindow(QMainWindow):
         if 'CCD' in self.devices:
             sp = 1.*self.devices['CCD'].get_last_n_images16()[1]
             return np.arange(sp.size), sp
-
-    def get_position(self):
-        if 'NanoStage' in self.devices:
-            return self.devices['NanoStage'].qPOS()
 
     def recordSpectrum(self):
         if self.sender() == self.ui.pushButtonRecDark:
@@ -209,7 +215,7 @@ class MainWindow(QMainWindow):
 
     def update_position(self):
         if 'NanoStage' in self.devices:
-            locs_dict = self.get_position()
+            locs_dict = self.devices['NanoStage'].get_position()
             if self.sender() == self.ui.pushButton_setPos_getCurrent:
                 self.ui.spinBox_x_setpos.setValue(locs_dict['X'])
                 self.ui.spinBox_y_setpos.setValue(locs_dict['Y'])
@@ -219,9 +225,28 @@ class MainWindow(QMainWindow):
                 self.ui.spinBox_y_pos.setValue(locs_dict['Y'])
                 self.ui.spinBox_z_pos.setValue(locs_dict['Z'])
 
+        if 'MicroStage' in self.devices:
+            locs_dict = self.devices['MicroStage'].get_position()
+            if self.sender() == self.ui.pushButton_setPos_getCurrentMicro:
+                self.ui.spinBox_x_setpos_micro.setValue(locs_dict['1'])
+                self.ui.spinBox_y_setpos_micro.setValue(locs_dict['2'])
+            else: # Not from the set from current-position load button
+                self.ui.spinBox_x_pos_micro.setValue(locs_dict['1'])
+                self.ui.spinBox_y_pos_micro.setValue(locs_dict['2'])
+            # Check joystick state
+            self.ui.checkBoxJoyStickOn.setChecked(self.devices['MicroStage'].get_joystick_status())
+
+    def micro_joystick_change(self):
+        if 'MicroStage' in self.devices:
+            is_checked = self.ui.checkBoxJoyStickOn.isChecked()
+            if is_checked:
+                self.devices['MicroStage'].set_joystick_on()
+            else:
+                self.devices['MicroStage'].set_joystick_off()
+
     def update_delay_pos(self):
         if 'DelayStage' in self.devices:
-            delay = self.devices['DelayStage'].get_pos()
+            delay = self.devices['DelayStage'].get_position()
             self.ui.spinBoxTimeCurrPos.setValue(delay)
 
     def move_delay(self):
@@ -237,7 +262,7 @@ class MainWindow(QMainWindow):
             elif self.sender() == self.ui.pushButtonTimeGoToDark:
                 new_delay = 0.3
                 
-            self.devices['DelayStage'].set_pos(new_delay)
+            self.devices['DelayStage'].set_position(new_delay)
         
 
     def set_delay_home(self):
@@ -325,25 +350,42 @@ class MainWindow(QMainWindow):
         if 'NanoStage' in self.devices:
             self.timer_update_pos.stop()
             if self.sender() == self.ui.pushButton_moveX:
-                self.devices['NanoStage'].MOV({'X': self.ui.spinBox_x_setpos.value()})
+                self.devices['NanoStage'].set_position({'X': self.ui.spinBox_x_setpos.value()})
             elif self.sender() == self.ui.pushButton_moveY:
-                self.devices['NanoStage'].MOV({'Y': self.ui.spinBox_y_setpos.value()})
+                self.devices['NanoStage'].set_position({'Y': self.ui.spinBox_y_setpos.value()})
             elif self.sender() == self.ui.pushButton_moveZ:
-                self.devices['NanoStage'].MOV({'Z': self.ui.spinBox_z_setpos.value()})
+                self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_z_setpos.value()})
             elif self.sender() == self.ui.pushButton_moveAll:
-                self.devices['NanoStage'].MOV({'X': self.ui.spinBox_x_setpos.value(),
+                self.devices['NanoStage'].set_position({'X': self.ui.spinBox_x_setpos.value(),
                                 'Y': self.ui.spinBox_y_setpos.value(),
                                 'Z': self.ui.spinBox_z_setpos.value()})
             elif self.sender() == self.ui.pushButton_moveCenter:
-                self.devices['NanoStage'].MOV({'X': 100., 'Y': 100., 'Z': 100.})
+                self.devices['NanoStage'].set_position({'X': 100., 'Y': 100., 'Z': 100.})
             elif self.sender() == self.ui.pushButton_moveCenter_Offset:
-                self.devices['NanoStage'].MOV({'X': 100.,
+                self.devices['NanoStage'].set_position({'X': 100.,
                                 'Y': 100.,
                                 'Z': self.ui.spinBox_z_offset.value()})
                                 
 
             else:
                 raise ValueError('Move stage error (inner')
+            self.timer_update_pos.start()
+
+    def move_micro_stage(self):
+        if 'MicroStage' in self.devices:
+            self.timer_update_pos.stop()
+            if self.sender() == self.ui.pushButton_moveXMicro:
+                self.devices['MicroStage'].set_position({'1': self.ui.spinBox_x_setpos_micro.value()})
+            elif self.sender() == self.ui.pushButton_moveYMicro:
+                self.devices['MicroStage'].set_position({'2': self.ui.spinBox_y_setpos_micro.value()})
+            elif self.sender() == self.ui.pushButton_moveAllMicro:
+                self.devices['MicroStage'].set_position({'1': self.ui.spinBox_x_setpos_micro.value(),
+                                                         '2': self.ui.spinBox_y_setpos_micro.value()})
+            elif self.sender() == self.ui.pushButton_moveCenterMicro:
+                self.devices['MicroStage'].set_position({'1': 12., '2': 12.})                    
+
+            else:
+                raise ValueError('Move stage error (micro)')
             self.timer_update_pos.start()
 
         
@@ -362,6 +404,8 @@ if __name__ == '__main__':
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.25*np.arange(1000), label='Spectrum')[0]
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.125*np.arange(1000), label='Spectrum')[0]
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.065*np.arange(1000), label='Spectrum')[0]
+        window.ui.mpl_canvas.axes.grid(visible=True, which='both', color='gray', linestyle='--', linewidth=0.5)
+
         window.show()
 
         app.exec_()
