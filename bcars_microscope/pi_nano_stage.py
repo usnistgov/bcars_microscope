@@ -14,6 +14,12 @@ class NanoStage(AbstractStage):
         try:
             self.sdk = GCSDevice('E-545')
             self.sdk.ConnectUSB(self.device_name)
+            
+            # Turn control mode to ONLINE (axis number : 1=ONLINE)
+            self.sdk.ONL({1:1, 2:1, 3:1})
+
+            # Turn on all Servos (axis ID : 1=ON)
+            self.sdk.SVO({'X':1, 'Y':1, 'Z':1})           
 
         except Exception:
             print('Opening failed')
