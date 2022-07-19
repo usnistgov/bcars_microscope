@@ -6,6 +6,8 @@ from devices import AbstractStage
 
 class MicroStage(AbstractStage):
     device_name = 'PI C-867 Piezomotor Controller SN 0111036765'
+    num_to_axis = {'2':'X', '1':'Y'}
+    axis_to_num = {'X':'2','Y':'1'}
 
     def open(self):
         print('Opening device: {}'.format(self.device_name))
@@ -40,6 +42,12 @@ class MicroStage(AbstractStage):
     def set_position(self, pos_dict):
         assert isinstance(pos_dict, dict)
         self.sdk.MOV(pos_dict)
+
+    def set_x_position(self, pos):
+        self.set_position({self.axis_to_num['X']: pos})
+
+    def set_y_position(self, pos):
+        self.set_position({self.axis_to_num['Y']: pos})
         
     def wait_till_done(self, pause=0.1, let_settle=False, settle_pause=0.1):
         while self.is_moving():

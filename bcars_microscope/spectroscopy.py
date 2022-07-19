@@ -228,11 +228,11 @@ class MainWindow(QMainWindow):
         if 'MicroStage' in self.devices:
             locs_dict = self.devices['MicroStage'].get_position()
             if self.sender() == self.ui.pushButton_setPos_getCurrentMicro:
-                self.ui.spinBox_x_setpos_micro.setValue(locs_dict['1'])
-                self.ui.spinBox_y_setpos_micro.setValue(locs_dict['2'])
+                self.ui.spinBox_x_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
+                self.ui.spinBox_y_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
             else: # Not from the set from current-position load button
-                self.ui.spinBox_x_pos_micro.setValue(locs_dict['1'])
-                self.ui.spinBox_y_pos_micro.setValue(locs_dict['2'])
+                self.ui.spinBox_x_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
+                self.ui.spinBox_y_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
             # Check joystick state
             self.ui.checkBoxJoyStickOn.setChecked(self.devices['MicroStage'].get_joystick_status())
 
@@ -375,14 +375,14 @@ class MainWindow(QMainWindow):
         if 'MicroStage' in self.devices:
             self.timer_update_pos.stop()
             if self.sender() == self.ui.pushButton_moveXMicro:
-                self.devices['MicroStage'].set_position({'1': self.ui.spinBox_x_setpos_micro.value()})
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num['X']: self.ui.spinBox_x_setpos_micro.value()})
             elif self.sender() == self.ui.pushButton_moveYMicro:
-                self.devices['MicroStage'].set_position({'2': self.ui.spinBox_y_setpos_micro.value()})
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num['Y']: self.ui.spinBox_y_setpos_micro.value()})
             elif self.sender() == self.ui.pushButton_moveAllMicro:
-                self.devices['MicroStage'].set_position({'1': self.ui.spinBox_x_setpos_micro.value(),
-                                                         '2': self.ui.spinBox_y_setpos_micro.value()})
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num['X']: self.ui.spinBox_x_setpos_micro.value(),
+                                                         self.devices['MicroStage'].axis_to_num['Y']: self.ui.spinBox_y_setpos_micro.value()})
             elif self.sender() == self.ui.pushButton_moveCenterMicro:
-                self.devices['MicroStage'].set_position({'1': 12., '2': 12.})                    
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num['Y']: 12., self.devices['MicroStage'].axis_to_num['X']: 12.})                    
 
             else:
                 raise ValueError('Move stage error (micro)')
