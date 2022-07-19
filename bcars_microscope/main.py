@@ -29,6 +29,7 @@ from pipython import GCSDevice
 from esp301 import ESP301
 from pi_nano_stage import NanoStage
 from pi_micro_stage import MicroStage
+from acton_spec import Acton2300i, DialogSpectrographConfig
 
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
@@ -46,6 +47,7 @@ class MainWindow(QMainWindow):
 
         # Signals and Slots
         self.ui.pushButtonInitCCD.pressed.connect(self.init_ccd)
+        self.ui.pushButtonInitSpectrograph.pressed.connect(self.init_spectrograph)
         self.ui.pushButtonInitNanoStage.pressed.connect(self.init_nano_stage)
         self.ui.pushButtonInitMicroStage.pressed.connect(self.init_micro_stage)
         self.ui.pushButtonInitDelayStage.pressed.connect(self.init_delay_stage)
@@ -97,6 +99,35 @@ class MainWindow(QMainWindow):
         # Re-enable init button
         self.ui.pushButtonInitCCD.setEnabled(True)
 
+    def init_spectrograph(self):
+        """ Initialize Spectrograph """
+
+        # Disable init button during initialization
+        self.ui.pushButtonInitSpectrograph.setEnabled(False)
+
+        if 'Spectrograph' not in self.devices:
+            self.devices['Spectrograph'] = Acton2300i('COM4')
+            self.devices['Spectrograph'].open()
+            # Indicator light on
+            self.ui.radioButtonSpectrograph.setChecked(True)
+        elif self.devices['Spectrograph'] is None:
+            self.devices['Spectrograph'] = Acton2300i('COM4')
+            self.devices['Spectrograph'].open()
+            # Indicator light on
+            self.ui.radioButtonSpectrograph.setChecked(True)
+  
+          
+
+        dlg = DialogSpectrographConfig(spec=self.devices['Spectrograph'])
+        ret = dlg.exec_()
+        if ret == 1:
+            print('Settings OKd')
+        else:
+            print('Settings Canceled')
+
+
+        # Re-enable init button
+        self.ui.pushButtonInitSpectrograph.setEnabled(True)
 
     def init_nano_stage(self):
         """ Initialize nanostage"""

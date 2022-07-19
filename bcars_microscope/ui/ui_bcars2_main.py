@@ -17,11 +17,11 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(921, 205)
+        MainWindow.resize(1007, 213)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.gridLayout_2 = QGridLayout(self.centralwidget)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
         self.frame.setMaximumSize(QSize(97, 144))
@@ -64,11 +64,49 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.pushButtonInitCCD, 0, Qt.AlignHCenter)
 
 
-        self.horizontalLayout.addWidget(self.frame)
+        self.gridLayout_2.addWidget(self.frame, 0, 0, 1, 1)
+
+        self.frame_5 = QFrame(self.centralwidget)
+        self.frame_5.setObjectName(u"frame_5")
+        self.frame_5.setMaximumSize(QSize(185, 144))
+        self.frame_5.setFrameShape(QFrame.Panel)
+        self.frame_5.setFrameShadow(QFrame.Plain)
+        self.frame_5.setLineWidth(2)
+        self.verticalLayout_5 = QVBoxLayout(self.frame_5)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.label_5 = QLabel(self.frame_5)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setFont(font)
+
+        self.verticalLayout_5.addWidget(self.label_5, 0, Qt.AlignHCenter)
+
+        self.radioButtonSpectrograph = QRadioButton(self.frame_5)
+        self.radioButtonSpectrograph.setObjectName(u"radioButtonSpectrograph")
+        self.radioButtonSpectrograph.setEnabled(False)
+        self.radioButtonSpectrograph.setStyleSheet(u"QRadioButton { color: white}\n"
+"QRadioButton::indicator { width: 50; height: 50; border-radius: 20px}\n"
+"QRadioButton::indicator:checked {background-color: rgb(85, 255, 0); border: 2px solid white}\n"
+"QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}")
+        self.radioButtonSpectrograph.setCheckable(True)
+        self.radioButtonSpectrograph.setChecked(False)
+        self.radioButtonSpectrograph.setAutoExclusive(False)
+
+        self.verticalLayout_5.addWidget(self.radioButtonSpectrograph, 0, Qt.AlignHCenter)
+
+        self.pushButtonInitSpectrograph = QPushButton(self.frame_5)
+        self.pushButtonInitSpectrograph.setObjectName(u"pushButtonInitSpectrograph")
+        self.pushButtonInitSpectrograph.setMinimumSize(QSize(75, 0))
+        self.pushButtonInitSpectrograph.setMaximumSize(QSize(75, 16777215))
+        self.pushButtonInitSpectrograph.setFont(font1)
+
+        self.verticalLayout_5.addWidget(self.pushButtonInitSpectrograph, 0, Qt.AlignHCenter)
+
+
+        self.gridLayout_2.addWidget(self.frame_5, 0, 1, 1, 1)
 
         self.frame_4 = QFrame(self.centralwidget)
         self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setMaximumSize(QSize(165, 144))
+        self.frame_4.setMaximumSize(QSize(185, 144))
         self.frame_4.setFrameShape(QFrame.Panel)
         self.frame_4.setFrameShadow(QFrame.Plain)
         self.frame_4.setLineWidth(2)
@@ -102,7 +140,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.pushButtonInitMicroStage, 0, Qt.AlignHCenter)
 
 
-        self.horizontalLayout.addWidget(self.frame_4)
+        self.gridLayout_2.addWidget(self.frame_4, 0, 2, 1, 1)
 
         self.frame_2 = QFrame(self.centralwidget)
         self.frame_2.setObjectName(u"frame_2")
@@ -140,7 +178,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.pushButtonInitNanoStage, 0, Qt.AlignHCenter)
 
 
-        self.horizontalLayout.addWidget(self.frame_2)
+        self.gridLayout_2.addWidget(self.frame_2, 0, 3, 1, 1)
 
         self.frame_3 = QFrame(self.centralwidget)
         self.frame_3.setObjectName(u"frame_3")
@@ -178,11 +216,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.pushButtonInitDelayStage, 0, Qt.AlignHCenter)
 
 
-        self.horizontalLayout.addWidget(self.frame_3)
+        self.gridLayout_2.addWidget(self.frame_3, 0, 4, 1, 1)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.gridLayout_2.addItem(self.horizontalSpacer, 0, 5, 1, 1)
 
         self.groupBox = QGroupBox(self.centralwidget)
         self.groupBox.setObjectName(u"groupBox")
@@ -214,17 +252,24 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.pushButtonWinRaster, 1, 0, 1, 1)
 
+        self.pushButtonWinRaster_2 = QPushButton(self.groupBox)
+        self.pushButtonWinRaster_2.setObjectName(u"pushButtonWinRaster_2")
+        self.pushButtonWinRaster_2.setMaximumSize(QSize(134, 50))
+        self.pushButtonWinRaster_2.setFont(font3)
 
-        self.horizontalLayout.addWidget(self.groupBox)
+        self.gridLayout.addWidget(self.pushButtonWinRaster_2, 2, 0, 1, 1)
+
+
+        self.gridLayout_2.addWidget(self.groupBox, 0, 6, 1, 1)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
+        self.gridLayout_2.addItem(self.horizontalSpacer_2, 0, 7, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 921, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1007, 22))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -240,7 +285,10 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"CCD", None))
         self.radioButtonCCD.setText("")
         self.pushButtonInitCCD.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Micro Stage", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Spectrograph", None))
+        self.radioButtonSpectrograph.setText("")
+        self.pushButtonInitSpectrograph.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Macro Stage", None))
         self.radioButtonMicroStage.setText("")
         self.pushButtonInitMicroStage.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Nano Stage", None))
@@ -251,6 +299,7 @@ class Ui_MainWindow(object):
         self.pushButtonInitDelayStage.setText(QCoreApplication.translate("MainWindow", u"Initialize", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Widgets", None))
         self.pushButtonWinSpectroscopy.setText(QCoreApplication.translate("MainWindow", u"Spectroscopy", None))
-        self.pushButtonWinRaster.setText(QCoreApplication.translate("MainWindow", u"Raster Image", None))
+        self.pushButtonWinRaster.setText(QCoreApplication.translate("MainWindow", u"Micro Raster", None))
+        self.pushButtonWinRaster_2.setText(QCoreApplication.translate("MainWindow", u"Macro Raster", None))
     # retranslateUi
 
