@@ -1,10 +1,8 @@
-import abc
 import traceback
 
 from pipython import GCSDevice
-from time import sleep
-
 from devices import AbstractStage
+
 
 class NanoStage(AbstractStage):
     device_name = 'PI E-517 Display and Interface SN 0114071272'
@@ -14,19 +12,19 @@ class NanoStage(AbstractStage):
         try:
             self.sdk = GCSDevice('E-545')
             self.sdk.ConnectUSB(self.device_name)
-            
+
             # Turn control mode to ONLINE (axis number : 1=ONLINE)
-            self.sdk.ONL({1:1, 2:1, 3:1})
+            self.sdk.ONL({1: 1, 2: 1, 3: 1})
 
             # Turn on all Servos (axis ID : 1=ON)
-            self.sdk.SVO({'X':1, 'Y':1, 'Z':1})           
+            self.sdk.SVO({'X': 1, 'Y': 1, 'Z': 1})
 
         except Exception:
             print('Opening failed')
             print(traceback.format_exc())
         else:
             print('Opening succeeded')
-        
+
     def close(self):
         print('Closing device: {}'.format(self.device_name))
         try:
@@ -46,7 +44,7 @@ class NanoStage(AbstractStage):
     def set_position(self, pos_dict):
         assert isinstance(pos_dict, dict)
         self.sdk.MOV(pos_dict)
-        
+
     def wait_till_done(self, n_iter, pause, let_settle, settle_pause):
         raise NotImplementedError('Haven\'t found a good way to do this yet')
 
@@ -71,9 +69,10 @@ class NanoStage(AbstractStage):
             self.sdk.WTR(num_wavegen, rate, 0)
 
     def set_linescan(self, table_num, start, num_points, stop):
-        self.sdk.WAV_LIN(table=table_num, firstpoint=0, numpoints=num_points, 
-                         append='X', speedupdown=0, amplitude=stop - start, 
+        self.sdk.WAV_LIN(table=table_num, firstpoint=0, numpoints=num_points,
+                         append='X', speedupdown=0, amplitude=stop - start,
                          offset=start, seglength=num_points)
+
 
 if __name__ == '__main__':
     ns = NanoStage()
@@ -83,4 +82,3 @@ if __name__ == '__main__':
     print('Wavegen rates: {}'.format(ns.get_wavegen_rate()))
     print('Set Wavegen rates: {}'.format(ns.get_wavegen_rate()))
     ns.close()
-
