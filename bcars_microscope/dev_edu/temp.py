@@ -1,8 +1,8 @@
 from time import sleep
 
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QPushButton, QWidget, QMainWindow, QApplication
-from PySide2.QtCore import QTimer, QRunnable, Slot, Signal, QObject, QThreadPool
-from PySide2 import QtCore
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QPushButton, QWidget, QMainWindow, QApplication
+from PyQt5.QtCore import QTimer, QRunnable, Slot, Signal, QObject, QThreadPool
+from PyQt5 import QtCore
 
 import sys
 import time

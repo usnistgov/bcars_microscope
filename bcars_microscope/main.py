@@ -11,21 +11,14 @@ TODO: Configure Laser
 import sys
 import traceback
 
-import numpy as np
-
-from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
-from PySide2.QtCore import QTimer, Qt
-from PySide2 import QtCore
-from PySide2.QtGui import QPalette, QColor
-
-QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5 import QtCore
 
 from ui.ui_bcars2_main import Ui_MainWindow
 from spectroscopy import MainWindow as WinSpectroscopy
 from raster import MainWindow as WinRaster
 
 from andor_ccd import AndorNewton970, DialogAndorConfig
-from pipython import GCSDevice
 from esp301 import ESP301
 from pi_nano_stage import NanoStage
 from pi_micro_stage import MicroStage
@@ -33,6 +26,8 @@ from acton_spec import Acton2300i, DialogSpectrographConfig
 
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
+QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -56,7 +51,6 @@ class MainWindow(QMainWindow):
         self.windows['Spectroscopy'].hide()
         self.ui.pushButtonWinSpectroscopy.pressed.connect(self.windows['Spectroscopy'].show)
 
-
         self.windows['Raster'] = WinRaster(self.devices)
         self.windows['Raster'].hide()
         self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
@@ -72,11 +66,11 @@ class MainWindow(QMainWindow):
         # Disable init button during initialization
         self.ui.pushButtonInitCCD.setEnabled(False)
 
-        #TODO: Use user-settings for init
+        # TODO: Use user-settings for init
         # Default to FVB spectroscopy
         if self.devices['CCD'] is None:
 
-            self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,
+            self.devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time': 0.0035,
                                                                   'readout_mode': 'FULL_VERTICAL_BINNING',
                                                                   'trigger_mode': 'EXTERNAL'})
 
@@ -86,15 +80,12 @@ class MainWindow(QMainWindow):
             # Indicator light on
             self.ui.radioButtonCCD.setChecked(ret)
 
-
-
         dlg = DialogAndorConfig(ccd=self.devices['CCD'])
         ret = dlg.exec_()
         if ret == 1:
             print('Settings OKd')
         else:
             print('Settings Canceled')
-
 
         # Re-enable init button
         self.ui.pushButtonInitCCD.setEnabled(True)
@@ -115,8 +106,6 @@ class MainWindow(QMainWindow):
             self.devices['Spectrograph'].open()
             # Indicator light on
             self.ui.radioButtonSpectrograph.setChecked(True)
-  
-          
 
         dlg = DialogSpectrographConfig(spec=self.devices['Spectrograph'])
         ret = dlg.exec_()
@@ -124,7 +113,6 @@ class MainWindow(QMainWindow):
             print('Settings OKd')
         else:
             print('Settings Canceled')
-
 
         # Re-enable init button
         self.ui.pushButtonInitSpectrograph.setEnabled(True)
@@ -176,15 +164,14 @@ if __name__ == '__main__':
         app_geo = window.geometry()
 
         window.show()
-        window.setGeometry(screen_geo.width()/2 - app_geo.width()/2,
-                           screen_geo.height()*0.05, app_geo.width(), app_geo.height())
-
+        window.setGeometry(screen_geo.width() / 2 - app_geo.width() / 2,
+                           screen_geo.height() * 0.05, app_geo.width(), app_geo.height())
 
         window.windows['Raster'].ui.spinBox_left_index.setValue(365)
         window.windows['Raster'].ui.spinBox_right_index.setValue(392)
 
         app.exec_()
-    except Exception as e:
+    except Exception:
         print(traceback.format_exc())
     else:
         pass

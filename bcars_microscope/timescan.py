@@ -14,10 +14,10 @@ TODO: H5 file meta data for Laser
 from timeit import default_timer as timer
 from time import sleep
 from cycler import cycler
-from PySide2.QtWidgets import (QMainWindow, QVBoxLayout, QApplication,
+from PyQt5.QtWidgets import (QMainWindow, QVBoxLayout, QApplication,
                                QFileDialog, QMessageBox)
-from PySide2.QtCore import QTimer, QThreadPool
-from PySide2 import QtCore
+from PyQt5.QtCore import QTimer, QThreadPool
+from PyQt5 import QtCore
 from ui.ui_bcars2_timescan import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 

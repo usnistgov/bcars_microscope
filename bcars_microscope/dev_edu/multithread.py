@@ -1,5 +1,5 @@
-from PySide2.QtWidgets import QVBoxLayout, QLabel, QPushButton, QWidget, QMainWindow, QApplication
-from PySide2.QtCore import QTimer, QRunnable, Slot, Signal, QObject, QThreadPool
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QPushButton, QWidget, QMainWindow, QApplication
+from PyQt5.QtCore import QTimer, QRunnable, Slot, Signal, QObject, QThreadPool
 
 import sys
 import time

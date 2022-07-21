@@ -15,9 +15,9 @@ TODO: H5 file meta data for Laser
 from cycler import cycler
 from timeit import default_timer as timer
 from time import sleep
-from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
-from PySide2.QtCore import QTimer, QThreadPool
-from PySide2 import QtCore
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
+from PyQt5.QtCore import QTimer, QThreadPool
+from PyQt5 import QtCore
 from ui.ui_bcars2_raster import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from bcars_microscope import dark_style_sheet
@@ -32,7 +32,7 @@ import h5py
 import matplotlib as mpl
 import matplotlib.style
 import numpy as np
-import debugpy
+# import debugpy
 
 mpl.style.use('seaborn-dark-palette')
 mpl.use('Qt5Agg')
@@ -48,13 +48,13 @@ mpl.rcParams['ytick.color'] = TEXT_COLOR
 mpl.rcParams['axes.labelsize'] = 11
 # print(mpl.rcParams)
 
-MPL_BG_COLOR = (53/255, 53/255, 53/255)
+MPL_BG_COLOR = (53 / 255, 53 / 255, 53 / 255)
 mpl.rcParams['figure.facecolor'] = MPL_BG_COLOR
 mpl.rcParams['axes.facecolor'] = MPL_BG_COLOR
 # print(mpl.style.available)
 
 mpl.rcParams['lines.linewidth'] = 0.5
-mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF', 
+mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF',
                                                 '#A239A0', '#DE350B',
                                                 '#36B37E'])
 mpl.rcParams['image.interpolation'] = 'none'
@@ -68,7 +68,7 @@ stylesheet = dark_style_sheet
 
 class ImageParams:
     """Container that describes a single image acqusition
-    """    
+    """
     def __init__(self, name, nanoscan_params_list, delay, save=False, path_filename=None, groupname=None):
         """Container that describes a single image acqusition
 
@@ -84,7 +84,7 @@ class ImageParams:
             Full path including HDF5 filename
         groupname : str
             Group name within HDF5 file. (Note: ImageParams.name will be the dataset name within group)
-        """             
+        """
         self.ns_list = nanoscan_params_list
         self.delay = delay
         self.name = name
@@ -102,7 +102,7 @@ class ImageParams:
 
 class NanoScanAxisParams:
     """Container describing single-axis NanoScan (stage) settings (for a single image)
-    """    
+    """
     def __init__(self, axis, start, stop, n_steps, prefix=''):
         """_summary_
 
@@ -118,7 +118,7 @@ class NanoScanAxisParams:
             Number of steps (minimum 2)
         prefix : str
             Prefix for parameter names such as "Raster.Fast." that will be used for metadata later.
-        """        
+        """
         assert axis.upper() in ['X', 'Y', 'Z'], 'Axis need be specified as X, Y, or Z'
         self.axis = axis.upper()
         self.start = start
@@ -134,7 +134,7 @@ class NanoScanAxisParams:
         -------
         ndarray
             Vector with each step (ideal) position.
-        """        
+        """
         return np.linspace(self.start, self.stop, self.n_steps)
 
     @property
@@ -145,11 +145,11 @@ class NanoScanAxisParams:
         -------
         float
             Step size
-        """        
+        """
         if self.n_steps == 1:
             return 0.0
         else:
-            return (self.stop - self.start) / (self.n_steps-1)
+            return (self.stop - self.start) / (self.n_steps - 1)
 
     @property
     def meta(self):
@@ -159,7 +159,7 @@ class NanoScanAxisParams:
         -------
         dict
             Dictionary containing metadata and settings
-        """        
+        """
         output = {}
 
         output['{}Axis'.format(self.prefix)] = self.axis
@@ -290,9 +290,9 @@ class MainWindow(QMainWindow):
 
     def memo_changed_fcn(self):
         self.memo_altered_bool = True
-        
+
     def select_save_file(self):
-        fname, _ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)', 
+        fname, _ = QFileDialog.getSaveFileName(filter='HDF5/H5 (*.h5 *.hdf5)',
                                                options=QFileDialog.DontConfirmOverwrite)
         if fname:
             self.ui.lineEditPathFileName.setText(fname)
@@ -300,7 +300,7 @@ class MainWindow(QMainWindow):
     def update_macro(self):
         """ Run when macro buttons are pressed """
         sender = self.sender()
-        
+
         if sender == self.ui.pushButtonMacroXY:
             self.ui.comboBoxFast.setCurrentIndex(0)
             self.ui.comboBoxSlow.setCurrentIndex(1)
@@ -332,6 +332,7 @@ class MainWindow(QMainWindow):
             self.ui.spinBox_slow_stop.setValue(130)
             self._update_step_sizes(ignore_sender=True)
         # print(self.nanoscan_slow_params.__dict__)
+
     @property
     def meta(self):
 
@@ -348,21 +349,21 @@ class MainWindow(QMainWindow):
 
     def _update_nrb_scan_params(self):
         self.nanoscan_nrb_fast_params = NanoScanAxisParams(axis=self.ui.comboBox_nrb_fast_axis.currentText(),
-                                              start=self.ui.spinBox_nrb_fast_start.value(),
-                                              stop=self.ui.spinBox_nrb_fast_stop.value(),
-                                              n_steps=self.ui.spinBox_nrb_fast_steps.value(),
-                                              prefix='Raster.NRB.Fast.')
+                                                           start=self.ui.spinBox_nrb_fast_start.value(),
+                                                           stop=self.ui.spinBox_nrb_fast_stop.value(),
+                                                           n_steps=self.ui.spinBox_nrb_fast_steps.value(),
+                                                           prefix='Raster.NRB.Fast.')
         self.nanoscan_nrb_slow_params = NanoScanAxisParams(axis=self.ui.comboBox_nrb_slow_axis.currentText(),
-                                              start=self.ui.spinBox_nrb_slow_start.value(),
-                                              stop=self.ui.spinBox_nrb_slow_stop.value(),
-                                              n_steps=self.ui.spinBox_nrb_slow_steps.value(),
-                                              prefix='Raster.NRB.Slow.')
+                                                           start=self.ui.spinBox_nrb_slow_start.value(),
+                                                           stop=self.ui.spinBox_nrb_slow_stop.value(),
+                                                           n_steps=self.ui.spinBox_nrb_slow_steps.value(),
+                                                           prefix='Raster.NRB.Slow.')
 
         self.nanoscan_nrb_fixed_params = NanoScanAxisParams(axis=self.ui.comboBox_nrb_fixed_axis.currentText(),
-                                              start=self.ui.spinBox_nrb_fixed_start.value(),
-                                              stop=self.ui.spinBox_nrb_fixed_start.value(),
-                                              n_steps=1,
-                                              prefix='Raster.NRB.Fixed.')
+                                                            start=self.ui.spinBox_nrb_fixed_start.value(),
+                                                            stop=self.ui.spinBox_nrb_fixed_start.value(),
+                                                            n_steps=1,
+                                                            prefix='Raster.NRB.Fixed.')
 
     def _update_step_sizes(self, ignore_sender=False):
         if not ignore_sender:
@@ -371,29 +372,30 @@ class MainWindow(QMainWindow):
             sender = None
         # print('Sender: {}'.format(sender))
 
+        # TODO: Fix for is AXIS changes
         # 3 if's b/c if sender == None, want all 3 to run
         if sender in [self.ui.spinBox_fast_start, self.ui.spinBox_fast_stop, self.ui.spinBox_fast_steps, None]:
             self.nanoscan_fast_params = NanoScanAxisParams(axis=self.ui.comboBoxFast.currentText(),
-                                              start=self.ui.spinBox_fast_start.value(),
-                                              stop=self.ui.spinBox_fast_stop.value(),
-                                              n_steps=self.ui.spinBox_fast_steps.value(),
-                                              prefix='Raster.Fast.')
+                                                           start=self.ui.spinBox_fast_start.value(),
+                                                           stop=self.ui.spinBox_fast_stop.value(),
+                                                           n_steps=self.ui.spinBox_fast_steps.value(),
+                                                           prefix='Raster.Fast.')
             self.ui.spinBox_fast_stepsize.setValue(self.nanoscan_fast_params.step_size)
 
         if sender in [self.ui.spinBox_slow_start, self.ui.spinBox_slow_stop, self.ui.spinBox_slow_steps, None]:
             self.nanoscan_slow_params = NanoScanAxisParams(axis=self.ui.comboBoxSlow.currentText(),
-                                              start=self.ui.spinBox_slow_start.value(),
-                                              stop=self.ui.spinBox_slow_stop.value(),
-                                              n_steps=self.ui.spinBox_slow_steps.value(),
-                                              prefix='Raster.Slow.')
+                                                           start=self.ui.spinBox_slow_start.value(),
+                                                           stop=self.ui.spinBox_slow_stop.value(),
+                                                           n_steps=self.ui.spinBox_slow_steps.value(),
+                                                           prefix='Raster.Slow.')
             self.ui.spinBox_slow_stepsize.setValue(self.nanoscan_slow_params.step_size)
 
         if sender in [self.ui.spinBox_fixed_start, self.ui.spinBox_fixed_stop, self.ui.spinBox_fixed_steps, None]:
             self.nanoscan_fixed_params = NanoScanAxisParams(axis=self.ui.comboBoxFixed.currentText(),
-                                              start=self.ui.spinBox_fixed_start.value(),
-                                              stop=self.ui.spinBox_fixed_stop.value(),
-                                              n_steps=self.ui.spinBox_fixed_steps.value(),
-                                              prefix='Raster.Fixed.')
+                                                            start=self.ui.spinBox_fixed_start.value(),
+                                                            stop=self.ui.spinBox_fixed_stop.value(),
+                                                            n_steps=self.ui.spinBox_fixed_steps.value(),
+                                                            prefix='Raster.Fixed.')
             self.ui.spinBox_fixed_stepsize.setValue(self.nanoscan_fixed_params.step_size)
 
     def _wait_till_not_running(self, predelay=1, delay_bw_polls=1):
@@ -433,11 +435,11 @@ class MainWindow(QMainWindow):
                     self.ui.mpl_canvas_left.cbar.remove()
                     self.ui.mpl_canvas_left.cbar = None
                 try:
-                    if self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].size > 0:
-                        minner = self._midscan_img_left[rows_to_skip:self._acq_ct,cols_to_skip:].min()
-                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[rows_to_skip:,cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
+                    if self._midscan_img_left[rows_to_skip:self._acq_ct, cols_to_skip:].size > 0:
+                        minner = self._midscan_img_left[rows_to_skip:self._acq_ct, cols_to_skip:].min()
+                        img = self.ui.mpl_canvas_left.axes.imshow(self._midscan_img_left[rows_to_skip:, cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
                         self.ui.mpl_canvas_left.cbar = self.ui.mpl_canvas_left.fig.colorbar(img)
-                except Exception as e:
+                except Exception:
                     print('-------------ERROR-----------')
                     print(traceback.format_exc())
                     print(self._midscan_img_left.shape)
@@ -445,24 +447,23 @@ class MainWindow(QMainWindow):
                     print(self._acq_ct)
 
                 self.ui.mpl_canvas_left.draw()
-            
+
             if self._midscan_img_right is not None:
                 self.ui.mpl_canvas_right.axes.cla()
                 if self.ui.mpl_canvas_right.cbar is not None:
                     self.ui.mpl_canvas_right.cbar.remove()
                     self.ui.mpl_canvas_right.cbar = None
                 try:
-                    if self._midscan_img_right[rows_to_skip:self._acq_ct,cols_to_skip:].size > 0:
-                        minner = self._midscan_img_right[rows_to_skip:self._acq_ct,cols_to_skip:].min()
-                        img = self.ui.mpl_canvas_right.axes.imshow(self._midscan_img_right[rows_to_skip:,cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
+                    if self._midscan_img_right[rows_to_skip:self._acq_ct, cols_to_skip:].size > 0:
+                        minner = self._midscan_img_right[rows_to_skip:self._acq_ct, cols_to_skip:].min()
+                        img = self.ui.mpl_canvas_right.axes.imshow(self._midscan_img_right[rows_to_skip:, cols_to_skip:], vmin=minner, extent=extent)  # Trim off first col
                         self.ui.mpl_canvas_right.cbar = self.ui.mpl_canvas_right.fig.colorbar(img)
-                except Exception as e:
+                except Exception:
                     print('-------------ERROR-----------')
                     print(traceback.format_exc())
                     print(self._midscan_img_right.shape)
                     # print(self._midscan_img_right[1:, :self._acq_ct])
                     print(self._acq_ct)
-
 
                 self.ui.mpl_canvas_right.draw()
 
@@ -473,13 +474,13 @@ class MainWindow(QMainWindow):
         -------
         list
             [bool_devices_init, bool_instrument_not_acquiring, description_str]
-        """        
+        """
         devices_needed = ['CCD', 'NanoStage', 'DelayStage']
 
         devices_not_ready_list = [nd for nd in devices_needed if nd not in self.devices]
         devices_are_ready = len(devices_not_ready_list) == 0
-        
-        system_is_free = self.devices['running'] == False
+
+        system_is_free = self.devices['running'] is False
 
         status_str = ''
         if not devices_are_ready:
@@ -493,7 +494,7 @@ class MainWindow(QMainWindow):
 
     def double_check_save(self):
         """Double-check that user meant to NOT save the acquisition
-        """        
+        """
         if not self.ui.checkBoxSave.isChecked():
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Warning)
@@ -514,7 +515,7 @@ class MainWindow(QMainWindow):
 
         self.double_check_save()
         yes_save = self.ui.checkBoxSave.isChecked()
-        
+
         if not yes_save:
             pfname = None  # path + filename
             dsetname = None  # dataset name
@@ -523,14 +524,14 @@ class MainWindow(QMainWindow):
             fname = None  # filename
         else:
             pfname = self.ui.lineEditPathFileName.text()  # Path + filename
-            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value()) # Dataset name
+            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
             grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
 
             try:
-                pth,fname = pfname.rsplit('/', 1)
-            except:
-                pth=None
-                fname=None
+                pth, fname = pfname.rsplit('/', 1)
+            except Exception:
+                pth = None
+                fname = None
 
             # NOTE: Has to write to a new group
             save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
@@ -554,25 +555,25 @@ class MainWindow(QMainWindow):
                 msg.setIcon(QMessageBox.Warning)
                 msg.setText('The memo has not been changed for this acquisition. Continue?')
                 msg.setWindowTitle('Memo not updated')
-                msg.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+                msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                 # msg.setButtonText(0, 'A')
                 msg.setDefaultButton(QMessageBox.Yes)
                 out = msg.exec()
                 if out == QMessageBox.No:
                     return
-                
+
         devs, not_acq, status_str = self.is_ready()
         print(status_str)
         if not (devs & not_acq):  # System is NOT ready to acquire
             return
-        
+
         # General image settings
         self.devices['CCD'].set_fast_external_trigger()  # External trigger
         pixel_time = self.devices['CCD'].net_acquisition_time  # Per-pixel est time
-        wavegen_rate = int(np.ceil(pixel_time/40e-6)) # Set wavegen rate multiplier
-        
+        wavegen_rate = int(np.ceil(pixel_time / 40e-6))  # Set wavegen rate multiplier
+
         # Go ahead and set all axis wavegen rates
-        for num in range(1,4):
+        for num in range(1, 4):
             self.devices['NanoStage'].set_wavegen_rate(num, wavegen_rate)
             print('Read Wavegen rates: Wavegen {}:{}'.format(num, self.devices['NanoStage'].get_wavegen_rate(num)))
         print('Read All Wavegen rates: {}'.format(self.devices['NanoStage'].get_wavegen_rate()))
@@ -585,7 +586,7 @@ class MainWindow(QMainWindow):
             if self.ui.checkBoxCollectNRB_Early.isChecked():
                 ns_param_list = [self.nanoscan_nrb_fast_params, self.nanoscan_nrb_slow_params, self.nanoscan_nrb_fixed_params]
                 delay = self.ui.spinBoxDelayNRB_Early.value()
-                to_scan_img_list.append(ImageParams('NRB_Early_Pre', ns_param_list, delay, save=yes_save, 
+                to_scan_img_list.append(ImageParams('NRB_Early_Pre', ns_param_list, delay, save=yes_save,
                                                     path_filename=pfname, groupname=grpname))
 
             if self.ui.checkBoxCollectDark.isChecked():
@@ -652,25 +653,24 @@ class MainWindow(QMainWindow):
         #     pass
 
         self.devices['running'] = True  # Need this for timing
-        
-        axis_str_to_num = {'X':1, 'Y':2, 'Z': 3}
-        
+
+        axis_str_to_num = {'X': 1, 'Y': 2, 'Z': 3}
+
         n_image_steps = len(img_list)  # may not be true if there are multiple fixed axes
-        
+
         try:
-            if img_list[0].save == True:
-                fid = h5py.File(img_list[0].path_filename,'a')
+            if img_list[0].save is True:
+                fid = h5py.File(img_list[0].path_filename, 'a')
                 grp = fid.create_group(img_list[0].groupname)
                 print('Data will be saved to group: {}'.format(img_list[0].groupname))
             else:
                 fid = None
                 grp = None
-            
+
             for iter_imgs, img_inst in enumerate(img_list):
 
                 # Delay position
                 self.devices['DelayStage'].set_position(img_inst.delay)
-
 
                 # NANOSTAGE SETUP
                 # self.devices['NanoStage'].sdk.WAV_LIN(table=axis_str_to_num[img_inst.ns_list[0].axis],
@@ -684,7 +684,6 @@ class MainWindow(QMainWindow):
                                                        num_points=img_inst.ns_list[0].n_steps,
                                                        stop=img_inst.ns_list[0].stop)
 
-                
                 # Make sure delay stage is done moving
                 self.devices['DelayStage'].wait_till_done(n_iter=10, pause=1, let_settle=True, settle_pause=0.25)
 
@@ -695,13 +694,13 @@ class MainWindow(QMainWindow):
 
                     curr_fixed_pos = fixed_step_vec[num_z_stack]
 
-                    if img_inst.save == True:
+                    if img_inst.save is True:
                         if n_fixed_steps == 1:
                             dset_name = img_inst.name
                         else:
                             dset_name = img_inst.name + '_z{}'.format(num_z_stack)
-                        dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps,1600),
-                                                dtype=np.uint16)
+                        dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps, img_inst.ns_list[0].n_steps, 1600),
+                                                  dtype=np.uint16)
                         # WRITE ATTRIBUTES
                         dset.attrs.update(img_inst.meta)
                         dset.attrs.update(self.devices['CCD'].meta)
@@ -711,26 +710,25 @@ class MainWindow(QMainWindow):
                         dset.attrs[img_inst.ns_list[2].prefix + 'Position'] = curr_fixed_pos
                     else:
                         dset = None
-                    
-                    # Plotting setup
-                    self._midscan_img_left = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
-                    self._midscan_img_right = np.zeros((img_inst.ns_list[1].n_steps,img_inst.ns_list[0].n_steps), dtype=np.uint16)
 
+                    # Plotting setup
+                    self._midscan_img_left = np.zeros((img_inst.ns_list[1].n_steps, img_inst.ns_list[0].n_steps), dtype=np.uint16)
+                    self._midscan_img_right = np.zeros((img_inst.ns_list[1].n_steps, img_inst.ns_list[0].n_steps), dtype=np.uint16)
 
                     # CCD Preparation
                     # TODO: consider moving outside of loop
                     self.devices['CCD'].sdk.PrepareAcquisition()
 
                     # 3. Move Slow, Fast, then Fixed
-                    self.devices['NanoStage'].set_position({img_inst.ns_list[1].axis:img_inst.ns_list[1].start})
-                    self.devices['NanoStage'].set_position({img_inst.ns_list[0].axis:img_inst.ns_list[0].start})
-                    self.devices['NanoStage'].set_position({img_inst.ns_list[2].axis:curr_fixed_pos})
+                    self.devices['NanoStage'].set_position({img_inst.ns_list[1].axis: img_inst.ns_list[1].start})
+                    self.devices['NanoStage'].set_position({img_inst.ns_list[0].axis: img_inst.ns_list[0].start})
+                    self.devices['NanoStage'].set_position({img_inst.ns_list[2].axis: curr_fixed_pos})
 
                     self._acq_ct = -1
                     for num in range(img_inst.ns_list[1].n_steps):
                         self._acq_ct += 1
                         tmr_per_loop = timer()
-                        if num == 0: # 4. Start if 1st iter
+                        if num == 0:  # 4. Start if 1st iter
                             self.devices['CCD'].start_acquisition()
                             sleep(0.001)
 
@@ -739,11 +737,11 @@ class MainWindow(QMainWindow):
                         # sleep(0.1)
 
                         # 6. WGO
-                        self.devices['NanoStage'].sdk.WGO(1,mode=9)
+                        self.devices['NanoStage'].sdk.WGO(1, mode=9)
 
                         # 7. Wait on Stage movement
                         tmr = timer()
-                        sleep((2+img_inst.ns_list[0].n_steps)*self.devices['CCD'].net_acquisition_time)  # Wait an extra 2 pixels worth
+                        sleep((2 + img_inst.ns_list[0].n_steps) * self.devices['CCD'].net_acquisition_time)  # Wait an extra 2 pixels worth
                         # WaitOnTarget takes waaaaaay too long and is not stable
                         # pitools.waitontarget(self.devices['NanoStage'], timeout=10,
                         #                      predelay=self.acq_params['Raster.Fast.Steps']*pixel_time*1, polldelay=0.01)
@@ -757,11 +755,11 @@ class MainWindow(QMainWindow):
                         (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
                         if n_images < img_inst.ns_list[0].n_steps:
                             print('TOO FEW IMAGES')
-                            img_arr = np.zeros((img_inst.ns_list[0].n_steps,1600))
+                            img_arr = np.zeros((img_inst.ns_list[0].n_steps, 1600))
                         else:
                             img_arr = arr.reshape((n_images, -1))
                             # print(arr.dtype)
-                        
+
                         if dset is not None:
                             dset[num, :, :] = 1 * img_arr
                         # 9. Write slice
@@ -779,7 +777,7 @@ class MainWindow(QMainWindow):
 
                         self._midscan_img_left[num, :] = 1 * img_arr[:, self.ui.spinBox_left_index.value()]
                         self._midscan_img_right[num, :] = 1 * img_arr[:, self.ui.spinBox_right_index.value()]
-                        
+
                         # 11. Move slow then fast to next position
                         if (num + 1) < img_inst.ns_list[1].n_steps:
                             if np.abs(img_inst.ns_list[1].step_size) > 0.0:
@@ -798,7 +796,7 @@ class MainWindow(QMainWindow):
                         tmr_per_loop -= timer()
                         print('Time per loop: {} sec'.format(-tmr_per_loop))
                         progress_callback.emit(num + 1, img_inst.ns_list[1].n_steps, 'Image columns complete: ')
-                            # self.devices['CCD'].stop_acquisition()
+                        # self.devices['CCD'].stop_acquisition()
                     # -- END LOOP
                     # 12. Move Z to end position
                     self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_post_image_z_pos.value()})
@@ -810,7 +808,7 @@ class MainWindow(QMainWindow):
                     progress_callback.emit(iter_imgs + 1, n_image_steps, 'Fixed-Axis Imaging steps: ')
 
                 progress_callback.emit(iter_imgs + 1, n_image_steps, 'Imaging steps: ')
-        except Exception as e:
+        except Exception:
             print(traceback.format_exc())
         finally:
             if fid is not None:
@@ -832,9 +830,10 @@ class MainWindow(QMainWindow):
         self.devices['CCD'].free_memory()
         self._reset_state()
 
+
 if __name__ == '__main__':
     from andor_ccd import AndorNewton970
-    from pipython import GCSDevice
+    # from pipython import GCSDevice
     from esp301 import ESP301
     from pi_nano_stage import NanoStage
 
@@ -849,8 +848,8 @@ if __name__ == '__main__':
         devices = {}
 
         if not just_ui:
-            devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time':0.0035,'readout_mode': 'FULL_VERTICAL_BINNING',
-                                                            'trigger_mode': 'EXTERNAL'})
+            devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time': 0.0035, 'readout_mode': 'FULL_VERTICAL_BINNING',
+                                                             'trigger_mode': 'EXTERNAL'})
 
             devices['CCD'].init_all()
             devices['CCD'].set_fast_external_trigger()
@@ -870,7 +869,7 @@ if __name__ == '__main__':
         window.show()
 
         app.exec_()
-    except Exception as e:
+    except Exception:
         print(traceback.format_exc())
     else:
         pass

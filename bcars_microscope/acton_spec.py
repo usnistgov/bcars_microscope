@@ -3,6 +3,12 @@ import serial
 import traceback
 from time import sleep
 from devices import AbstractDevice
+from PyQt5.QtWidgets import QDialog, QApplication
+from PyQt5 import QtCore
+
+from ui.ui_bcars2_spectrometer import Ui_Dialog as Ui_Spectrograph
+QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
 
 class Acton2300i(AbstractDevice):
     device_name = 'Acton 2300i Spectrograph'
@@ -77,14 +83,6 @@ class Acton2300i(AbstractDevice):
         out = self._read_wait()
         # print('Set Grating: {}'.format(out))
 
-from PySide2.QtWidgets import QDialog, QApplication
-from PySide2 import QtCore
-from PySide2.QtCore import QTimer
-
-QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-
-from ui.ui_bcars2_spectrometer import Ui_Dialog as Ui_Spectrograph
-from PySide2.QtGui import QCloseEvent
 
 class DialogSpectrographConfig(QDialog):
     def __init__(self, spec):

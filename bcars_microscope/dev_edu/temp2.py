@@ -1,5 +1,5 @@
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 pyqtSignal=Signal
 pyqtSlot=Slot

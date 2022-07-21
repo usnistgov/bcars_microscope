@@ -8,10 +8,10 @@ mpl.rcParams['axes.labelsize'] = 20
 
 import numpy as np
 
-from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
-from PySide2.QtCore import QTimer, Qt
-from PySide2 import QtCore
-from PySide2.QtGui import QPalette, QColor
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5 import QtCore
+from PyQt5.QtGui import QPalette, QColor
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 

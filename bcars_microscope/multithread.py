@@ -2,7 +2,7 @@
 See https://www.pythonguis.com/tutorials/multithreading-pyside-applications-qthreadpool/ 
 """
 
-from PySide2.QtCore import QObject, Signal, Slot, QRunnable
+from PyQt5.QtCore import QObject, Signal, Slot, QRunnable
 
 import sys
 import traceback
