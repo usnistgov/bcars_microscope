@@ -12,7 +12,7 @@ class ESP301(AbstractStage):
 
     def get_position(self, axis=1):
         if self.serial:
-            pos = self._read_write('{}TP'.format(axis))
+            pos = float(self._read_write('{}TP'.format(axis)))
             return pos
 
     def set_position(self, pos, axis=1):
@@ -41,12 +41,19 @@ class ESP301(AbstractStage):
         print('Opening device: {}'.format(self.device_name))
         try:
             self.serial = serial.Serial(self.settings['com_port'], self.settings['baudrate'], timeout=1)
+            self.motor_on()
         except Exception:
             print('Opening failed')
             print(traceback.format_exc())
         else:
             print('Opening succeeded')
         
+    def motor_on(self):
+        self._write('1MO_Set')
+
+    def motor_off(self):
+        self._write('1MF_Set')
+
     def close(self):
         print('Closing device: {}'.format(self.device_name))
         try:
@@ -60,7 +67,7 @@ class ESP301(AbstractStage):
     
     def _read_write(self, write_command):
         self.serial.write('{}\r\n'.format(write_command).encode())
-        output = float(self.serial.readline().decode().rstrip('\r\n'))
+        output = self.serial.readline().decode().rstrip('\r\n')
         return output
 
     def _write(self, write_command):
@@ -77,10 +84,15 @@ if __name__ == '__main__':
     esp = ESP301(com_port='COM9')
     print('Open?: {}'.format(esp.is_open))
     esp.open()
-    print('Open?: {}'.format(esp.is_open))
+    try:
+        print(esp._write('1MO'))
+        print(esp._read_write('1MO?'))
+    except Exception:
+        print('Failed: {}'.format(traceback.format_exc()))
+    # print('Open?: {}'.format(esp.is_open))
 
     curr_pos = esp.get_position()
-    new_pos = curr_pos + (-1 * np.sign(curr_pos) * 0.1)
+    new_pos = curr_pos + (-1 * np.sign(curr_pos) * 0.1) + 0.1
 
     print('Current position: {:.3f}'.format(curr_pos))
     print('Set position: {:.3f}'.format(new_pos))
