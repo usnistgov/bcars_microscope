@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1007</width>
-    <height>213</height>
+    <width>1033</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -436,7 +436,91 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
      </widget>
     </item>
     <item row="0" column="5">
-     <spacer name="horizontalSpacer">
+     <widget class="QFrame" name="frame_6">
+      <property name="maximumSize">
+       <size>
+        <width>170</width>
+        <height>144</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Laser</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QRadioButton" name="radioButtonLaser">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QRadioButton { color: white}
+QRadioButton::indicator { width: 50; height: 50; border-radius: 20px}
+QRadioButton::indicator:checked {background-color: rgb(85, 255, 0); border: 2px solid white}
+QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2px solid white}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QPushButton" name="pushButtonInitLaser">
+         <property name="minimumSize">
+          <size>
+           <width>75</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>75</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Initialize</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <spacer name="horizontalSpacer_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -448,7 +532,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
       </property>
      </spacer>
     </item>
-    <item row="0" column="6">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="font">
        <font>
@@ -465,7 +549,28 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
        <bool>false</bool>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButtonWinRaster">
+         <property name="maximumSize">
+          <size>
+           <width>134</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Small Raster</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QPushButton" name="pushButtonWinSpectroscopy">
          <property name="maximumSize">
           <size>
@@ -486,28 +591,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButtonWinRaster">
-         <property name="maximumSize">
-          <size>
-           <width>134</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>14</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Micro Raster</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
+       <item row="1" column="2">
         <widget class="QPushButton" name="pushButtonWinRaster_2">
          <property name="maximumSize">
           <size>
@@ -531,19 +615,6 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
       </layout>
      </widget>
     </item>
-    <item row="0" column="7">
-     <spacer name="horizontalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -551,8 +622,8 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1007</width>
-     <height>22</height>
+     <width>1033</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

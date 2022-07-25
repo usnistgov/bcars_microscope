@@ -9,5 +9,8 @@ call pyuic5.bat .\qt_andor_setup.ui -o ..\bcars_microscope\ui\ui_andor_setup.py
 call pyuic5.bat .\qt_bcars2_main.ui -o ..\bcars_microscope\ui\ui_bcars2_main.py
 
 call pyuic5.bat .\qt_bcars2_spectrometer.ui -o ..\bcars_microscope\ui\ui_bcars2_spectrometer.py
+call pyuic5.bat .\qt_bcars2_laser_setup.ui -o ..\bcars_microscope\ui\ui_bcars2_laser_setup.py
 
 call pyuic5.bat .\qt_learn_multithread.ui -o ..\bcars_microscope\dev_edu\ui_learn_multithread.py
+
+
