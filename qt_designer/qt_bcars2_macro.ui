@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2595</width>
-    <height>1644</height>
+    <width>1625</width>
+    <height>1056</height>
    </rect>
   </property>
   <property name="font">
@@ -270,6 +270,23 @@
                  </property>
                  <property name="maximum">
                   <double>20000.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>1.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Acceleration (mm/s^2)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="spinBoxMacroFastAcceleration">
+                 <property name="maximum">
+                  <double>200.000000000000000</double>
                  </property>
                  <property name="value">
                   <double>1.000000000000000</double>
@@ -2516,8 +2533,8 @@ SC Power = 11 mW</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2595</width>
-     <height>38</height>
+     <width>1625</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
