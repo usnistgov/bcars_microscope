@@ -6,6 +6,11 @@ call pyuic5.bat .\qt_bcars2_spectroscopy.ui -o ..\bcars_microscope\ui\ui_bcars2_
 call pyuic5.bat .\qt_demo_2_threads.ui -o ..\bcars_microscope\ui\ui_demo_2_threads.py
 
 call pyuic5.bat .\qt_andor_setup.ui -o ..\bcars_microscope\ui\ui_andor_setup.py
+call pyuic5.bat .\qt_bcars2_esp.ui -o ..\bcars_microscope\ui\ui_bcars2_esp.py
+call pyuic5.bat .\qt_bcars2_pi_macro.ui -o ..\bcars_microscope\ui\ui_bcars2_pi_macro.py
+call pyuic5.bat .\qt_bcars2_pi_nano.ui -o ..\bcars_microscope\ui\ui_bcars2_pi_nano.py
+
+
 call pyuic5.bat .\qt_bcars2_main.ui -o ..\bcars_microscope\ui\ui_bcars2_main.py
 
 call pyuic5.bat .\qt_bcars2_spectrometer.ui -o ..\bcars_microscope\ui\ui_bcars2_spectrometer.py

@@ -1,7 +1,13 @@
 import traceback
 
 from pipython import GCSDevice
-from bcars_microscope.devices import AbstractStage, AbstractDevice
+from bcars_microscope.devices import AbstractStage
+# from bcars_microscope.ui.ui_bcars2_pi_nano import Ui_Dialog as Ui_NanoStage
+
+# from PyQt5.QtWidgets import QDialog, QApplication
+from PyQt5 import QtCore
+
+# QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 
 class NanoStage(AbstractStage):
@@ -99,16 +105,29 @@ class NanoStage(AbstractStage):
 
 
 if __name__ == '__main__':
-    ns = NanoStage()
-    ns.open()
-    print('Current Position: {}'.format(ns.get_position()))
-    print('Current Velocity: {}'.format(ns.get_velocity()))
-    print('Wavegen rates: {}'.format(ns.get_wavegen_rate()))
-    print('Wavegen rates: {}'.format(ns.get_wavegen_rate(1)))
-    print('Set Wavegen rates: {}'.format(ns.get_wavegen_rate()))
-    ns.set_linescan(1, 1, 300, 199)
-    print(ns.meta)
-    print(isinstance(ns, (AbstractDevice, AbstractStage)))
-    print(issubclass(NanoStage, (AbstractDevice, AbstractStage)))
-    print(type(NanoStage))
-    ns.close()
+    
+    try_ui = False
+
+    try:
+        devices = {}
+        devices['NanoStage'] = NanoStage()
+        devices['NanoStage'].open()
+        devices['NanoStage'].set_velocity({'X':1.})
+        print('Current velocity: {}'.format(devices['NanoStage'].get_velocity()))
+        # print('Max velocity: {}'.format(devices['NanoStage'].sdk.gcscommands.qSPA('1', '0xA')['1'][0xA]))
+    except Exception:
+        print(traceback.format_exc())
+    else:
+        pass
+        # if try_ui:
+        #     import sys
+        #     from bcars_microscope import dark_style_sheet as stylesheet
+        #     app = QApplication(sys.argv)
+        #     app.setStyle("Fusion")
+        #     app.setStyleSheet(stylesheet)
+
+        #     window = DialogNanoStage(macrostage=devices['NanoStage'])
+        #     ret = window.exec_()
+        #     print(ret)
+    finally:
+        devices['NanoStage'].close()
