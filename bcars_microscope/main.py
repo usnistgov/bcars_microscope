@@ -1,9 +1,7 @@
 """
 Main controller for bcars microscope
 
-TODO: Configure Stage
-TODO: Configure Delay
-TODO: Configure Laser
+# BUG: Changing dwell times between images results in failed imaging
 
 """
 
@@ -19,10 +17,11 @@ from spectroscopy import MainWindow as WinSpectroscopy
 from raster import MainWindow as WinRaster
 
 from andor_ccd import AndorNewton970, DialogAndorConfig
-from esp301 import ESP301
+from esp301 import ESP301, DialogDelayStage
 from pi_nano_stage import NanoStage
 from pi_micro_stage import MicroStage
 from acton_spec import Acton2300i, DialogSpectrographConfig
+from toptica_laser import DialogLaserConfig, TopticaPro
 
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
@@ -46,6 +45,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButtonInitNanoStage.pressed.connect(self.init_nano_stage)
         self.ui.pushButtonInitMicroStage.pressed.connect(self.init_micro_stage)
         self.ui.pushButtonInitDelayStage.pressed.connect(self.init_delay_stage)
+        self.ui.pushButtonInitLaser.pressed.connect(self.init_laser)
         self.windows = {}
         self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
         self.windows['Spectroscopy'].hide()
@@ -66,7 +66,6 @@ class MainWindow(QMainWindow):
         # Disable init button during initialization
         self.ui.pushButtonInitCCD.setEnabled(False)
 
-        # TODO: Use user-settings for init
         # Default to FVB spectroscopy
         if self.devices['CCD'] is None:
 
@@ -139,15 +138,57 @@ class MainWindow(QMainWindow):
         # Indicator light on
         self.ui.radioButtonMicroStage.setChecked(True)
 
+    def init_laser(self):
+
+        # Disable init button during initialization
+        self.ui.pushButtonInitLaser.setEnabled(False)
+
+        if 'Laser' not in self.devices:
+            self.devices['Laser'] = TopticaPro(com_port='COM7')
+            self.devices['Laser'].open()
+            # Indicator light on
+            self.ui.radioButtonLaser.setChecked(True)
+        elif self.devices['Laser'] is None:
+            self.devices['Laser'] = TopticaPro(com_port='COM7')
+            self.devices['Laser'].open()
+            # Indicator light on
+            self.ui.radioButtonLaser.setChecked(True)
+
+        dlg = DialogLaserConfig(laser=self.devices['Laser'])
+        ret = dlg.exec_()
+        if ret == 1:
+            print('Settings OKd')
+        else:
+            print('Settings Canceled')
+
+        # Re-enable init button
+        self.ui.pushButtonInitLaser.setEnabled(True)
+
     def init_delay_stage(self):
         """ Initialize delay stage"""
-        self.devices['DelayStage'] = ESP301(com_port='COM9')
-        self.devices['DelayStage'].open()
-        # Disable init button if CCD initialized just fine
+
+        # Disable init button during initialization
         self.ui.pushButtonInitDelayStage.setEnabled(False)
+
+        if 'DelayStage' not in self.devices:
+            self.devices['DelayStage'] = ESP301(com_port='COM9')
+            self.devices['DelayStage'].open()
+        elif self.devices['DelayStage'] is None:
+            self.devices['DelayStage'] = ESP301(com_port='COM9')
+            self.devices['DelayStage'].open()       
+
+        dlg = DialogDelayStage(delaystage=self.devices['DelayStage'])
+        ret = dlg.exec_()
+        if ret == 1:
+            print('Settings OKd')
+        else:
+            print('Settings Canceled')
 
         # Indicator light on
         self.ui.radioButtonDelayStage.setChecked(True)
+
+        # Re-enable init button
+        self.ui.pushButtonInitDelayStage.setEnabled(True)
 
 
 if __name__ == '__main__':
@@ -164,8 +205,11 @@ if __name__ == '__main__':
         app_geo = window.geometry()
 
         window.show()
-        window.setGeometry(screen_geo.width() / 2 - app_geo.width() / 2,
-                           screen_geo.height() * 0.05, app_geo.width(), app_geo.height())
+
+        # Place window in upper-center of screen
+        x_pos = int(screen_geo.width() / 2 - app_geo.width() / 2)
+        y_pos = int(screen_geo.height() * 0.05)  # 5% down from the top of the screen
+        window.setGeometry(x_pos, y_pos, app_geo.width(), app_geo.height())
 
         window.windows['Raster'].ui.spinBox_left_index.setValue(365)
         window.windows['Raster'].ui.spinBox_right_index.setValue(392)
@@ -192,3 +236,7 @@ if __name__ == '__main__':
         if 'DelayStage' in window.devices:
             print('Delay Stage...')
             window.devices['DelayStage'].close()
+
+        if 'Laser' in window.devices:
+            print('Laser...')
+            window.devices['Laser'].close()
