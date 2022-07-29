@@ -1,11 +1,16 @@
 import traceback
 
 from pipython import GCSDevice
-from devices import AbstractStage
+from bcars_microscope.devices import AbstractStage, AbstractDevice
 
 
 class NanoStage(AbstractStage):
+
     device_name = 'PI E-517 Display and Interface SN 0114071272'
+    prefix = 'Nano'
+
+    def __init__(self):
+        super().__init__(self)
 
     def open(self):
         print('Opening device: {}'.format(self.device_name))
@@ -18,6 +23,9 @@ class NanoStage(AbstractStage):
 
             # Turn on all Servos (axis ID : 1=ON)
             self.sdk.SVO({'X': 1, 'Y': 1, 'Z': 1})
+            self.get_position()
+            self.get_velocity()
+            self.get_wavegen_rate()
 
         except Exception:
             print('Opening failed')
@@ -39,39 +47,55 @@ class NanoStage(AbstractStage):
     def get_position(self):
         if self.sdk:
             pos = self.sdk.qPOS()
+            for k in pos:
+                self.settings['position.{}'.format(k)] = pos[k]
             return pos
 
-    def set_position(self, pos_dict):
+    def set_position(self, pos_dict, read_after=True):
         assert isinstance(pos_dict, dict)
         self.sdk.MOV(pos_dict)
+        if read_after:
+            self.get_position()
 
     def wait_till_done(self, n_iter, pause, let_settle, settle_pause):
         raise NotImplementedError('Haven\'t found a good way to do this yet')
 
-    def set_velocity(self, vel_dict):
+    def set_velocity(self, vel_dict, read_after=True):
         if self.sdk:
             self.sdk.VEL(vel_dict)
+            if read_after:
+                self.get_velocity()
 
     def get_velocity(self):
         if self.sdk:
             vel = self.sdk.qVEL()
+            for k in vel:
+                self.settings['velocity.{}'.format(k)] = vel[k]
             return vel
 
     def get_wavegen_rate(self, num_wavegen=None):
         if self.sdk:
             if num_wavegen is None:
-                return self.sdk.qWTR()
+                wg = self.sdk.qWTR()
+                for k in wg:
+                    self.settings['wavegen_rate.{}'.format(k)] = wg[k][0]
+                return wg
             else:
-                return self.sdk.qWTR(num_wavegen)
+                wg = self.sdk.qWTR(num_wavegen)
+                self.settings['wavegen_rate.{}'.format(num_wavegen)] = wg[num_wavegen][0]
+                return wg
 
-    def set_wavegen_rate(self, num_wavegen, rate):
+    def set_wavegen_rate(self, num_wavegen, rate, read_after=True):
         if self.sdk:
             self.sdk.WTR(num_wavegen, rate, 0)
+            if read_after:
+                self.get_wavegen_rate()
 
     def set_linescan(self, table_num, start, num_points, stop):
         self.sdk.WAV_LIN(table=table_num, firstpoint=0, numpoints=num_points,
                          append='X', speedupdown=0, amplitude=stop - start,
                          offset=start, seglength=num_points)
+        self.settings['wav_lin'] = 'WAV {} X LIN {} {} {} {} 0 0'.format(table_num, num_points, stop-start, start, num_points)
 
 
 if __name__ == '__main__':
@@ -80,5 +104,11 @@ if __name__ == '__main__':
     print('Current Position: {}'.format(ns.get_position()))
     print('Current Velocity: {}'.format(ns.get_velocity()))
     print('Wavegen rates: {}'.format(ns.get_wavegen_rate()))
+    print('Wavegen rates: {}'.format(ns.get_wavegen_rate(1)))
     print('Set Wavegen rates: {}'.format(ns.get_wavegen_rate()))
+    ns.set_linescan(1, 1, 300, 199)
+    print(ns.meta)
+    print(isinstance(ns, (AbstractDevice, AbstractStage)))
+    print(issubclass(NanoStage, (AbstractDevice, AbstractStage)))
+    print(type(NanoStage))
     ns.close()
