@@ -3,6 +3,7 @@ Spectroscopy window for bcars microscope
 
 TODO: De-enable controls for uninitialized devices
 TODO: Grid across plotting window (maybe a checkbox)
+TODO: Recording of spectra
 """
 
 import sys
