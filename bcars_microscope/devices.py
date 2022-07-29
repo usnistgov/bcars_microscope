@@ -7,6 +7,8 @@ import numpy as np
 
 class AbstractDevice(abc.ABC):
     device_name = 'Abstract Device'
+    prefix = None
+    
     def __init__(self, *args, **kwargs):
         """Abstract base class for all devices """
         super().__init__()
@@ -31,8 +33,17 @@ class AbstractDevice(abc.ABC):
         """ Open the channel, SDK, and device """
         pass
 
+    @property
+    def meta(self):
+        if self.prefix is None:
+            return self.settings
+        else:
+            return {'{}.{}'.format(self.prefix, k):self.settings[k] for k in self.settings}
+
+
 class AbstractStage(AbstractDevice):
     device_name = 'Abstract Stage'
+
     @abc.abstractmethod
     def get_position(self):
         pass
