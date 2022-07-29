@@ -7,9 +7,6 @@ Started
 Not Started
 -----------
 TODO: Spectral axis selectable and calibratable to wavelength or wavenumber
-TODO: Redo check-save messagebox text to be clearer
-TODO: Set velocities and acceleration of ESP and Nanostage
-TODO: H5 file meta data for Laser
 """
 
 from cycler import cycler
@@ -18,12 +15,13 @@ from time import sleep
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
 from PyQt5.QtCore import QTimer, QThreadPool
 from PyQt5 import QtCore
-from ui.ui_bcars2_raster import Ui_MainWindow
+from bcars_microscope.ui.ui_bcars2_raster import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from bcars_microscope import dark_style_sheet
 from bcars_microscope.multithread import Worker
 from bcars_microscope.mpl import MplCanvas
 from bcars_microscope.h5 import save_location_is_valid
+from bcars_microscope.devices import AbstractDevice, AbstractStage
 
 import sys
 import traceback
@@ -500,10 +498,12 @@ class MainWindow(QMainWindow):
             msg.setIcon(QMessageBox.Warning)
             msg.setText('Save NOT selected. Are you sure?')
             msg.setWindowTitle('Not Saving?')
-            msg.setInformativeText('YES will not save the data. NO will select save.')
+            # msg.setInformativeText('YES will not save the data. NO will select save.')
             msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             # msg.setButtonText(0, 'A')
-            msg.setDefaultButton(QMessageBox.Yes)
+            msg.buttons()[0].setText('Don\'t Save')
+            msg.buttons()[1].setText('Yes, Save')
+            # msg.setDefaultButton(QMessageBox.Yes)
             out = msg.exec()
 
             if out == QMessageBox.Yes:
@@ -703,6 +703,10 @@ class MainWindow(QMainWindow):
                                                   dtype=np.uint16)
                         # WRITE ATTRIBUTES
                         dset.attrs.update(img_inst.meta)
+                        for k in self.devices:
+                            if isinstance(self.devices[k], AbstractDevice):
+                                print('{} is a device'.format(k))
+                                dset.attrs.update(self.devices[k].meta)
                         dset.attrs.update(self.devices['CCD'].meta)
                         dset.attrs['TimeStage.Position'] = img_inst.delay
                         dset.attrs['Memo'] = self.ui.plainTextEditMemo.toPlainText()
@@ -832,10 +836,10 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == '__main__':
-    from andor_ccd import AndorNewton970
+    from  bcars_microscope.andor_ccd import AndorNewton970
     # from pipython import GCSDevice
-    from esp301 import ESP301
-    from pi_nano_stage import NanoStage
+    from  bcars_microscope.esp301 import ESP301
+    from bcars_microscope.pi_nano_stage import NanoStage
 
     just_ui = False
 
@@ -855,9 +859,13 @@ if __name__ == '__main__':
             devices['CCD'].set_fast_external_trigger()
 
             devices['NanoStage'] = NanoStage()
+            print(isinstance(devices['NanoStage'], (AbstractDevice, AbstractStage)))
+            print(issubclass(NanoStage, (AbstractDevice, AbstractStage)))
             devices['NanoStage'].open()
 
             devices['DelayStage'] = ESP301(com_port='COM9')
+            devices['DelayStage'].open()
+
         window = MainWindow(devices=devices)
         # print('Meta data:')
         # print(window.meta)
@@ -868,6 +876,13 @@ if __name__ == '__main__':
         window.ui.spinBox_right_index.setValue(392)
         window.show()
 
+        print('Meta Data')
+        # print(window.devices)
+        for d in window.devices:
+            print(d)
+            print(isinstance(window.devices[d], (AbstractDevice, AbstractStage)))
+            if isinstance(window.devices[d], (AbstractDevice, AbstractStage)):
+                print(window.devices[d].meta)
         app.exec_()
     except Exception:
         print(traceback.format_exc())
