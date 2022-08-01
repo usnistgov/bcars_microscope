@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\qt_learn_multithread.ui'
+# Form implementation generated from reading ui file '.\qt_designer\qt_learn_multithread.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #

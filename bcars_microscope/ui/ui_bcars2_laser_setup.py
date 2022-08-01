@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\qt_bcars2_laser_setup.ui'
+# Form implementation generated from reading ui file '.\qt_designer\qt_bcars2_laser_setup.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #

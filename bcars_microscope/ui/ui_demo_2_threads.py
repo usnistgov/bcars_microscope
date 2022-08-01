@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\qt_demo_2_threads.ui'
+# Form implementation generated from reading ui file '.\qt_designer\qt_demo_2_threads.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
