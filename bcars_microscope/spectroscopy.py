@@ -49,6 +49,8 @@ from ui.ui_bcars2_spectroscopy import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
+from hilbert_toolkit import hilbert_pad_simple, hilbert_scipy
+
 from bcars_microscope import dark_style_sheet
 stylesheet = dark_style_sheet
 
@@ -99,7 +101,7 @@ class MainWindow(QMainWindow):
         self.ui.mpl_canvas.axes.set_title('CCD Counts')
         self.ui.mpl_canvas.fig.set_tight_layout(True)
         self.ui.mpl_canvas.axes.autoscale(True)
-
+        self.ui.mpl_canvas.axes.grid(visible=True, which='both', color='gray', linestyle='--', linewidth=0.5)
         self.ui.mpl_canvas.draw()
         
         # Multi-threading: Periodically we're going to collect spectra, get nanostage position, get delay stage position
@@ -141,11 +143,15 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_moveCenterMicro.pressed.connect(self.move_micro_stage)
         self.ui.checkBoxJoyStickOn.stateChanged.connect(self.micro_joystick_change)
         
+        # Averaging
         self.ui.checkBoxAvgOn.stateChanged.connect(self.reset_avg)
         self.ui.spinBoxNAverages.valueChanged.connect(self.reset_avg)
         
+        # Start/Stop
         self.ui.pushButtonStartAcq.pressed.connect(self.start_acquisition)
         self.ui.pushButtonStopAcq.pressed.connect(self.stop_acquisition)
+        
+        # Dark and NRB Spectrum
         self.ui.pushButtonRecDark.pressed.connect(self.recordSpectrum)
         self.ui.pushButtonRecNRB.pressed.connect(self.recordSpectrum)
 
@@ -190,18 +196,31 @@ class MainWindow(QMainWindow):
 
     def get_spectrum(self):
         if 'CCD' in self.devices:
-            sp = 1.*self.devices['CCD'].get_last_n_images16()[1]
-            return np.arange(sp.size), sp
+            sp = 1. * self.devices['CCD'].get_last_n_images16()[1]
+            x_vec = np.arange(sp.size)
+
+            if 'Spectrograph' in self.devices:
+                idx = self.ui.comboBoxSpectralXSelect.currentIndex()
+                if idx == 0:  # Pixels
+                    if 'pix_vec' in self.devices['Spectrograph'].spectral_vecs_dict:
+                        x_vec = self.devices['Spectrograph'].spectral_vecs_dict['pix_vec']
+                elif idx == 1:  # Wavelength (nm)
+                    if 'wl_vec' in self.devices['Spectrograph'].spectral_vecs_dict:
+                        x_vec = self.devices['Spectrograph'].spectral_vecs_dict['wl_vec']
+                elif idx == 2:
+                    if 'wn_vec' in self.devices['Spectrograph'].spectral_vecs_dict:
+                        x_vec = self.devices['Spectrograph'].spectral_vecs_dict['wn_vec']
+            return x_vec, sp
 
     def recordSpectrum(self):
         if self.sender() == self.ui.pushButtonRecDark:
             if self.ui.plot_ref is not None:
-                self.dark_spectrum = 1*self.ui.plot_ref.get_ydata()
+                self.dark_spectrum = 1 * self.ui.plot_ref.get_ydata()
                 self.ui.checkBoxSubtractDark.setEnabled(True)
 
         elif self.sender() == self.ui.pushButtonRecNRB:
             if self.ui.plot_ref is not None:
-                self.nrb_spectrum = 1*self.ui.plot_ref.get_ydata()
+                self.nrb_spectrum = 1 * self.ui.plot_ref.get_ydata()
                 self.ui.checkBoxKK.setEnabled(True)
 
     def reset_avg(self):
@@ -280,14 +299,14 @@ class MainWindow(QMainWindow):
 
             if self._avg_on:
                 ct = self._avg_ct % self._avg_num
-                self._avg_spectrum_arr[ct, :] = 1*new_spectrum
+                self._avg_spectrum_arr[ct, :] = 1 * new_spectrum
                 
                 if self._avg_ct == 0:
-                    avg_spectrum = 1*new_spectrum
-                    std_spectrum = 0*new_spectrum
+                    avg_spectrum = 1 * new_spectrum
+                    std_spectrum = 0 * new_spectrum
                 elif (self._avg_ct > 0) & (self._avg_ct < self._avg_num - 1):
-                    avg_spectrum = self._avg_spectrum_arr[:self._avg_ct+1,:].mean(axis=0)
-                    std_spectrum = self._avg_spectrum_arr[:self._avg_ct+1,:].std(axis=0)
+                    avg_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].mean(axis=0)
+                    std_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].std(axis=0)
                 else:
                     # print('Average Full')
                     # self.ui.radioButtonAvgDone.setChecked(True)
@@ -305,29 +324,43 @@ class MainWindow(QMainWindow):
             if ydata is not None:
                 if (self.ui.checkBoxSubtractDark.isChecked()) & (self.dark_spectrum is not None):
                     ydata -= self.dark_spectrum
-
+                if (self.ui.checkBoxKK.isChecked()) & (self.nrb_spectrum is not None):
+                    
+                    ratio_numer = 1 * ydata
+                    ratio_denom = 1 * self.nrb_spectrum
+                    ratio_denom[ratio_denom == 0] = 1
+                    ratio = abs(ratio_numer / ratio_denom)
+                    ratio[ratio <= 0] = 1e-6
+                    
+                    try:
+                        rng = slice(self.ui.spinBoxLowPix.value(), self.ui.spinBoxHighPix.value()+1, None)
+                        ydata *= 0
+                        ydata[rng] = 1 * (np.sqrt(ratio[rng]) * np.sin(hilbert_pad_simple(-0.5 * np.log(ratio[rng]), hilbert_scipy)))
+                    except Exception:
+                        print(traceback.format_exc())
+                        
                 if self.ui.plot_ref is None:
                     self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, label='Spectrum')[0]
                     
                     if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
 
-                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata-std_spectrum, 
-                                                                            ydata+std_spectrum, alpha=0.25,
-                                                                            color='C0', label=r'$\pm$1 Std. Dev')
+                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
+                                                                               ydata + std_spectrum, alpha=0.25,
+                                                                               color='C0', label=r'$\pm$1 Std. Dev')
                         self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
                         self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
                     
                 else:
-                    self.ui.plot_ref.set_ydata(xdata)
+                    self.ui.plot_ref.set_xdata(xdata)
                     self.ui.plot_ref.set_ydata(ydata)
                     
                     if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
                         if self.ui.std_ref is not None:
                             self.ui.std_ref.remove()
                             self.ui.std_ref = None
-                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata-std_spectrum, 
-                                                                            ydata+std_spectrum, alpha=0.25,
-                                                                            color='C0', label=r'$\pm$1 Std. Dev')
+                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
+                                                                               ydata + std_spectrum, alpha=0.25,
+                                                                               color='C0', label=r'$\pm$1 Std. Dev')
                         self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
                         if self.ui.lgd_ref is not None:
                             self.ui.lgd_ref.set_visible(True)
@@ -405,7 +438,7 @@ if __name__ == '__main__':
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.25*np.arange(1000), label='Spectrum')[0]
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.125*np.arange(1000), label='Spectrum')[0]
         window.ui.mpl_canvas.axes.plot(np.arange(1000), 0.065*np.arange(1000), label='Spectrum')[0]
-        window.ui.mpl_canvas.axes.grid(visible=True, which='both', color='gray', linestyle='--', linewidth=0.5)
+        # window.ui.mpl_canvas.axes.grid(visible=True, which='both', color='gray', linestyle='--', linewidth=0.5)
 
         window.show()
 
