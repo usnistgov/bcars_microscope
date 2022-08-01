@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
             self.devices['DelayStage'].open()
         elif self.devices['DelayStage'] is None:
             self.devices['DelayStage'] = ESP301(com_port='COM9')
-            self.devices['DelayStage'].open()       
+            self.devices['DelayStage'].open()
 
         dlg = DialogDelayStage(delaystage=self.devices['DelayStage'])
         ret = dlg.exec_()
@@ -223,6 +223,7 @@ if __name__ == '__main__':
         print('Shutting Down All Devices...')
         if window.devices['CCD']:
             print('CCD...')
+            print(window.devices['CCD'].sdk.SetCoolerMode(1))
             window.devices['CCD'].shutdown()
 
         if 'NanoStage' in window.devices:
@@ -240,3 +241,7 @@ if __name__ == '__main__':
         if 'Laser' in window.devices:
             print('Laser...')
             window.devices['Laser'].close()
+
+        if 'Spectrograph' in window.devices:
+            print('Spectrograph...')
+            window.devices['Spectrograph'].close()
