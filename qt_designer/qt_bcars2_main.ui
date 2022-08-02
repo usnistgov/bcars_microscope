@@ -592,7 +592,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QPushButton" name="pushButtonWinRaster_2">
+        <widget class="QPushButton" name="pushButtonWinRasterMacro">
          <property name="maximumSize">
           <size>
            <width>134</width>
@@ -623,7 +623,7 @@ QRadioButton::indicator:unchecked {background-color: rgb(100,100,100); border: 2
      <x>0</x>
      <y>0</y>
      <width>1033</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
