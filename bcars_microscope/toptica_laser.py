@@ -3,12 +3,12 @@ import sys
 import time
 import traceback
 
-from devices import AbstractDevice
+from bcars_microscope.devices import AbstractDevice
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 
-from ui.ui_bcars2_laser_setup import Ui_Dialog as Ui_Laser
+from bcars_microscope.ui.ui_bcars2_laser_setup import Ui_Dialog as Ui_Laser
 from bcars_microscope import dark_style_sheet as stylesheet
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)

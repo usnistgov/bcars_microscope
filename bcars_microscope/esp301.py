@@ -212,5 +212,5 @@ if __name__ == '__main__':
     finally:
         esp.close()
         print('Open?: {}'.format(esp.is_open))
-        print(esp.__dict__)
+        print(esp.meta)
 

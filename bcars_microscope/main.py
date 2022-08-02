@@ -12,9 +12,10 @@ import traceback
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import QtCore
 
-from ui.ui_bcars2_main import Ui_MainWindow
+from bcars_microscope.ui.ui_bcars2_main import Ui_MainWindow
 from spectroscopy import MainWindow as WinSpectroscopy
 from raster import MainWindow as WinRaster
+from macro_raster import MainWindow as WinMicroRaster
 
 from andor_ccd import AndorNewton970, DialogAndorConfig
 from esp301 import ESP301, DialogDelayStage
@@ -46,6 +47,8 @@ class MainWindow(QMainWindow):
         self.ui.pushButtonInitMicroStage.pressed.connect(self.init_micro_stage)
         self.ui.pushButtonInitDelayStage.pressed.connect(self.init_delay_stage)
         self.ui.pushButtonInitLaser.pressed.connect(self.init_laser)
+
+        # New Windows
         self.windows = {}
         self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
         self.windows['Spectroscopy'].hide()
@@ -54,6 +57,10 @@ class MainWindow(QMainWindow):
         self.windows['Raster'] = WinRaster(self.devices)
         self.windows['Raster'].hide()
         self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
+
+        self.windows['MicroRaster'] = WinMicroRaster(self.devices)
+        self.windows['MicroRaster'].hide()
+        self.ui.pushButtonWinRasterMacro.pressed.connect(self.windows['MicroRaster'].show)
 
     def closeEvent(self, ev):
         print('Close')

@@ -2,12 +2,12 @@
 import serial
 import traceback
 from time import sleep
-from devices import AbstractDevice
+from bcars_microscope.devices import AbstractDevice
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5 import QtCore
 import numpy as np
 
-from ui.ui_bcars2_spectrometer import Ui_Dialog as Ui_Spectrograph
+from bcars_microscope.ui.ui_bcars2_spectrometer import Ui_Dialog as Ui_Spectrograph
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 

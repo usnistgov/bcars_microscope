@@ -40,7 +40,7 @@ from PyQt5.QtGui import QPalette, QColor
 
 QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
-from ui.ui_learn_multithread import Ui_MainWindow
+from bcars_microscope.ui.ui_learn_multithread import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 

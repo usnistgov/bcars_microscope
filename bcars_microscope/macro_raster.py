@@ -22,7 +22,7 @@ import h5py
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
 from PyQt5.QtCore import QTimer, QThreadPool
 from PyQt5 import QtCore
-from ui.ui_bcars2_macro import Ui_MainWindow
+from bcars_microscope.ui.ui_bcars2_macro import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from bcars_microscope import dark_style_sheet
 # from bcars_microscope.multithread import Worker
@@ -452,7 +452,13 @@ class MainWindow(QMainWindow):
 
     def _update_step_sizes(self, ignore_sender=False):
         # dt = self.devices['CCD'].net_acquisition_time
-        dt = self.devices['CCD'].settings['exposure_time']
+        if 'CCD' in self.devices:  # TODO: Rethink this
+            if self.devices['CCD'] is not None:
+                dt = self.devices['CCD'].settings['exposure_time']
+            else:
+                dt = 0.0035
+        else:
+            dt = 0.0035
 
         if not ignore_sender:
             sender = self.sender()
@@ -797,27 +803,14 @@ class MainWindow(QMainWindow):
                     dset_name = dsetname_prefix + '_slow_{}'.format(num)
                     dset = grp.create_dataset(dset_name, data=1 * arr, dtype=np.uint16)
                     dset.attrs.update(device_meta)
+                    dset.attrs.update(self.macroscan_fast_params.meta)
+                    dset.attrs.update(self.macroscan_slow_params.meta)
+                    dset.attrs.update(self.nanoscan_fixed_params.meta)
                     dset.attrs['MicroStage.raster.slow.pos'] = curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]]
                     dset.attrs['MicroStage.raster.slow.pos_sample_vec'] = slow_pos_sample_vec
                     dset.attrs['MicroStage.raster.fast.pos_sample_vec'] = fast_pos_sample_vec
                     dset.attrs['MicroStage.raster.fast.n_images_at_pos_samples'] = n_images_at_pos_samples
                     print('Writing to dataset: {}'.format(dset_name))
-
-                # if n_fixed_steps == 1:
-                #             dset_name = img_inst.name
-                #         else:
-                #             dset_name = img_inst.name + '_z{}'.format(num_z_stack)
-                #         dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps, img_inst.ns_list[0].n_steps, 1600),
-                #                                   dtype=np.uint16)
-                #         # WRITE ATTRIBUTES
-                #         dset.attrs.update(img_inst.meta)
-
-                #         dset.attrs.update(self.devices[k].meta)
-                # dset.attrs.update(self.devices['CCD'].meta)
-                # dset.attrs['TimeStage.Position'] = img_inst.delay
-                # dset.attrs['Memo'] = self.ui.plainTextEditMemo.toPlainText()
-                # dset.attrs['Date'] = '{}'.format(datetime.datetime.now())
-                # dset.attrs[img_inst.ns_list[2].prefix + 'Position'] = curr_fixed_pos
 
                 sp_idxs = np.arange(n_images)[1:: n_images // (self._n_spectra_to_collect - 1) - 1]
                 _midscan_spectra = arr[sp_idxs, :]

@@ -6,7 +6,7 @@ import numpy as np
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5 import QtCore
 
-from ui.ui_andor_setup import Ui_Dialog as Ui_AndorConfig
+from bcars_microscope.ui.ui_andor_setup import Ui_Dialog as Ui_AndorConfig
 # from PyQt5.QtGui import QCloseEvent
 
 from pyAndorSDK2 import atmcd, atmcd_codes, atmcd_errors

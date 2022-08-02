@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (QMainWindow, QVBoxLayout, QApplication,
                                QFileDialog, QMessageBox)
 from PyQt5.QtCore import QTimer, QThreadPool
 from PyQt5 import QtCore
-from ui.ui_bcars2_timescan import Ui_MainWindow
+from bcars_microscope.ui.ui_bcars2_timescan import Ui_MainWindow
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 from bcars_microscope import dark_style_sheet
