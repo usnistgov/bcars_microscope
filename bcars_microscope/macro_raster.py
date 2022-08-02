@@ -14,9 +14,11 @@ TODO: Clear plots (or reference) before a 2nd scan
 QUESTION: Does acceleration affect over- and under-scanning?
 """
 
+import datetime
 from timeit import default_timer as timer
 from cycler import cycler
 from time import sleep
+import h5py
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QApplication, QFileDialog, QMessageBox
 from PyQt5.QtCore import QTimer, QThreadPool
 from PyQt5 import QtCore
@@ -25,8 +27,9 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from bcars_microscope import dark_style_sheet
 # from bcars_microscope.multithread import Worker
 from bcars_microscope.mpl import MplCanvas
-# from bcars_microscope.h5 import save_location_is_valid
+from bcars_microscope.h5 import save_location_is_valid
 from bcars_microscope.raster import NanoScanAxisParams
+from bcars_microscope.devices import AbstractDevice
 
 import sys
 import traceback
@@ -448,7 +451,9 @@ class MainWindow(QMainWindow):
     #                                           prefix='Raster.NRB.Fixed.')
 
     def _update_step_sizes(self, ignore_sender=False):
-        dt = self.devices['CCD'].net_acquisition_time
+        # dt = self.devices['CCD'].net_acquisition_time
+        dt = self.devices['CCD'].settings['exposure_time']
+
         if not ignore_sender:
             sender = self.sender()
         else:
@@ -616,42 +621,42 @@ class MainWindow(QMainWindow):
 
     def start_acquisition(self):
 
-        # self.double_check_save()
-        # yes_save = self.ui.checkBoxSave.isChecked()
+        self.double_check_save()
+        yes_save = self.ui.checkBoxSave.isChecked()
 
-        # if not yes_save:
-        #     pfname = None  # path + filename
-        #     dsetname = None  # dataset name
-        #     grpname = None  # group name
-        #     pth = None  # path
-        #     fname = None  # filename
-        # else:
-        #     pfname = self.ui.lineEditPathFileName.text()  # Path + filename
-        #     dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
-        #     grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
+        if not yes_save:
+            pfname = None  # path + filename
+            dsetname = None  # dataset name
+            grpname = None  # group name
+            pth = None  # path
+            fname = None  # filename
+        else:
+            pfname = self.ui.lineEditPathFileName.text()  # Path + filename
+            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
+            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
 
-        #     try:
-        #         pth, fname = pfname.rsplit('/', 1)
-        #     except Exception:
-        #         pth = None
-        #         fname = None
+            try:
+                pth, fname = pfname.rsplit('/', 1)
+            except Exception:
+                pth = None
+                fname = None
 
-        #     # NOTE: Has to write to a new group
-        #     save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
-        #     if not save_loc_valid:
-        #         msg = QMessageBox(self)
-        #         msg.setIcon(QMessageBox.Warning)
-        #         msg.setText('Save location is not valid.')
-        #         msg.setInformativeText(save_loc_str)
-        #         msg.setWindowTitle('Save location not valid')
-        #         msg.setStandardButtons(QMessageBox.Ok)
-        #         # msg.setButtonText(0, 'A')
-        #         msg.setDefaultButton(QMessageBox.Ok)
-        #         out = msg.exec()
-        #         del pth, fname, grpname, dsetname
-        #         return
-        #     else:
-        #         del pth, fname
+            # NOTE: Has to write to a new group
+            save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
+            if not save_loc_valid:
+                msg = QMessageBox(self)
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText('Save location is not valid.')
+                msg.setInformativeText(save_loc_str)
+                msg.setWindowTitle('Save location not valid')
+                msg.setStandardButtons(QMessageBox.Ok)
+                # msg.setButtonText(0, 'A')
+                msg.setDefaultButton(QMessageBox.Ok)
+                _ = msg.exec()
+                del pth, fname, grpname, dsetname
+                return
+            else:
+                del pth, fname
 
         #     if not self.memo_altered_bool:
         #         msg = QMessageBox(self)
@@ -672,16 +677,52 @@ class MainWindow(QMainWindow):
 
         # General image settings
         self.devices['CCD'].set_internal_trigger()  # Internal trigger
-        devices['CCD'].sdk.PrepareAcquisition()
+        self.devices['CCD'].sdk.PrepareAcquisition()
         self.do_acquire()
 
     def do_acquire(self):
+        yes_save = self.ui.checkBoxSave.isChecked()
+
+        if not yes_save:
+            pfname = None  # path + filename
+            dsetname_prefix = None  # dataset name
+            grpname = None  # group name
+            pth = None  # path
+            fname = None  # filename
+        else:
+            pfname = self.ui.lineEditPathFileName.text()  # Path + filename
+            dsetname_prefix = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
+            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname_prefix  # Groupname
+
+            try:
+                pth, fname = pfname.rsplit('/', 1)
+            except Exception:
+                pth = None
+                fname = None
+
+        devs, not_acq, status_str = self.is_ready()
+        print(status_str)
+        if not (devs & not_acq):  # System is NOT ready to acquire
+            return
+
+        if yes_save:
+            fid = h5py.File(pfname, 'a')
+            grp = fid.create_group(grpname)
+            print('Data will be saved to group: {}'.format(grpname))
+        else:
+            fid = None
+            grp = None
+
         print('DO ACQUIRE')
+        self.devices['running'] = True  # Need this for timing
+
         print(self.macroscan_fast_params.__dict__)
         print(self.macroscan_slow_params.__dict__)
         print(self.nanoscan_fixed_params.__dict__)
 
         fast_axis = self.macroscan_fast_params.axis
+        velocity = self.macroscan_fast_params.velocity
+        self.devices['MicroStage'].set_velocity({self.devices['MicroStage'].axis_to_num[fast_axis]: velocity})
         slow_axis = self.macroscan_slow_params.axis
 
         slow_steps = self.macroscan_slow_params.n_steps
@@ -689,6 +730,15 @@ class MainWindow(QMainWindow):
         _midscan_plot_ref = None
 
         try:
+            device_meta = {}
+            for k in self.devices:
+                if isinstance(self.devices[k], AbstractDevice):
+                    print('{} is a device'.format(k))
+                    device_meta.update(self.devices[k].meta)
+            device_meta.update(self.devices['CCD'].meta)
+            device_meta['Memo'] = self.ui.plainTextEditMemo.toPlainText()
+            device_meta['Date'] = '{}'.format(datetime.datetime.now())
+
             for num in range(slow_steps):
                 fast_pos_sample_vec = []
                 slow_pos_sample_vec = []
@@ -696,51 +746,78 @@ class MainWindow(QMainWindow):
 
                 # tmr = timer()
                 print('============= {} / {} ============'.format(num + 1, slow_steps))
-                devices['MicroStage'].set_position({devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.start,
-                                                    devices['MicroStage'].axis_to_num[slow_axis]: self.macroscan_slow_params.step_vec[num]})
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.start,
+                                                         self.devices['MicroStage'].axis_to_num[slow_axis]: self.macroscan_slow_params.step_vec[num]})
                 # 3. Move Slow, Fast, then Fixed
                 self.devices['NanoStage'].set_position({'Y': self.ui.spinBoxYPosition.value()})
                 self.devices['NanoStage'].set_position({'X': self.ui.spinBoxXPosition.value()})
 
-                while devices['MicroStage'].is_moving():
+                while self.devices['MicroStage'].is_moving():
                     sleep(0.1)
-                curr_pos = devices['MicroStage'].get_position()
-                fast_pos_sample_vec.append(curr_pos[devices['MicroStage'].axis_to_num[fast_axis]])
-                slow_pos_sample_vec.append(curr_pos[devices['MicroStage'].axis_to_num[slow_axis]])
+                curr_pos = self.devices['MicroStage'].get_position()
+                fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
+                slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
                 n_images_at_pos_samples = [0]
                 print('Ready for line scan')
                 self.devices['NanoStage'].set_position({'Z': self.nanoscan_fixed_params.start})  # Put Z in last
 
-                devices['CCD'].start_acquisition()
+                self.devices['CCD'].start_acquisition()
                 tmr = timer()
-                devices['MicroStage'].set_position({devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.stop})
+                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.stop})
 
-                temp_fast_pos, temp_fast_n_imgs = devices['MicroStage'].wait_till_near(devices['MicroStage'].axis_to_num[fast_axis], 
-                                                                                       self.macroscan_fast_params.start, 
-                                                                                       self.macroscan_fast_params.stop, 
-                                                                                       threshold=0.01, pause=0.01,
-                                                                                       per_iter_fcn=lambda: devices['CCD'].get_num_new_images()[1])
-                devices['CCD'].stop_acquisition()
+                temp_fast_pos, temp_fast_n_imgs = self.devices['MicroStage'].wait_till_near(self.devices['MicroStage'].axis_to_num[fast_axis],
+                                                                                            self.macroscan_fast_params.start,
+                                                                                            self.macroscan_fast_params.stop,
+                                                                                            threshold=0.01, pause=0.001,
+                                                                                            per_iter_fcn=lambda: self.devices['CCD'].get_num_new_images()[1])
+                self.devices['CCD'].stop_acquisition()
                 tmr -= timer()
+                self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_post_image_z_pos.value()})
                 print('Time per iteration: {}'.format(-tmr))
                 fast_pos_sample_vec.extend(temp_fast_pos)
-                slow_pos_sample_vec.extend([slow_pos_sample_vec[-1]]*len(temp_fast_pos))
+                slow_pos_sample_vec.extend([slow_pos_sample_vec[-1]] * len(temp_fast_pos))
                 n_images_at_pos_samples.extend(temp_fast_n_imgs)
-                self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_post_image_z_pos.value()})
 
-                ret_code, n_images, first_img, last_img = devices['CCD'].get_num_new_images()
+                ret_code, n_images, first_img, last_img = self.devices['CCD'].get_num_new_images()
                 print('New Images: {}'.format(n_images))
-                
+                print('Velocity: {}'.format(self.devices['MicroStage'].get_velocity()))
+                print(fast_pos_sample_vec)
+
                 # Needed the extra n_images* thus also needed the extra positional info
                 # else interpolation range problems for plotting
                 n_images_at_pos_samples.append(n_images)
-                curr_pos = devices['MicroStage'].get_position()
-                fast_pos_sample_vec.append(curr_pos[devices['MicroStage'].axis_to_num[fast_axis]])
-                slow_pos_sample_vec.append(curr_pos[devices['MicroStage'].axis_to_num[slow_axis]])
-                
-                
-                (ret_code, arr, validfirst, validlast) = devices['CCD'].get_all_images16()
+                curr_pos = self.devices['MicroStage'].get_position()
+                fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
+                slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
+
+                (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
                 arr = arr.reshape((n_images, -1))
+
+                if fid is not None:
+                    dset_name = dsetname_prefix + '_slow_{}'.format(num)
+                    dset = grp.create_dataset(dset_name, data=1 * arr, dtype=np.uint16)
+                    dset.attrs.update(device_meta)
+                    dset.attrs['MicroStage.raster.slow.pos'] = curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]]
+                    dset.attrs['MicroStage.raster.slow.pos_sample_vec'] = slow_pos_sample_vec
+                    dset.attrs['MicroStage.raster.fast.pos_sample_vec'] = fast_pos_sample_vec
+                    dset.attrs['MicroStage.raster.fast.n_images_at_pos_samples'] = n_images_at_pos_samples
+                    print('Writing to dataset: {}'.format(dset_name))
+
+                # if n_fixed_steps == 1:
+                #             dset_name = img_inst.name
+                #         else:
+                #             dset_name = img_inst.name + '_z{}'.format(num_z_stack)
+                #         dset = grp.create_dataset(dset_name, shape=(img_inst.ns_list[1].n_steps, img_inst.ns_list[0].n_steps, 1600),
+                #                                   dtype=np.uint16)
+                #         # WRITE ATTRIBUTES
+                #         dset.attrs.update(img_inst.meta)
+
+                #         dset.attrs.update(self.devices[k].meta)
+                # dset.attrs.update(self.devices['CCD'].meta)
+                # dset.attrs['TimeStage.Position'] = img_inst.delay
+                # dset.attrs['Memo'] = self.ui.plainTextEditMemo.toPlainText()
+                # dset.attrs['Date'] = '{}'.format(datetime.datetime.now())
+                # dset.attrs[img_inst.ns_list[2].prefix + 'Position'] = curr_fixed_pos
 
                 sp_idxs = np.arange(n_images)[1:: n_images // (self._n_spectra_to_collect - 1) - 1]
                 _midscan_spectra = arr[sp_idxs, :]
@@ -754,10 +831,10 @@ class MainWindow(QMainWindow):
                 self.ui.mpl_canvas_spectra.draw()
                 self.ui.mpl_canvas_spectra.flush_events()
 
-                intfcn = interp1d(n_images_at_pos_samples, fast_pos_sample_vec, kind='linear')
+                interp_n_imgs_to_pos = interp1d(n_images_at_pos_samples, fast_pos_sample_vec, kind='linear')
 
                 try:
-                    self.ui.mpl_canvas_left.axes.scatter(intfcn(np.arange(n_images)), [slow_pos_sample_vec[0]] * n_images, c=arr[:, 1000], marker='s')
+                    self.ui.mpl_canvas_left.axes.scatter(interp_n_imgs_to_pos(np.arange(n_images)), [slow_pos_sample_vec[0]] * n_images, c=arr[:, 1000], marker='s')
                     self.ui.mpl_canvas_left.draw()
                     self.ui.mpl_canvas_left.flush_events()
                 except Exception:
@@ -769,6 +846,15 @@ class MainWindow(QMainWindow):
                 # print('Time per iteration: {}'.format(-tmr))
         except Exception:
             print(traceback.format_exc())
+        finally:
+            if fid is not None:
+                try:
+                    fid.close()
+                except Exception:
+                    print(traceback.format_exc())
+            self.devices['running'] = False
+            if yes_save:
+                self.ui.spinBoxDatasetIndex.setValue(self.ui.spinBoxDatasetIndex.value() + 1)
 
     def stop_acquisition(self):
         self.timer_update_plots.stop()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1625</width>
-    <height>1056</height>
+    <height>1000</height>
    </rect>
   </property>
   <property name="font">
@@ -270,23 +270,6 @@
                  </property>
                  <property name="maximum">
                   <double>20000.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>1.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Acceleration (mm/s^2)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="spinBoxMacroFastAcceleration">
-                 <property name="maximum">
-                  <double>200.000000000000000</double>
                  </property>
                  <property name="value">
                   <double>1.000000000000000</double>
@@ -672,6 +655,9 @@
                </item>
                <item>
                 <widget class="QSpinBox" name="spinBoxFixedSteps">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::UpDownArrows</enum>
                  </property>
@@ -1075,7 +1061,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget_2">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="currentIndex">
          <number>0</number>
@@ -1100,6 +1086,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="spinBox_post_image_z_pos">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>75</width>
@@ -1137,6 +1126,9 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_16">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Imaging Delay (mm)</string>
             </property>
@@ -1147,6 +1139,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QDoubleSpinBox" name="spinBoxDelayImaging">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
               <width>75</width>
@@ -1184,6 +1179,9 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_19">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Before/After</string>
             </property>
@@ -1194,6 +1192,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="comboBoxRecNRB">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="maximumSize">
              <size>
               <width>69</width>
@@ -1227,6 +1228,9 @@
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_17">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Collect Dark</string>
             </property>
@@ -1259,6 +1263,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QLabel" name="label_21">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Delay (mm)</string>
               </property>
@@ -1269,6 +1276,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="spinBoxDelayDark">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>75</width>
@@ -1308,6 +1318,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_18">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Collect NRB</string>
             </property>
@@ -1340,6 +1353,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QLabel" name="label_22">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Delay (mm)</string>
               </property>
@@ -1350,6 +1366,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="spinBoxDelayNRB">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>75</width>
@@ -1389,6 +1408,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="label_20">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Early-Time NRB</string>
             </property>
@@ -1421,6 +1443,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QLabel" name="label_23">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Delay (mm)</string>
               </property>
@@ -1431,6 +1456,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="spinBoxDelayNRB_Early">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>75</width>
@@ -1539,6 +1567,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QDoubleSpinBox" name="spinBox_nrb_fast_start">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>75</width>
@@ -1583,6 +1614,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QDoubleSpinBox" name="spinBox_nrb_fast_stop">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>75</width>
@@ -1627,6 +1661,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QSpinBox" name="spinBox_nrb_fast_steps">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::NoButtons</enum>
                  </property>
@@ -1710,6 +1747,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QDoubleSpinBox" name="spinBox_nrb_slow_start">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>75</width>
@@ -1754,6 +1794,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QDoubleSpinBox" name="spinBox_nrb_slow_stop">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>75</width>
@@ -1798,6 +1841,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QSpinBox" name="spinBox_nrb_slow_steps">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::NoButtons</enum>
                  </property>
@@ -1881,6 +1927,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                </item>
                <item>
                 <widget class="QDoubleSpinBox" name="spinBox_nrb_fixed_start">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>75</width>
@@ -2534,7 +2583,7 @@ SC Power = 11 mW</string>
      <x>0</x>
      <y>0</y>
      <width>1625</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

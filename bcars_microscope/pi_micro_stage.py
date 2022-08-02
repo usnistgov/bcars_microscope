@@ -225,101 +225,104 @@ class MicroStage(AbstractStage):
 
 
 if __name__ == '__main__':
-    
-    try_ui = True
 
-    try:
-        devices = {}
-        devices['MicroStage'] = MicroStage()
-        devices['MicroStage'].open()
-        print(devices['MicroStage'].sdk.gcscommands.qHPA())
-        print('Max acceleration: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0x4A')['1'][0x4A]))
-        print('Current acceleration: {}'.format(devices['MicroStage'].get_acceleration()))
-        print('Max deceleration: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0x4B')['1'][0x4B]))
-        print('Current deceleration: {}'.format(devices['MicroStage'].get_deceleration()))
-
-        print('Current velocity: {}'.format(devices['MicroStage'].get_velocity()))
-        print('Max velocity: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0xA')['1'][0xA]))
-    except Exception:
-        print(traceback.format_exc())
-    else:
-        if try_ui:
-            import sys
-            from bcars_microscope import dark_style_sheet as stylesheet
-            app = QApplication(sys.argv)
-            app.setStyle("Fusion")
-            app.setStyleSheet(stylesheet)
-
-            window = DialogMacroStage(macrostage=devices['MicroStage'])
-            ret = window.exec_()
-            print(ret)
-    finally:
-        devices['MicroStage'].close()
-
-    # Run a demo raster scan
-    # from bcars_microscope.andor_ccd import AndorNewton970    
-    
-    # devices = {}
-    # start = 12.5
-    # stop = 13.5
-    # diff = stop-start
-    # vel = 1. 
-    
+    # try_ui = True
 
     # try:
-    #     devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time': 0.0035, 'readout_mode': 'FULL_VERTICAL_BINNING', 'trigger_mode': 'INTERNAL'})
-
-    #     devices['CCD'].init_all()
-    #     # devices['CCD'].set_internal_trigger()
-    #     dwell = devices['CCD'].net_acquisition_time
-    #     # print('Estimated total time per acquisition (2): {}'.format(dwell))
-    #     devices['CCD'].sdk.SetExposureTime(0.0035)
-    #     print('Exposure time: {}'.format(devices['CCD'].sdk.GetAcquisitionTimings()[1]))
+    #     devices = {}
     #     devices['MicroStage'] = MicroStage()
     #     devices['MicroStage'].open()
-    #     print('Delay: {}'.format(devices['MicroStage'].sdk.DEL(0)))
+    #     print(devices['MicroStage'].sdk.gcscommands.qHPA())
+    #     print('Max acceleration: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0x4A')['1'][0x4A]))
+    #     print('Current acceleration: {}'.format(devices['MicroStage'].get_acceleration()))
+    #     print('Max deceleration: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0x4B')['1'][0x4B]))
+    #     print('Current deceleration: {}'.format(devices['MicroStage'].get_deceleration()))
+
+    #     print('Current velocity: {}'.format(devices['MicroStage'].get_velocity()))
+    #     print('Max velocity: {}'.format(devices['MicroStage'].sdk.gcscommands.qSPA('1', '0xA')['1'][0xA]))
     # except Exception:
     #     print(traceback.format_exc())
     # else:
-    #     # Set velocity
-    #     devices['MicroStage'].set_velocity({'1':vel, '2':vel})
-    #     print('Velocity: {}'.format(devices['MicroStage'].get_velocity()))
-        
-    #     # Set acceleration
-    #     print('Acceleration: {}'.format(devices['MicroStage'].get_acceleration()))
-        
-    #     N_iter = 10
-    #     n_img_list = []
+    #     if try_ui:
+    #         import sys
+    #         from bcars_microscope import dark_style_sheet as stylesheet
+    #         app = QApplication(sys.argv)
+    #         app.setStyle("Fusion")
+    #         app.setStyleSheet(stylesheet)
 
-    #     for _ in range(N_iter):
-    #         # Set initial position
-    #         devices['MicroStage'].set_position({'1':start, '2':start})
-    #         while devices['MicroStage'].is_moving():
-    #             sleep(0.01)
-    #         curr_pos = [devices['MicroStage'].get_position('2')]
-    #         n_imgs_w_pos = [0]
-    #         # Start CCD
-    #         devices['CCD'].start_acquisition()
-
-    #         # MOVE 
-    #         devices['MicroStage'].set_position({'2':stop})
-    #         temp_pos, temp_n_imgs = devices['MicroStage'].wait_till_near('2', start, stop, threshold=0.01, pause=0.01, 
-    #                                                                      per_iter_fcn=lambda: devices['CCD'].get_num_new_images()[1])
-    #         n_imgs_w_pos.extend(temp_n_imgs)
-    #         curr_pos.extend(temp_pos)
-                    
-    #         # Stop acquisition
-    #         devices['CCD'].stop_acquisition()
-    #         # print(curr_pos)
-
-    #         # Collect images
-    #         _, n_images, _, _ = devices['CCD'].get_num_new_images()
-    #         n_img_list.append(n_images)
-    #         # print('New Images: {}'.format(n_images))
-    #         (_, _, _, _) = devices['CCD'].get_all_images16()
-    #     print('N images: {} +/- {:.1f}'.format(int(np.mean(n_img_list)), np.std(n_img_list)))
-    #     print(n_imgs_w_pos)
+    #         window = DialogMacroStage(macrostage=devices['MicroStage'])
+    #         ret = window.exec_()
+    #         print(ret)
     # finally:
-    #     devices['CCD'].free_memory()
-    #     devices['CCD'].shutdown()
     #     devices['MicroStage'].close()
+
+    # Run a demo raster scan
+    from bcars_microscope.andor_ccd import AndorNewton970
+    import numpy as np
+
+    devices = {}
+    start = 12.5
+    stop = 13.5
+    diff = stop-start
+    vel = 1.
+
+
+    try:
+        devices['CCD'] = AndorNewton970(settings_kwargs={'exposure_time': 0.0035, 'readout_mode': 'FULL_VERTICAL_BINNING', 'trigger_mode': 'INTERNAL'})
+
+        devices['CCD'].init_all()
+        # devices['CCD'].set_internal_trigger()
+        dwell = devices['CCD'].net_acquisition_time
+        # print('Estimated total time per acquisition (2): {}'.format(dwell))
+        devices['CCD'].sdk.SetExposureTime(0.0035)
+        print('Exposure time: {}'.format(devices['CCD'].sdk.GetAcquisitionTimings()[1]))
+        devices['MicroStage'] = MicroStage()
+        devices['MicroStage'].open()
+        print('Delay: {}'.format(devices['MicroStage'].sdk.DEL(0)))
+    except Exception:
+        print(traceback.format_exc())
+    else:
+        # Set velocity
+        devices['MicroStage'].set_velocity({'1':vel, '2':vel})
+        print('Velocity: {}'.format(devices['MicroStage'].get_velocity()))
+
+        # Set acceleration
+        print('Acceleration: {}'.format(devices['MicroStage'].get_acceleration()))
+
+        N_iter = 10
+        n_img_list = []
+
+        for _ in range(N_iter):
+            # Set initial position
+            devices['MicroStage'].set_position({'1':start, '2':start})
+            while devices['MicroStage'].is_moving():
+                sleep(0.01)
+            curr_pos = [devices['MicroStage'].get_position('2')]
+            n_imgs_w_pos = [0]
+            # Start CCD
+            devices['CCD'].start_acquisition()
+
+            # MOVE
+            devices['MicroStage'].set_position({'2':stop})
+            temp_pos, temp_n_imgs = devices['MicroStage'].wait_till_near('2', start, stop, threshold=0.01, pause=0.01,
+                                                                         per_iter_fcn=lambda: devices['CCD'].get_num_new_images()[1])
+            n_imgs_w_pos.extend(temp_n_imgs)
+            curr_pos.extend(temp_pos)
+
+            # Stop acquisition
+            devices['CCD'].stop_acquisition()
+            # print(curr_pos)
+
+            # Collect images
+            _, n_images, _, _ = devices['CCD'].get_num_new_images()
+            n_img_list.append(n_images)
+            # print('New Images: {}'.format(n_images))
+            (_, _, _, _) = devices['CCD'].get_all_images16()
+        print('N images: {} +/- {:.1f}'.format(int(np.mean(n_img_list)), np.std(n_img_list)))
+        print(n_imgs_w_pos)
+        print(devices['MicroStage'].get_position(devices['MicroStage'].axis_to_num['Y']))
+        print(type(devices['MicroStage'].get_position(devices['MicroStage'].axis_to_num['Y'])))
+    finally:
+        devices['CCD'].free_memory()
+        devices['CCD'].shutdown()
+        devices['MicroStage'].close()
