@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1625</width>
-    <height>1000</height>
+    <height>1002</height>
    </rect>
   </property>
   <property name="font">
@@ -656,7 +656,7 @@
                <item>
                 <widget class="QSpinBox" name="spinBoxFixedSteps">
                  <property name="enabled">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                  <property name="buttonSymbols">
                   <enum>QAbstractSpinBox::UpDownArrows</enum>
@@ -665,7 +665,7 @@
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>5000</number>
+                  <number>100</number>
                  </property>
                  <property name="value">
                   <number>1</number>
@@ -2455,7 +2455,7 @@ SC Power = 11 mW</string>
                 </size>
                </property>
                <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
                <property name="minimum">
                 <number>0</number>
@@ -2477,7 +2477,7 @@ SC Power = 11 mW</string>
        <item row="0" column="1">
         <widget class="QTabWidget" name="tabWidget_right">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_3">
           <attribute name="title">
@@ -2531,7 +2531,7 @@ SC Power = 11 mW</string>
                 </size>
                </property>
                <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
+                <enum>QAbstractSpinBox::UpDownArrows</enum>
                </property>
                <property name="minimum">
                 <number>0</number>

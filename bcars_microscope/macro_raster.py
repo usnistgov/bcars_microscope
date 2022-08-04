@@ -8,10 +8,8 @@ Started
 Not Started
 -----------
 TODO: Spectral axis selectable and calibratable to wavelength or wavenumber
-TODO: Redo check-save messagebox text to be clearer
-TODO: H5 file meta data for Laser
-TODO: Clear plots (or reference) before a 2nd scan
 QUESTION: Does acceleration affect over- and under-scanning?
+TODO: STOP button works
 """
 
 import datetime
@@ -140,6 +138,7 @@ class MacroScanAxisParams:
         self.prefix = prefix
         self.dt = dwell_time
         self._velocity = velocity
+        self.units = 'mm'
 
         self._start = None
         self._stop = None
@@ -253,6 +252,7 @@ class MacroScanAxisParams:
         output['{}Steps'.format(self.prefix)] = self.n_steps
         output['{}StepSize'.format(self.prefix)] = self.step_size
         output['{}Velocity'.format(self.prefix)] = self.velocity
+        output['{}Units'.format(self.prefix)] = self.units
         return output
 
 
@@ -684,10 +684,18 @@ class MainWindow(QMainWindow):
         # General image settings
         self.devices['CCD'].set_internal_trigger()  # Internal trigger
         self.devices['CCD'].sdk.PrepareAcquisition()
+        self.ui.mpl_canvas_left.axes.cla()
+        self.ui.mpl_canvas_right.axes.cla()
+        
         self.do_acquire()
 
     def do_acquire(self):
         yes_save = self.ui.checkBoxSave.isChecked()
+        try:
+            delay = self.ui.spinBoxDelayImaging.value()
+            self.devices['DelayStage'].set_position(delay)
+        except Exception:
+            print(traceback.format_exc())
 
         if not yes_save:
             pfname = None  # path + filename
@@ -732,7 +740,7 @@ class MainWindow(QMainWindow):
         slow_axis = self.macroscan_slow_params.axis
 
         slow_steps = self.macroscan_slow_params.n_steps
-
+        
         _midscan_plot_ref = None
 
         try:
@@ -745,98 +753,111 @@ class MainWindow(QMainWindow):
             device_meta['Memo'] = self.ui.plainTextEditMemo.toPlainText()
             device_meta['Date'] = '{}'.format(datetime.datetime.now())
 
-            for num in range(slow_steps):
-                fast_pos_sample_vec = []
-                slow_pos_sample_vec = []
-                n_images_at_pos_samples = []
+            z_steps = self.nanoscan_fixed_params.n_steps
+            for num_z, curr_z in enumerate(self.nanoscan_fixed_params.step_vec):
+                self.ui.mpl_canvas_left.axes.cla()
+                self.ui.mpl_canvas_right.axes.cla()
+                for num in range(slow_steps):
+                    fast_pos_sample_vec = []
+                    slow_pos_sample_vec = []
+                    n_images_at_pos_samples = []
 
-                # tmr = timer()
-                print('============= {} / {} ============'.format(num + 1, slow_steps))
-                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.start,
-                                                         self.devices['MicroStage'].axis_to_num[slow_axis]: self.macroscan_slow_params.step_vec[num]})
-                # 3. Move Slow, Fast, then Fixed
-                self.devices['NanoStage'].set_position({'Y': self.ui.spinBoxYPosition.value()})
-                self.devices['NanoStage'].set_position({'X': self.ui.spinBoxXPosition.value()})
+                    # tmr = timer()
+                    print('============= {} / {} ============'.format(num + 1, slow_steps))
+                    self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.start,
+                                                            self.devices['MicroStage'].axis_to_num[slow_axis]: self.macroscan_slow_params.step_vec[num]})
+                    # 3. Move Slow, Fast, then Fixed
+                    self.devices['NanoStage'].set_position({'Y': self.ui.spinBoxYPosition.value()})
+                    self.devices['NanoStage'].set_position({'X': self.ui.spinBoxXPosition.value()})
 
-                while self.devices['MicroStage'].is_moving():
-                    sleep(0.1)
-                curr_pos = self.devices['MicroStage'].get_position()
-                fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
-                slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
-                n_images_at_pos_samples = [0]
-                print('Ready for line scan')
-                self.devices['NanoStage'].set_position({'Z': self.nanoscan_fixed_params.start})  # Put Z in last
+                    while self.devices['MicroStage'].is_moving():
+                        sleep(0.1)
+                    curr_pos = self.devices['MicroStage'].get_position()
+                    fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
+                    slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
+                    n_images_at_pos_samples = [0]
+                    print('Ready for line scan')
+                    self.devices['NanoStage'].set_position({'Z': curr_z})  # Put Z in last
 
-                self.devices['CCD'].start_acquisition()
-                tmr = timer()
-                self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.stop})
+                    self.devices['CCD'].start_acquisition()
+                    tmr = timer()
+                    self.devices['MicroStage'].set_position({self.devices['MicroStage'].axis_to_num[fast_axis]: self.macroscan_fast_params.stop})
 
-                temp_fast_pos, temp_fast_n_imgs = self.devices['MicroStage'].wait_till_near(self.devices['MicroStage'].axis_to_num[fast_axis],
-                                                                                            self.macroscan_fast_params.start,
-                                                                                            self.macroscan_fast_params.stop,
-                                                                                            threshold=0.01, pause=0.001,
-                                                                                            per_iter_fcn=lambda: self.devices['CCD'].get_num_new_images()[1])
-                self.devices['CCD'].stop_acquisition()
-                tmr -= timer()
-                self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_post_image_z_pos.value()})
-                print('Time per iteration: {}'.format(-tmr))
-                fast_pos_sample_vec.extend(temp_fast_pos)
-                slow_pos_sample_vec.extend([slow_pos_sample_vec[-1]] * len(temp_fast_pos))
-                n_images_at_pos_samples.extend(temp_fast_n_imgs)
+                    temp_fast_pos, temp_fast_n_imgs = self.devices['MicroStage'].wait_till_near(self.devices['MicroStage'].axis_to_num[fast_axis],
+                                                                                                self.macroscan_fast_params.start,
+                                                                                                self.macroscan_fast_params.stop,
+                                                                                                threshold=0.01, pause=0.001,
+                                                                                                per_iter_fcn=lambda: self.devices['CCD'].get_num_new_images()[1])
+                    self.devices['CCD'].stop_acquisition()
+                    tmr -= timer()
+                    self.devices['NanoStage'].set_position({'Z': self.ui.spinBox_post_image_z_pos.value()})
+                    print('Time per iteration: {}'.format(-tmr))
+                    fast_pos_sample_vec.extend(temp_fast_pos)
+                    slow_pos_sample_vec.extend([slow_pos_sample_vec[-1]] * len(temp_fast_pos))
+                    n_images_at_pos_samples.extend(temp_fast_n_imgs)
 
-                ret_code, n_images, first_img, last_img = self.devices['CCD'].get_num_new_images()
-                print('New Images: {}'.format(n_images))
-                print('Velocity: {}'.format(self.devices['MicroStage'].get_velocity()))
-                print(fast_pos_sample_vec)
+                    ret_code, n_images, first_img, last_img = self.devices['CCD'].get_num_new_images()
+                    print('New Images: {}'.format(n_images))
+                    print('Velocity: {}'.format(self.devices['MicroStage'].get_velocity()))
+                    print(fast_pos_sample_vec)
 
-                # Needed the extra n_images* thus also needed the extra positional info
-                # else interpolation range problems for plotting
-                n_images_at_pos_samples.append(n_images)
-                curr_pos = self.devices['MicroStage'].get_position()
-                fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
-                slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
+                    # Needed the extra n_images* thus also needed the extra positional info
+                    # else interpolation range problems for plotting
+                    n_images_at_pos_samples.append(n_images)
+                    curr_pos = self.devices['MicroStage'].get_position()
+                    fast_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[fast_axis]])
+                    slow_pos_sample_vec.append(curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]])
 
-                (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
-                arr = arr.reshape((n_images, -1))
+                    (ret_code, arr, validfirst, validlast) = self.devices['CCD'].get_all_images16()
+                    arr = arr.reshape((n_images, -1))
 
-                if fid is not None:
-                    dset_name = dsetname_prefix + '_slow_{}'.format(num)
-                    dset = grp.create_dataset(dset_name, data=1 * arr, dtype=np.uint16)
-                    dset.attrs.update(device_meta)
-                    dset.attrs.update(self.macroscan_fast_params.meta)
-                    dset.attrs.update(self.macroscan_slow_params.meta)
-                    dset.attrs.update(self.nanoscan_fixed_params.meta)
-                    dset.attrs['MicroStage.raster.slow.pos'] = curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]]
-                    dset.attrs['MicroStage.raster.slow.pos_sample_vec'] = slow_pos_sample_vec
-                    dset.attrs['MicroStage.raster.fast.pos_sample_vec'] = fast_pos_sample_vec
-                    dset.attrs['MicroStage.raster.fast.n_images_at_pos_samples'] = n_images_at_pos_samples
-                    print('Writing to dataset: {}'.format(dset_name))
+                    if fid is not None:
+                        if z_steps > 1:
+                            dset_name = dsetname_prefix + '_z{}_slow_{}'.format(num_z, num)
+                        else:
+                            dset_name = dsetname_prefix + '_slow_{}'.format(num)
+                        dset = grp.create_dataset(dset_name, data=1 * arr, dtype=np.uint16)
+                        dset.attrs.update(device_meta)
+                        dset.attrs.update(self.macroscan_fast_params.meta)
+                        dset.attrs.update(self.macroscan_slow_params.meta)
+                        dset.attrs.update(self.nanoscan_fixed_params.meta)
+                        dset.attrs['MicroStage.raster.slow.pos'] = curr_pos[self.devices['MicroStage'].axis_to_num[slow_axis]]
+                        dset.attrs['MicroStage.raster.slow.pos_sample_vec'] = slow_pos_sample_vec
+                        dset.attrs['MicroStage.raster.fast.pos_sample_vec'] = fast_pos_sample_vec
+                        dset.attrs['MicroStage.raster.fast.n_images_at_pos_samples'] = n_images_at_pos_samples
+                        dset.attrs['MicroStage.raster.fixed.pos'] = curr_z
+                        print('Writing to dataset: {}'.format(dset_name))
 
-                sp_idxs = np.arange(n_images)[1:: n_images // (self._n_spectra_to_collect - 1) - 1]
-                _midscan_spectra = arr[sp_idxs, :]
+                    sp_idxs = np.arange(n_images)[1:: n_images // (self._n_spectra_to_collect - 1) - 1]
+                    _midscan_spectra = arr[sp_idxs, :]
 
-                if _midscan_plot_ref is None:
-                    self.ui.mpl_canvas_spectra.axes.cla()
-                    _midscan_plot_ref = self.ui.mpl_canvas_spectra.axes.plot(_midscan_spectra.T)
-                else:
-                    for entry, new_sp in zip(_midscan_plot_ref, _midscan_spectra):
-                        entry.set_ydata(new_sp)
-                self.ui.mpl_canvas_spectra.draw()
-                self.ui.mpl_canvas_spectra.flush_events()
+                    if _midscan_plot_ref is None:
+                        self.ui.mpl_canvas_spectra.axes.cla()
+                        _midscan_plot_ref = self.ui.mpl_canvas_spectra.axes.plot(_midscan_spectra.T)
+                    else:
+                        for entry, new_sp in zip(_midscan_plot_ref, _midscan_spectra):
+                            entry.set_ydata(new_sp)
+                    self.ui.mpl_canvas_spectra.draw()
+                    self.ui.mpl_canvas_spectra.flush_events()
 
-                interp_n_imgs_to_pos = interp1d(n_images_at_pos_samples, fast_pos_sample_vec, kind='linear')
+                    interp_n_imgs_to_pos = interp1d(n_images_at_pos_samples, fast_pos_sample_vec, kind='linear')
 
-                try:
-                    self.ui.mpl_canvas_left.axes.scatter(interp_n_imgs_to_pos(np.arange(n_images)), [slow_pos_sample_vec[0]] * n_images, c=arr[:, 1000], marker='s')
-                    self.ui.mpl_canvas_left.draw()
-                    self.ui.mpl_canvas_left.flush_events()
-                except Exception:
-                    print(traceback.format_exc())
-                    print('N Images: {}'.format(n_images))
-                    print(len(n_images_at_pos_samples), len(fast_pos_sample_vec))
+                    try:
+                        idx_left = self.ui.spinBox_left_index.value()
+                        idx_right = self.ui.spinBox_right_index.value()
+                        self.ui.mpl_canvas_left.axes.scatter(interp_n_imgs_to_pos(np.arange(n_images)), [slow_pos_sample_vec[0]] * n_images, c=arr[:, idx_left], marker='s')
+                        self.ui.mpl_canvas_right.axes.scatter(interp_n_imgs_to_pos(np.arange(n_images)), [slow_pos_sample_vec[0]] * n_images, c=arr[:, idx_right], marker='s')
+                        self.ui.mpl_canvas_left.draw()
+                        self.ui.mpl_canvas_right.draw()
+                        self.ui.mpl_canvas_left.flush_events()
+                        self.ui.mpl_canvas_right.flush_events()
+                    except Exception:
+                        print(traceback.format_exc())
+                        print('N Images: {}'.format(n_images))
+                        print(len(n_images_at_pos_samples), len(fast_pos_sample_vec))
 
-                # tmr -= timer()
-                # print('Time per iteration: {}'.format(-tmr))
+                    # tmr -= timer()
+                    # print('Time per iteration: {}'.format(-tmr))
         except Exception:
             print(traceback.format_exc())
         finally:
