@@ -62,6 +62,7 @@ class MplCanvas(FigureCanvasQTAgg):
         self.axes = self.fig.add_subplot(111)
         super(MplCanvas, self).__init__(self.fig)
 
+
 class MainWindow(QMainWindow):
     def __init__(self, devices={}):
         # Boilerplate stuff
@@ -162,14 +163,12 @@ class MainWindow(QMainWindow):
         self.ui.pushButtonTimeGoToDark.pressed.connect(self.move_delay)
         self.ui.pushButtonTimeSetZero.pressed.connect(self.set_delay_home)
 
-    def showEvent(self, ev):
-        """ This happens when the window is shown"""
-        self.timer_update_pos.start()
-        self.timer_update_delay_pos.start()
-        return QWidget.showEvent(self, ev)
+        # Need the focus policy to trigger FocusInEvent and FocusOutEvent
+        self.setFocusPolicy(Qt.StrongFocus)
 
     def hideEvent(self, ev):
         """ This happens when the window is hidden"""
+        print('Hide Event')
         self.timer_update_pos.stop()
         self.timer_update_delay_pos.stop()
         if 'CCD' in self.devices:
@@ -179,6 +178,36 @@ class MainWindow(QMainWindow):
             self.devices['MicroStage'].set_joystick_off()
 
         return QWidget.hideEvent(self, ev)
+
+    def showEvent(self, ev):
+        """ This happens when the window is shown"""
+        if not self.devices['imaging']:
+            self.timer_update_pos.start()
+            self.timer_update_delay_pos.start()
+        return QWidget.showEvent(self, ev)
+
+    def focusInEvent(self, ev):
+        """ This happens when the window gains focus"""
+        if not self.devices['imaging']:
+            print('Focus In')
+            self.timer_update_pos.start()
+            self.timer_update_delay_pos.start()
+        
+        return QWidget.focusInEvent(self, ev)
+
+    def focusOutEvent(self, ev):
+        """ This happens when the window gains focus"""
+        print('Focus Out')
+        self.timer_update_pos.stop()
+        self.timer_update_delay_pos.stop()
+        if 'CCD' in self.devices:
+            if self.devices['running']:
+                self.stop_acquisition()
+        if 'MicroStage' in self.devices:
+            self.devices['MicroStage'].set_joystick_off()
+        
+        return QWidget.focusOutEvent(self, ev)
+    
 
     def start_acquisition(self):
         if 'CCD' in self.devices:
@@ -345,8 +374,8 @@ class MainWindow(QMainWindow):
                     if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
 
                         self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
-                                                                               ydata + std_spectrum, alpha=0.25,
-                                                                               color='C0', label=r'$\pm$1 Std. Dev')
+                                                                            ydata + std_spectrum, alpha=0.25,
+                                                                            color='C0', label=r'$\pm$1 Std. Dev')
                         self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
                         self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
                     
@@ -359,8 +388,8 @@ class MainWindow(QMainWindow):
                             self.ui.std_ref.remove()
                             self.ui.std_ref = None
                         self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
-                                                                               ydata + std_spectrum, alpha=0.25,
-                                                                               color='C0', label=r'$\pm$1 Std. Dev')
+                                                                            ydata + std_spectrum, alpha=0.25,
+                                                                            color='C0', label=r'$\pm$1 Std. Dev')
                         self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
                         if self.ui.lgd_ref is not None:
                             self.ui.lgd_ref.set_visible(True)

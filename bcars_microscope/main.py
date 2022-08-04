@@ -11,6 +11,7 @@ import traceback
 
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 
 from bcars_microscope.ui.ui_bcars2_main import Ui_MainWindow
 from spectroscopy import MainWindow as WinSpectroscopy
@@ -39,6 +40,7 @@ class MainWindow(QMainWindow):
         self.devices = {}
         self.devices['CCD'] = None
         self.devices['running'] = False
+        self.devices['imaging'] = False
 
         # Signals and Slots
         self.ui.pushButtonInitCCD.pressed.connect(self.init_ccd)
@@ -51,17 +53,22 @@ class MainWindow(QMainWindow):
         # New Windows
         self.windows = {}
         self.windows['Spectroscopy'] = WinSpectroscopy(self.devices)
+        self.windows['Spectroscopy'].setFocus()  # In case there are In and Out Events set
         self.windows['Spectroscopy'].hide()
         self.ui.pushButtonWinSpectroscopy.pressed.connect(self.windows['Spectroscopy'].show)
 
         self.windows['Raster'] = WinRaster(self.devices)
+        self.windows['Raster'].setFocus()  # In case there are In and Out Events set
         self.windows['Raster'].hide()
         self.ui.pushButtonWinRaster.pressed.connect(self.windows['Raster'].show)
 
         self.windows['MicroRaster'] = WinMicroRaster(self.devices)
+        self.windows['Raster'].setFocus()  # In case there are In and Out Events set
         self.windows['MicroRaster'].hide()
         self.ui.pushButtonWinRasterMacro.pressed.connect(self.windows['MicroRaster'].show)
 
+        # self.setFocusPolicy(Qt.StrongFocus)
+        
     def closeEvent(self, ev):
         print('Close')
         del self.windows  # If you close main window, should close all other windows and exit
