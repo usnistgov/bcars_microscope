@@ -217,11 +217,11 @@ if __name__ == '__main__':
         x_pos = int(screen_geo.width() / 2 - app_geo.width() / 2)
         y_pos = int(screen_geo.height() * 0.05)  # 5% down from the top of the screen
         window.setGeometry(x_pos, y_pos, app_geo.width(), app_geo.height())
-
+        
         window.windows['Raster'].ui.spinBox_left_index.setValue(365)
         window.windows['Raster'].ui.spinBox_right_index.setValue(392)
 
-        app.exec_()
+        sys.exit(app.exec_())
     except Exception:
         print(traceback.format_exc())
     else:

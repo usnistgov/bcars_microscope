@@ -7,6 +7,7 @@ Started
 Not Started
 -----------
 TODO: Spectral axis selectable and calibratable to wavelength or wavenumber
+TODO: STOP stops everything
 """
 
 from cycler import cycler
@@ -123,6 +124,7 @@ class NanoScanAxisParams:
         self.stop = stop
         self.n_steps = n_steps
         self.prefix = prefix
+        self.units = 'nm'
 
     @property
     def step_vec(self):
@@ -165,6 +167,7 @@ class NanoScanAxisParams:
         output['{}Stop'.format(self.prefix)] = self.stop
         output['{}Steps'.format(self.prefix)] = self.n_steps
         output['{}StepSize'.format(self.prefix)] = self.step_size
+        output['{}Units'.format(self.prefix)] = self.units
         return output
 
 
