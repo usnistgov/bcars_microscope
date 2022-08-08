@@ -402,7 +402,19 @@ class MainWindow(QMainWindow):
                                 if not self._avg_on & self.ui.lgd_ref.get_visible():
                                     self.ui.lgd_ref.set_visible(False)
 
-                        # self.ui.mpl_canvas.axes.set_ylim(bottom=ydata.min()-np.std(ydata), top=ydata.max()+np.std(ydata))
+                        if self.ui.checkBoxAutoscalePlot.isChecked():
+                            max_y = ydata.max()
+                            min_y = ydata.min()
+                            max_x = xdata.max()
+                            min_x = xdata.min()
+                            frac_span_y = 0.1 * abs(max_y - min_y)
+                            frac_span_x = 0.1 * abs(max_x - min_x)
+
+                            self.ui.mpl_canvas.axes.set_ylim(bottom=min_y - frac_span_y, top=max_y + frac_span_y)
+                            self.ui.mpl_canvas.axes.set_xlim(left=min_x - frac_span_x, right=max_x + frac_span_x)
+                            self.ui.mpl_canvas.axes.set_ylim(auto=True)
+                            self.ui.mpl_canvas.axes.set_xlim(auto=True)
+
                         self.ui.mpl_canvas.draw()
     
     

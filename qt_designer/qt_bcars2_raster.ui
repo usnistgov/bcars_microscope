@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1511</width>
-    <height>950</height>
+    <height>956</height>
    </rect>
   </property>
   <property name="font">
@@ -2048,39 +2048,35 @@ SC Power = 11 mW</string>
           <attribute name="title">
            <string>Settings</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <layout class="QFormLayout" name="formLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>Frequency Index</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="spinBox_left_index">
-               <property name="maximumSize">
-                <size>
-                 <width>61</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
-               </property>
-               <property name="minimum">
-                <number>0</number>
-               </property>
-               <property name="maximum">
-                <number>1599</number>
-               </property>
-               <property name="value">
-                <number>1000</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Frequency Index</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="spinBox_left_index">
+             <property name="maximumSize">
+              <size>
+               <width>61</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
+             </property>
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>1599</number>
+             </property>
+             <property name="value">
+              <number>1000</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -2124,39 +2120,35 @@ SC Power = 11 mW</string>
           <attribute name="title">
            <string>Settings</string>
           </attribute>
-          <layout class="QGridLayout" name="gridLayout_7">
+          <layout class="QFormLayout" name="formLayout_3">
            <item row="0" column="0">
-            <layout class="QFormLayout" name="formLayout_3">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_35">
-               <property name="text">
-                <string>Frequency Index</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="spinBox_right_index">
-               <property name="maximumSize">
-                <size>
-                 <width>61</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="buttonSymbols">
-                <enum>QAbstractSpinBox::NoButtons</enum>
-               </property>
-               <property name="minimum">
-                <number>0</number>
-               </property>
-               <property name="maximum">
-                <number>1599</number>
-               </property>
-               <property name="value">
-                <number>1000</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QLabel" name="label_35">
+             <property name="text">
+              <string>Frequency Index</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="spinBox_right_index">
+             <property name="maximumSize">
+              <size>
+               <width>61</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
+             </property>
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>1599</number>
+             </property>
+             <property name="value">
+              <number>1000</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -2184,6 +2176,16 @@ SC Power = 11 mW</string>
          </property>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="checkBoxAutoscalePlot">
+         <property name="text">
+          <string>Autoscale</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -2195,7 +2197,7 @@ SC Power = 11 mW</string>
      <x>0</x>
      <y>0</y>
      <width>1511</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

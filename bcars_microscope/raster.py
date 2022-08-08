@@ -462,6 +462,20 @@ class MainWindow(QMainWindow):
 
                 self.ui.mpl_canvas_right.draw()
 
+        if self.ui.checkBoxAutoscalePlot.isChecked():
+            if isinstance(self._midscan_spectra, np.ndarray):
+                max_y = self._midscan_spectra.max()
+                min_y = self._midscan_spectra.min()
+                max_x = self._midscan_spectra.shape[-1]
+                min_x = 0
+                frac_span_y = 0.1 * abs(max_y - min_y)
+                frac_span_x = 0.1 * abs(max_x - min_x)
+
+                self.ui.mpl_canvas_spectra.axes.set_ylim(bottom=min_y - frac_span_y, top=max_y + frac_span_y)
+                self.ui.mpl_canvas_spectra.axes.set_xlim(left=min_x - frac_span_x, right=max_x + frac_span_x)
+                self.ui.mpl_canvas_spectra.axes.set_ylim(auto=True)
+                self.ui.mpl_canvas_spectra.axes.set_xlim(auto=True)
+
     def is_ready(self):
         """Returns status information about instrument
 
