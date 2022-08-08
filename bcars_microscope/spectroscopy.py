@@ -39,7 +39,7 @@ mpl.rcParams['axes.prop_cycle'] = cycler(color=['white', '#FF911F', '#00A3BF', '
 import numpy as np
 
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtCore import QTimer, Qt, QEvent
 from PyQt5 import QtCore
 from PyQt5.QtGui import QPalette, QColor
 
@@ -163,8 +163,18 @@ class MainWindow(QMainWindow):
         self.ui.pushButtonTimeGoToDark.pressed.connect(self.move_delay)
         self.ui.pushButtonTimeSetZero.pressed.connect(self.set_delay_home)
 
-        # Need the focus policy to trigger FocusInEvent and FocusOutEvent
-        self.setFocusPolicy(Qt.StrongFocus)
+        self.installEventFilter(self)
+
+    def eventFilter(self, source, ev):
+        typ = ev.type()
+        if typ == QEvent.WindowActivate:
+            print('Activate')
+            self.showEvent(None)
+        elif typ == QEvent.WindowDeactivate:
+            print('Deactivate')
+            self.hideEvent(None)
+
+        return super().eventFilter(source, ev)
 
     def hideEvent(self, ev):
         """ This happens when the window is hidden"""
@@ -181,33 +191,16 @@ class MainWindow(QMainWindow):
 
     def showEvent(self, ev):
         """ This happens when the window is shown"""
-        if not self.devices['imaging']:
+        print('Show Event')
+        if 'imaging' in self.devices:
+            if not self.devices['imaging']:
+                self.timer_update_pos.start()
+                self.timer_update_delay_pos.start()
+        else:
             self.timer_update_pos.start()
             self.timer_update_delay_pos.start()
         return QWidget.showEvent(self, ev)
-
-    def focusInEvent(self, ev):
-        """ This happens when the window gains focus"""
-        if not self.devices['imaging']:
-            print('Focus In')
-            self.timer_update_pos.start()
-            self.timer_update_delay_pos.start()
-        
-        return QWidget.focusInEvent(self, ev)
-
-    def focusOutEvent(self, ev):
-        """ This happens when the window gains focus"""
-        print('Focus Out')
-        self.timer_update_pos.stop()
-        self.timer_update_delay_pos.stop()
-        if 'CCD' in self.devices:
-            if self.devices['running']:
-                self.stop_acquisition()
-        if 'MicroStage' in self.devices:
-            self.devices['MicroStage'].set_joystick_off()
-        
-        return QWidget.focusOutEvent(self, ev)
-    
+   
 
     def start_acquisition(self):
         if 'CCD' in self.devices:
@@ -263,27 +256,29 @@ class MainWindow(QMainWindow):
         self.ui.radioButtonAvgDone.setStyleSheet('QRadioButton::indicator {background-color: rgb(100, 100, 100); border: 2px solid white}')
 
     def update_position(self):
-        if 'NanoStage' in self.devices:
-            locs_dict = self.devices['NanoStage'].get_position()
-            if self.sender() == self.ui.pushButton_setPos_getCurrent:
-                self.ui.spinBox_x_setpos.setValue(locs_dict['X'])
-                self.ui.spinBox_y_setpos.setValue(locs_dict['Y'])
-                self.ui.spinBox_z_setpos.setValue(locs_dict['Z'])
-            else: # Not from the set from current-position load button
-                self.ui.spinBox_x_pos.setValue(locs_dict['X'])
-                self.ui.spinBox_y_pos.setValue(locs_dict['Y'])
-                self.ui.spinBox_z_pos.setValue(locs_dict['Z'])
+        if 'imaging' in self.devices:
+            if not self.devices['imaging']:
+                if 'NanoStage' in self.devices:
+                    locs_dict = self.devices['NanoStage'].get_position()
+                    if self.sender() == self.ui.pushButton_setPos_getCurrent:
+                        self.ui.spinBox_x_setpos.setValue(locs_dict['X'])
+                        self.ui.spinBox_y_setpos.setValue(locs_dict['Y'])
+                        self.ui.spinBox_z_setpos.setValue(locs_dict['Z'])
+                    else: # Not from the set from current-position load button
+                        self.ui.spinBox_x_pos.setValue(locs_dict['X'])
+                        self.ui.spinBox_y_pos.setValue(locs_dict['Y'])
+                        self.ui.spinBox_z_pos.setValue(locs_dict['Z'])
 
-        if 'MicroStage' in self.devices:
-            locs_dict = self.devices['MicroStage'].get_position()
-            if self.sender() == self.ui.pushButton_setPos_getCurrentMicro:
-                self.ui.spinBox_x_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
-                self.ui.spinBox_y_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
-            else: # Not from the set from current-position load button
-                self.ui.spinBox_x_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
-                self.ui.spinBox_y_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
-            # Check joystick state
-            self.ui.checkBoxJoyStickOn.setChecked(self.devices['MicroStage'].get_joystick_status())
+                if 'MicroStage' in self.devices:
+                    locs_dict = self.devices['MicroStage'].get_position()
+                    if self.sender() == self.ui.pushButton_setPos_getCurrentMicro:
+                        self.ui.spinBox_x_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
+                        self.ui.spinBox_y_setpos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
+                    else: # Not from the set from current-position load button
+                        self.ui.spinBox_x_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['X']])
+                        self.ui.spinBox_y_pos_micro.setValue(locs_dict[self.devices['MicroStage'].axis_to_num['Y']])
+                    # Check joystick state
+                    self.ui.checkBoxJoyStickOn.setChecked(self.devices['MicroStage'].get_joystick_status())
 
     def micro_joystick_change(self):
         if 'MicroStage' in self.devices:
@@ -294,9 +289,11 @@ class MainWindow(QMainWindow):
                 self.devices['MicroStage'].set_joystick_off()
 
     def update_delay_pos(self):
-        if 'DelayStage' in self.devices:
-            delay = self.devices['DelayStage'].get_position()
-            self.ui.spinBoxTimeCurrPos.setValue(delay)
+        if 'imaging' in self.devices:
+            if not self.devices['imaging']:
+                if 'DelayStage' in self.devices:
+                    delay = self.devices['DelayStage'].get_position()
+                    self.ui.spinBoxTimeCurrPos.setValue(delay)
 
     def move_delay(self):
         if 'DelayStage' in self.devices:
@@ -313,102 +310,102 @@ class MainWindow(QMainWindow):
                 
             self.devices['DelayStage'].set_position(new_delay)
         
-
     def set_delay_home(self):
         if 'DelayStage' in self.devices:
             self.devices['DelayStage'].set_home()
         
     def update_plot(self):
-        output = self.get_spectrum()
-        if output:
-            xdata, new_spectrum = output
+        if 'imaging' in self.devices:
+            if not self.devices['imaging']:
+                output = self.get_spectrum()
+                if output:
+                    xdata, new_spectrum = output
 
-            if self._avg_on & (self._avg_ct == 0):
-                self._avg_spectrum_arr = np.zeros((self._avg_num, xdata.size))
+                    if self._avg_on & (self._avg_ct == 0):
+                        self._avg_spectrum_arr = np.zeros((self._avg_num, xdata.size))
 
-            if self._avg_on:
-                ct = self._avg_ct % self._avg_num
-                self._avg_spectrum_arr[ct, :] = 1 * new_spectrum
-                
-                if self._avg_ct == 0:
-                    avg_spectrum = 1 * new_spectrum
-                    std_spectrum = 0 * new_spectrum
-                elif (self._avg_ct > 0) & (self._avg_ct < self._avg_num - 1):
-                    avg_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].mean(axis=0)
-                    std_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].std(axis=0)
-                else:
-                    # print('Average Full')
-                    # self.ui.radioButtonAvgDone.setChecked(True)
-                    self.ui.radioButtonAvgDone.setStyleSheet('QRadioButton::indicator {background-color: rgb(85, 255, 0); border: 2px solid white}')
-                    
-                    avg_spectrum = self._avg_spectrum_arr.mean(axis=0)
-                    std_spectrum = self._avg_spectrum_arr.std(axis=0)
-                self._avg_ct += 1
-            
-            if self._avg_on:
-                ydata = avg_spectrum
-            else:
-                ydata = new_spectrum
-
-            if ydata is not None:
-                if (self.ui.checkBoxSubtractDark.isChecked()) & (self.dark_spectrum is not None):
-                    ydata -= self.dark_spectrum
-                if (self.ui.checkBoxKK.isChecked()) & (self.nrb_spectrum is not None):
-                    
-                    ratio_numer = 1 * ydata
-                    ratio_denom = 1 * self.nrb_spectrum
-                    ratio_denom[ratio_denom == 0] = 1
-                    ratio = abs(ratio_numer / ratio_denom)
-                    ratio[ratio <= 0] = 1e-6
-                    
-                    try:
-                        rng = slice(self.ui.spinBoxLowPix.value(), self.ui.spinBoxHighPix.value()+1, None)
-                        ydata *= 0
-                        ydata[rng] = 1 * (np.sqrt(ratio[rng]) * np.sin(hilbert_pad_simple(-0.5 * np.log(ratio[rng]), hilbert_scipy)))
-                    except Exception:
-                        print(traceback.format_exc())
+                    if self._avg_on:
+                        ct = self._avg_ct % self._avg_num
+                        self._avg_spectrum_arr[ct, :] = 1 * new_spectrum
                         
-                if self.ui.plot_ref is None:
-                    self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, label='Spectrum')[0]
-                    
-                    if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
-
-                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
-                                                                            ydata + std_spectrum, alpha=0.25,
-                                                                            color='C0', label=r'$\pm$1 Std. Dev')
-                        self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
-                        self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
-                    
-                else:
-                    self.ui.plot_ref.set_xdata(xdata)
-                    self.ui.plot_ref.set_ydata(ydata)
-                    
-                    if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
-                        if self.ui.std_ref is not None:
-                            self.ui.std_ref.remove()
-                            self.ui.std_ref = None
-                        self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
-                                                                            ydata + std_spectrum, alpha=0.25,
-                                                                            color='C0', label=r'$\pm$1 Std. Dev')
-                        self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
-                        if self.ui.lgd_ref is not None:
-                            self.ui.lgd_ref.set_visible(True)
+                        if self._avg_ct == 0:
+                            avg_spectrum = 1 * new_spectrum
+                            std_spectrum = 0 * new_spectrum
+                        elif (self._avg_ct > 0) & (self._avg_ct < self._avg_num - 1):
+                            avg_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].mean(axis=0)
+                            std_spectrum = self._avg_spectrum_arr[:self._avg_ct + 1, :].std(axis=0)
                         else:
-                            self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
+                            # print('Average Full')
+                            # self.ui.radioButtonAvgDone.setChecked(True)
+                            self.ui.radioButtonAvgDone.setStyleSheet('QRadioButton::indicator {background-color: rgb(85, 255, 0); border: 2px solid white}')
+                            
+                            avg_spectrum = self._avg_spectrum_arr.mean(axis=0)
+                            std_spectrum = self._avg_spectrum_arr.std(axis=0)
+                        self._avg_ct += 1
+                    
+                    if self._avg_on:
+                        ydata = avg_spectrum
                     else:
-                        if self.ui.std_ref is not None:
-                            self.ui.std_ref.remove()
-                            self.ui.std_ref = None
+                        ydata = new_spectrum
 
-                    if self.ui.lgd_ref is not None:
-                        if not self._avg_on & self.ui.lgd_ref.get_visible():
-                            self.ui.lgd_ref.set_visible(False)
+                    if ydata is not None:
+                        if (self.ui.checkBoxSubtractDark.isChecked()) & (self.dark_spectrum is not None):
+                            ydata -= self.dark_spectrum
+                        if (self.ui.checkBoxKK.isChecked()) & (self.nrb_spectrum is not None):
+                            
+                            ratio_numer = 1 * ydata
+                            ratio_denom = 1 * self.nrb_spectrum
+                            ratio_denom[ratio_denom == 0] = 1
+                            ratio = abs(ratio_numer / ratio_denom)
+                            ratio[ratio <= 0] = 1e-6
+                            
+                            try:
+                                rng = slice(self.ui.spinBoxLowPix.value(), self.ui.spinBoxHighPix.value()+1, None)
+                                ydata *= 0
+                                ydata[rng] = 1 * (np.sqrt(ratio[rng]) * np.sin(hilbert_pad_simple(-0.5 * np.log(ratio[rng]), hilbert_scipy)))
+                            except Exception:
+                                print(traceback.format_exc())
+                                
+                        if self.ui.plot_ref is None:
+                            self.ui.plot_ref = self.ui.mpl_canvas.axes.plot(xdata, ydata, label='Spectrum')[0]
+                            
+                            if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
 
-                # self.ui.mpl_canvas.axes.set_ylim(bottom=ydata.min()-np.std(ydata), top=ydata.max()+np.std(ydata))
-                self.ui.mpl_canvas.draw()
+                                self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
+                                                                                    ydata + std_spectrum, alpha=0.25,
+                                                                                    color='C0', label=r'$\pm$1 Std. Dev')
+                                self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
+                                self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
+                            
+                        else:
+                            self.ui.plot_ref.set_xdata(xdata)
+                            self.ui.plot_ref.set_ydata(ydata)
+                            
+                            if self._avg_on & self.ui.checkBoxShowStdDev.isChecked():
+                                if self.ui.std_ref is not None:
+                                    self.ui.std_ref.remove()
+                                    self.ui.std_ref = None
+                                self.ui.std_ref = self.ui.mpl_canvas.axes.fill_between(xdata, ydata - std_spectrum, 
+                                                                                    ydata + std_spectrum, alpha=0.25,
+                                                                                    color='C0', label=r'$\pm$1 Std. Dev')
+                                self.ui.plot_ref.set_label('Mean Spectrum ({})'.format(self._avg_num))
+                                if self.ui.lgd_ref is not None:
+                                    self.ui.lgd_ref.set_visible(True)
+                                else:
+                                    self.ui.lgd_ref = self.ui.mpl_canvas.axes.legend()
+                            else:
+                                if self.ui.std_ref is not None:
+                                    self.ui.std_ref.remove()
+                                    self.ui.std_ref = None
+
+                            if self.ui.lgd_ref is not None:
+                                if not self._avg_on & self.ui.lgd_ref.get_visible():
+                                    self.ui.lgd_ref.set_visible(False)
+
+                        # self.ui.mpl_canvas.axes.set_ylim(bottom=ydata.min()-np.std(ydata), top=ydata.max()+np.std(ydata))
+                        self.ui.mpl_canvas.draw()
     
     
-
     def move_nano_stage(self):
         if 'NanoStage' in self.devices:
             self.timer_update_pos.stop()

@@ -10,6 +10,7 @@ Not Started
 TODO: Spectral axis selectable and calibratable to wavelength or wavenumber
 QUESTION: Does acceleration affect over- and under-scanning?
 TODO: STOP button works
+TODO: Bidirectional Scanning
 """
 
 import datetime
@@ -264,7 +265,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.devices = devices
-        self.devices['running'] = False
+        self.devices['imaging'] = False
 
         # Create the maptlotlib FigureCanvas object,
         # which defines a single set of axes as self.axes.
@@ -509,12 +510,6 @@ class MainWindow(QMainWindow):
                                                             prefix='Macro.Raster.Fixed.')
             self.ui.spinBoxFixedStepSize.setValue(self.nanoscan_fixed_params.step_size)
 
-    def _wait_till_not_running(self, predelay=1, delay_bw_polls=1):
-        sleep(predelay)
-        print('Waiting till running is done')
-        while self.devices['running']:
-            sleep(delay_bw_polls)
-
     def _reset_state(self):
         self._midscan_spectra = None  # N spectra that are recorded for each column
         self._midscan_plot_ref = None  # Reference to spectral plot
@@ -591,7 +586,7 @@ class MainWindow(QMainWindow):
         devices_not_ready_list = [nd for nd in devices_needed if nd not in self.devices]
         devices_are_ready = len(devices_not_ready_list) == 0
 
-        system_is_free = self.devices['running'] is False
+        system_is_free = (not self.devices['running']) & (not self.devices['imaging'])
 
         status_str = ''
         if not devices_are_ready:
@@ -626,68 +621,69 @@ class MainWindow(QMainWindow):
                 self.ui.checkBoxSave.setChecked(True)
 
     def start_acquisition(self):
+        if not self.devices['imaging']:
+            self.double_check_save()
+            yes_save = self.ui.checkBoxSave.isChecked()
 
-        self.double_check_save()
-        yes_save = self.ui.checkBoxSave.isChecked()
-
-        if not yes_save:
-            pfname = None  # path + filename
-            dsetname = None  # dataset name
-            grpname = None  # group name
-            pth = None  # path
-            fname = None  # filename
-        else:
-            pfname = self.ui.lineEditPathFileName.text()  # Path + filename
-            dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
-            grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
-
-            try:
-                pth, fname = pfname.rsplit('/', 1)
-            except Exception:
-                pth = None
-                fname = None
-
-            # NOTE: Has to write to a new group
-            save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
-            if not save_loc_valid:
-                msg = QMessageBox(self)
-                msg.setIcon(QMessageBox.Warning)
-                msg.setText('Save location is not valid.')
-                msg.setInformativeText(save_loc_str)
-                msg.setWindowTitle('Save location not valid')
-                msg.setStandardButtons(QMessageBox.Ok)
-                # msg.setButtonText(0, 'A')
-                msg.setDefaultButton(QMessageBox.Ok)
-                _ = msg.exec()
-                del pth, fname, grpname, dsetname
-                return
+            if not yes_save:
+                pfname = None  # path + filename
+                dsetname = None  # dataset name
+                grpname = None  # group name
+                pth = None  # path
+                fname = None  # filename
             else:
-                del pth, fname
+                pfname = self.ui.lineEditPathFileName.text()  # Path + filename
+                dsetname = self.ui.lineEditDatasetName.text() + '_' + '{}'.format(self.ui.spinBoxDatasetIndex.value())  # Dataset name
+                grpname = self.ui.lineEditGroupName.text().rstrip('/') + '/' + dsetname  # Groupname
 
-        #     if not self.memo_altered_bool:
-        #         msg = QMessageBox(self)
-        #         msg.setIcon(QMessageBox.Warning)
-        #         msg.setText('The memo has not been changed for this acquisition. Continue?')
-        #         msg.setWindowTitle('Memo not updated')
-        #         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        #         # msg.setButtonText(0, 'A')
-        #         msg.setDefaultButton(QMessageBox.Yes)
-        #         out = msg.exec()
-        #         if out == QMessageBox.No:
-        #             return
+                try:
+                    pth, fname = pfname.rsplit('/', 1)
+                except Exception:
+                    pth = None
+                    fname = None
 
-        devs, not_acq, status_str = self.is_ready()
-        print(status_str)
-        if not (devs & not_acq):  # System is NOT ready to acquire
-            return
+                # NOTE: Has to write to a new group
+                save_loc_valid, save_loc_str = save_location_is_valid(pth, fname, grpname)
+                if not save_loc_valid:
+                    msg = QMessageBox(self)
+                    msg.setIcon(QMessageBox.Warning)
+                    msg.setText('Save location is not valid.')
+                    msg.setInformativeText(save_loc_str)
+                    msg.setWindowTitle('Save location not valid')
+                    msg.setStandardButtons(QMessageBox.Ok)
+                    # msg.setButtonText(0, 'A')
+                    msg.setDefaultButton(QMessageBox.Ok)
+                    _ = msg.exec()
+                    del pth, fname, grpname, dsetname
+                    return
+                else:
+                    del pth, fname
 
-        # General image settings
-        self.devices['CCD'].set_internal_trigger()  # Internal trigger
-        self.devices['CCD'].sdk.PrepareAcquisition()
-        self.ui.mpl_canvas_left.axes.cla()
-        self.ui.mpl_canvas_right.axes.cla()
-        
-        self.do_acquire()
+            #     if not self.memo_altered_bool:
+            #         msg = QMessageBox(self)
+            #         msg.setIcon(QMessageBox.Warning)
+            #         msg.setText('The memo has not been changed for this acquisition. Continue?')
+            #         msg.setWindowTitle('Memo not updated')
+            #         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            #         # msg.setButtonText(0, 'A')
+            #         msg.setDefaultButton(QMessageBox.Yes)
+            #         out = msg.exec()
+            #         if out == QMessageBox.No:
+            #             return
+
+            devs, not_acq, status_str = self.is_ready()
+            print(status_str)
+            if not (devs & not_acq):  # System is NOT ready to acquire
+                return
+
+            self.devices['imaging'] = True
+            # General image settings
+            self.devices['CCD'].set_internal_trigger()  # Internal trigger
+            self.devices['CCD'].sdk.PrepareAcquisition()
+            self.ui.mpl_canvas_left.axes.cla()
+            self.ui.mpl_canvas_right.axes.cla()
+            
+            self.do_acquire()
 
     def do_acquire(self):
         yes_save = self.ui.checkBoxSave.isChecked()
@@ -728,7 +724,7 @@ class MainWindow(QMainWindow):
             grp = None
 
         print('DO ACQUIRE')
-        self.devices['running'] = True  # Need this for timing
+        self.devices['imaging'] = True  # Need this for timing
 
         print(self.macroscan_fast_params.__dict__)
         print(self.macroscan_slow_params.__dict__)
@@ -866,10 +862,9 @@ class MainWindow(QMainWindow):
                     fid.close()
                 except Exception:
                     print(traceback.format_exc())
-            self.devices['running'] = False
             if yes_save:
                 self.ui.spinBoxDatasetIndex.setValue(self.ui.spinBoxDatasetIndex.value() + 1)
-
+            self.devices['imaging'] = False
     def stop_acquisition(self):
         self.timer_update_plots.stop()
         self.devices['CCD'].stop_acquisition()

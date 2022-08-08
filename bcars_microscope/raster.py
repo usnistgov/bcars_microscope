@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.devices = devices
-        self.devices['running'] = False
+        self.devices['imaging'] = False
 
         # Create the maptlotlib FigureCanvas object,
         # which defines a single set of axes as self.axes.
@@ -399,12 +399,6 @@ class MainWindow(QMainWindow):
                                                             prefix='Raster.Fixed.')
             self.ui.spinBox_fixed_stepsize.setValue(self.nanoscan_fixed_params.step_size)
 
-    def _wait_till_not_running(self, predelay=1, delay_bw_polls=1):
-        sleep(predelay)
-        print('Waiting till running is done')
-        while self.devices['running']:
-            sleep(delay_bw_polls)
-
     def _reset_state(self):
         self._midscan_spectra = None  # N spectra that are recorded for each column
         self._midscan_plot_ref = None  # Reference to spectral plot
@@ -481,8 +475,11 @@ class MainWindow(QMainWindow):
         devices_not_ready_list = [nd for nd in devices_needed if nd not in self.devices]
         devices_are_ready = len(devices_not_ready_list) == 0
 
-        system_is_free = self.devices['running'] is False
-
+        if 'running' in self.devices:
+            system_is_free = (not self.devices['running']) & (not self.devices['imaging'])
+        else:
+            system_is_free = not self.devices['imaging']
+        
         status_str = ''
         if not devices_are_ready:
             status_str += 'Not all necessary devices are initialized. Need: {}\n'.format(devices_not_ready_list)
@@ -647,7 +644,7 @@ class MainWindow(QMainWindow):
     def _data_collect_thread_finished(self):
         # self.worker_data_collect.signals.progress.disconnect()
         self.stop_acquisition()
-        self.devices['running'] = False
+        self.devices['imaging'] = False
 
     def _data_collect_thread_run(self, img_list, progress_callback):
         # try:
@@ -655,7 +652,7 @@ class MainWindow(QMainWindow):
         # except ConnectionRefusedError:
         #     pass
 
-        self.devices['running'] = True  # Need this for timing
+        self.devices['imaging'] = True  # Need this for timing
 
         axis_str_to_num = {'X': 1, 'Y': 2, 'Z': 3}
 
@@ -693,6 +690,7 @@ class MainWindow(QMainWindow):
                 n_fixed_steps = img_inst.ns_list[2].n_steps
                 fixed_step_vec = img_inst.ns_list[2].step_vec
 
+                tmr_total = timer()
                 for num_z_stack in range(n_fixed_steps):
 
                     curr_fixed_pos = fixed_step_vec[num_z_stack]
@@ -749,6 +747,8 @@ class MainWindow(QMainWindow):
                         # 7. Wait on Stage movement
                         tmr = timer()
                         sleep((2 + img_inst.ns_list[0].n_steps) * self.devices['CCD'].net_acquisition_time)  # Wait an extra 2 pixels worth
+                        # sleep((2 + img_inst.ns_list[0].n_steps) * self.devices['CCD'].settings['exposure_time'])  # Wait an extra 2 pixels worth
+                        # sleep(0.025)
                         # WaitOnTarget takes waaaaaay too long and is not stable
                         # pitools.waitontarget(self.devices['NanoStage'], timeout=10,
                         #                      predelay=self.acq_params['Raster.Fast.Steps']*pixel_time*1, polldelay=0.01)
@@ -815,6 +815,8 @@ class MainWindow(QMainWindow):
                     progress_callback.emit(iter_imgs + 1, n_image_steps, 'Fixed-Axis Imaging steps: ')
 
                 progress_callback.emit(iter_imgs + 1, n_image_steps, 'Imaging steps: ')
+                tmr_total -= timer()
+                print('============== TOTAL TIME (MAIN IMAGE + Z STACK): {} ================'.format(-tmr_total))
         except Exception:
             print(traceback.format_exc())
         finally:
@@ -826,7 +828,6 @@ class MainWindow(QMainWindow):
             if img_inst.save:
                 self.ui.spinBoxDatasetIndex.stepUp()
             # This is now in thread finished fcn
-            # self.devices['running'] = False
 
     def progress_fn(self, num, num_of, desc):
         print('{} {} / {}'.format(desc, num, num_of))

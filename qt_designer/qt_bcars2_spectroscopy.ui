@@ -22,6 +22,9 @@
     <pointsize>11</pointsize>
    </font>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -29,6 +32,9 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -75,6 +81,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -97,6 +106,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -118,6 +130,9 @@
                <width>200</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -162,6 +177,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -174,6 +192,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QPushButton" name="pushButton_moveAll">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -184,6 +205,9 @@
              </item>
              <item>
               <widget class="QPushButton" name="pushButton_setPos_getCurrent">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -207,6 +231,9 @@
                <width>200</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -267,6 +294,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
              </property>
@@ -303,6 +333,9 @@
                <width>150</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true"/>
@@ -363,6 +396,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
              </property>
@@ -400,6 +436,9 @@
                <height>40</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
              </property>
@@ -425,6 +464,9 @@
            </item>
            <item row="5" column="3">
             <widget class="QPushButton" name="pushButton_moveCenter">
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -435,6 +477,9 @@
            </item>
            <item row="1" column="0" colspan="2">
             <widget class="QPushButton" name="pushButton_updatePosition">
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="text">
               <string>Update</string>
              </property>
@@ -453,6 +498,9 @@
                <width>200</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -479,6 +527,9 @@
            </item>
            <item row="5" column="4">
             <widget class="QPushButton" name="pushButton_moveCenter_Offset">
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true"/>
              </property>
@@ -557,6 +608,9 @@
                <width>200</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -668,6 +722,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
               <widget class="QPushButton" name="pushButton_moveAllMicro">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -678,6 +735,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
              </item>
              <item>
               <widget class="QPushButton" name="pushButton_setPos_getCurrentMicro">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -804,6 +864,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
            </item>
            <item row="2" column="0" colspan="2">
             <widget class="QPushButton" name="pushButton_updateMicroPos">
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="text">
               <string>Update</string>
              </property>
@@ -859,6 +922,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                <width>200</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -1228,6 +1294,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                   <height>40</height>
                  </size>
                 </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">font: 11pt &quot;Arial&quot;;</string>
                 </property>
@@ -1264,6 +1333,9 @@ QCheckBox::indicator:disabled { background-color:rgb(100,100,100);}</string>
                   <width>200</width>
                   <height>40</height>
                  </size>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::WheelFocus</enum>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">font: 11pt &quot;Arial&quot;;</string>
@@ -1557,6 +1629,9 @@ font: 87 14pt &quot;Arial Black&quot;;</string>
           <height>250</height>
          </size>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -1644,9 +1719,50 @@ font: 87 14pt &quot;Arial Black&quot;;</string>
      <height>21</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>spinBox_x_setpos</tabstop>
+  <tabstop>spinBox_y_setpos</tabstop>
+  <tabstop>spinBox_z_setpos</tabstop>
+  <tabstop>spinBox_y_pos_micro</tabstop>
+  <tabstop>spinBox_x_setpos_micro</tabstop>
+  <tabstop>pushButton_moveCenterMicro</tabstop>
+  <tabstop>spinBox_y_setpos_micro</tabstop>
+  <tabstop>spinBox_x_pos_micro</tabstop>
+  <tabstop>checkBoxAvgOn</tabstop>
+  <tabstop>spinBoxNAverages</tabstop>
+  <tabstop>radioButtonAvgDone</tabstop>
+  <tabstop>checkBoxShowStdDev</tabstop>
+  <tabstop>pushButtonRecDark</tabstop>
+  <tabstop>checkBoxKK</tabstop>
+  <tabstop>checkBoxSubtractDark</tabstop>
+  <tabstop>pushButtonRecNRB</tabstop>
+  <tabstop>spinBoxLowPix</tabstop>
+  <tabstop>spinBoxHighPix</tabstop>
+  <tabstop>spinBoxTimeCurrPos</tabstop>
+  <tabstop>spinBoxTimeGoToPos</tabstop>
+  <tabstop>pushButtonTimeGoToPos</tabstop>
+  <tabstop>pushButtonTimeSetZero</tabstop>
+  <tabstop>pushButtonTimeGoToEarly</tabstop>
+  <tabstop>pushButtonTimeGoToZero</tabstop>
+  <tabstop>pushButtonTimeGoToLate</tabstop>
+  <tabstop>pushButtonTimeGoToDark</tabstop>
+  <tabstop>pushButtonStartAcq</tabstop>
+  <tabstop>pushButtonStopAcq</tabstop>
+  <tabstop>comboBoxSpectralXSelect</tabstop>
+  <tabstop>pushButton_moveYMicro</tabstop>
+  <tabstop>checkBoxJoyStickOn</tabstop>
+  <tabstop>pushButton_moveXMicro</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
